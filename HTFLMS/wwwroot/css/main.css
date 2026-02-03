@@ -21,8 +21,8 @@
 :root {
     --background-color: #ffffff; /* Background color for the entire website, including individual sections */
     --default-color: #444444; /* Default color used for the majority of the text content across the entire website */
-    --heading-color: #c1282a; /* Color for headings, subheadings and title throughout the website */
-    --accent-color: red; /* Accent color that represents your brand on the website. It's used for buttons, links, and other elements that need to stand out */
+    --heading-color: #c82333; /* Color for headings, subheadings and title throughout the website */
+    --accent-color: #c1282a; /* Accent color that represents your brand on the website. It's used for buttons, links, and other elements that need to stand out */
     --surface-color: #ffffff; /* The surface color is used as a background of boxed elements within sections, such as cards, icon boxes, or other elements that require a visual separation from the global background. */
     --contrast-color: #ffffff; /* Contrast color for text, ensuring readability against backgrounds of accent, heading, or default colors. */
 }
@@ -40,16 +40,16 @@
 /* Color Presets - These classes override global colors when applied to any section or element, providing reuse of the sam color scheme. */
 
 .light-background {
-  --background-color: #f9f9f9;
-  --surface-color: #ffffff;
+    --background-color: #fff5f6;
+    --surface-color: #ffffff;
 }
 
 .dark-background {
-  --background-color: #060606;
-  --default-color: #ffffff;
-  --heading-color: #ffffff;
-  --surface-color: #252525;
-  --contrast-color: #ffffff;
+    --background-color: #1a1a1a;
+    --default-color: #ffffff;
+    --heading-color: #ffffff;
+    --surface-color: #2a2a2a;
+    --contrast-color: #ffffff;
 }
 
 /* Smooth scroll */
@@ -917,23 +917,23 @@ section,
   font-size: 24px;
 }
 
-.hero .btn-get-started {
-  font-weight: 500;
-  font-size: 15px;
-  letter-spacing: 1px;
-  display: inline-block;
-  padding: 8px 35px 10px 35px;
-  border-radius: 50px;
-  transition: 0.4s;
-  margin-top: 30px;
-  border: 2px solid var(--default-color);
-  color: var(--default-color);
-}
+    .hero .btn-get-started {
+        font-weight: 500;
+        font-size: 15px;
+        letter-spacing: 1px;
+        display: inline-block;
+        padding: 8px 35px 10px 35px;
+        border-radius: 50px;
+        transition: 0.4s;
+        margin-top: 30px;
+        border: 2px solid #c82333;
+        color: #c82333;
+    }
 
-.hero .btn-get-started:hover {
-  background: var(--accent-color);
-  border: 2px solid var(--accent-color);
-}
+        .hero .btn-get-started:hover {
+            background: #b33434a2;
+            border: 2px solid var(--accent-color);
+        }
 
 @media (max-width: 768px) {
   .hero h2 {
