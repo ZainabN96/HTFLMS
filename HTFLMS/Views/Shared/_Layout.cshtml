@@ -40,7 +40,7 @@
 
             <a asp-controller="Home" asp-action="Index"
                class="logo d-flex align-items-center me-auto">
-                <img src="~/img/hcc_logo(1).png" alt="HCC Logo" style="height:40px;">
+                <img src="~/img/hcc_logo.png" alt="HCC Logo" style="height:40px;">
             </a>
 
             <nav id="navmenu" class="navmenu">
@@ -53,8 +53,8 @@
 
                     <li><a asp-controller="Courses" asp-action="CoursesIndex">Courses</a></li>
                     <li><a asp-controller="Trainers" asp-action="TrainersIndex">Trainers</a></li>
-                    <li><a asp-controller="Events" asp-action="EventsIndex">Events</a></li>
-                    <li><a asp-controller="Pricings" asp-action="PricingsIndex">Pricing</a></li>
+                    @* <li><a asp-controller="Events" asp-action="EventsIndex">Events</a></li> *@
+                    @* <li><a asp-controller="Pricings" asp-action="PricingsIndex">Pricing</a></li>
                     <li class="dropdown">
                         <a href="#"><span>Dropdown</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
                         <ul>
@@ -73,7 +73,7 @@
                             <li><a href="#">Dropdown 3</a></li>
                             <li><a href="#">Dropdown 4</a></li>
                         </ul>
-                    </li>
+                    </li> *@
                     <li>
                         <a asp-controller="Contact" asp-action="ContactIndex" class="contact-link">
                             Contact
@@ -99,9 +99,10 @@
         <div class="container footer-top">
             <div class="row gy-4">
                 <div class="col-lg-4 col-md-6 footer-about">
-                    <a href="index.html" class="logo d-flex align-items-center">
-                        <span class="sitename">Mentor</span>
-                    </a>
+                    <div class="logo d-flex align-items-center me-auto">
+                        <img src="~/img/hcc_logo.png" alt="HCC Logo" style="height:40px;">
+                    </div>
+
                     <div class="footer-contact pt-3">
                         <p>A108 Adam Street</p>
                         <p>New York, NY 535022</p>

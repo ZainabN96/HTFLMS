@@ -247,16 +247,17 @@ h6 {
   color: var(--accent-color);
 }
 
-.header .btn-getstarted,
-.header .btn-getstarted:focus {
-  color: var(--contrast-color);
-  background: var(--accent-color);
-  font-size: 14px;
-  padding: 8px 25px;
-  margin: 0 0 0 30px;
-  border-radius: 50px;
-  transition: 0.3s;
-}
+    .header .btn-getstarted,
+    .header .btn-getstarted:focus {
+        color: var(--contrast-color);
+        background: var(--accent-color);
+/*        background: linear-gradient(to right, #5e4545 0%, #dc271c 100%);*/
+        font-size: 14px;
+        padding: 8px 25px;
+        margin: 0 0 0 30px;
+        border-radius: 50px;
+        transition: 0.3s;
+    }
 
 .header .btn-getstarted:hover,
 .header .btn-getstarted:focus:hover {
@@ -1035,10 +1036,16 @@ section,
 # Why Us Section
 --------------------------------------------------------------*/
 .why-us .why-box {
-    color: var(--contrast-color);
-    background: #7d6666cc;
-    padding: 30px;
+    position: relative;
+    padding: 40px;
+    border-radius: 12px;
+    color: #fff;
+    background-image: url('/img/why-us-bg.jpeg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
 }
+
 
 .why-us .why-box h3 {
   color: var(--contrast-color);
