@@ -46,12 +46,16 @@
 
             <nav id="navmenu" class="navmenu">
                 <ul>
-                    <li><a href="index.html" class="active">Home<br></a></li>
-                    <li><a href="about.html">About</a></li>
-                    <li><a href="courses.html">Courses</a></li>
-                    <li><a href="trainers.html">Trainers</a></li>
-                    <li><a href="events.html">Events</a></li>
-                    <li><a href="pricing.html">Pricing</a></li>
+                    <li><a asp-controller="Home" asp-action="HomeIndex">Home</a></li>
+                    <li>
+                        <a asp-controller="About" asp-action="AboutIndex">About</a>
+                    </li>
+
+
+                    <li><a asp-controller="Courses" asp-action="CoursesIndex">Courses</a></li>
+                    <li><a asp-controller="Trainers" asp-action="TrainersIndex">Trainers</a></li>
+                    <li><a asp-controller="Events" asp-action="EventsIndex">Events</a></li>
+                    <li><a asp-controller="Pricings" asp-action="PricingsIndex">Pricing</a></li>
                     <li class="dropdown">
                         <a href="#"><span>Dropdown</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
                         <ul>
@@ -71,7 +75,12 @@
                             <li><a href="#">Dropdown 4</a></li>
                         </ul>
                     </li>
-                    <li><a href="contact.html">Contact</a></li>
+                    <li>
+                        <a asp-controller="Contact" asp-action="ContactIndex" class="contact-link">
+                            Contact
+                        </a>
+                    </li>
+
                 </ul>
                 <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
             </nav>
