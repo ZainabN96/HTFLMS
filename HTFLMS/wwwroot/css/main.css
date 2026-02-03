@@ -21,35 +21,35 @@
 :root {
     --background-color: #ffffff; /* Background color for the entire website, including individual sections */
     --default-color: #444444; /* Default color used for the majority of the text content across the entire website */
-    --heading-color: #c82333; /* Color for headings, subheadings and title throughout the website */
-    --accent-color: #c1282a; /* Accent color that represents your brand on the website. It's used for buttons, links, and other elements that need to stand out */
+    --heading-color: #212529cc; /* Color for headings, subheadings and title throughout the website */
+    --accent-color: #c82333; /* Accent color that represents your brand on the website. It's used for buttons, links, and other elements that need to stand out */
     --surface-color: #ffffff; /* The surface color is used as a background of boxed elements within sections, such as cards, icon boxes, or other elements that require a visual separation from the global background. */
     --contrast-color: #ffffff; /* Contrast color for text, ensuring readability against backgrounds of accent, heading, or default colors. */
 }
 
 /* Nav Menu Colors - The following color variables are used specifically for the navigation menu. They are separate from the global colors to allow for more customization options */
 :root {
-  --nav-color: #272828;  /* The default color of the main navmenu links */
-  --nav-hover-color: #5fcf80; /* Applied to main navmenu links when they are hovered over or active */
-  --nav-mobile-background-color: #ffffff; /* Used as the background color for mobile navigation menu */
-  --nav-dropdown-background-color: #ffffff; /* Used as the background color for dropdown items that appear when hovering over primary navigation items */
-  --nav-dropdown-color: #272828; /* Used for navigation links of the dropdown items in the navigation menu. */
-  --nav-dropdown-hover-color: #5fcf80; /* Similar to --nav-hover-color, this color is applied to dropdown navigation links when they are hovered over. */
+    --nav-color: #272828; /* The default color of the main navmenu links */
+    --nav-hover-color: #c82333; /* Applied to main navmenu links when they are hovered over or active */
+    --nav-mobile-background-color: #ffffff; /* Used as the background color for mobile navigation menu */
+    --nav-dropdown-background-color: #ffffff; /* Used as the background color for dropdown items that appear when hovering over primary navigation items */
+    --nav-dropdown-color: #272828; /* Used for navigation links of the dropdown items in the navigation menu. */
+    --nav-dropdown-hover-color: #5fcf80; /* Similar to --nav-hover-color, this color is applied to dropdown navigation links when they are hovered over. */
 }
 
 /* Color Presets - These classes override global colors when applied to any section or element, providing reuse of the sam color scheme. */
 
 .light-background {
-    --background-color: #fff5f6;
-    --surface-color: #ffffff;
+  --background-color: #f9f9f9;
+  --surface-color: #ffffff;
 }
 
 .dark-background {
-    --background-color: #1a1a1a;
-    --default-color: #ffffff;
-    --heading-color: #ffffff;
-    --surface-color: #2a2a2a;
-    --contrast-color: #ffffff;
+  --background-color: #060606;
+  --default-color: #ffffff;
+  --heading-color: #ffffff;
+  --surface-color: #252525;
+  --contrast-color: #ffffff;
 }
 
 /* Smooth scroll */
@@ -247,16 +247,16 @@ h6 {
   color: var(--accent-color);
 }
 
-    .header .btn-getstarted,
-    .header .btn-getstarted:focus {
-        color: var(--contrast-color);
-        background: red;
-        font-size: 14px;
-        padding: 8px 25px;
-        margin: 0 0 0 30px;
-        border-radius: 50px;
-        transition: 0.3s;
-    }
+.header .btn-getstarted,
+.header .btn-getstarted:focus {
+  color: var(--contrast-color);
+  background: var(--accent-color);
+  font-size: 14px;
+  padding: 8px 25px;
+  margin: 0 0 0 30px;
+  border-radius: 50px;
+  transition: 0.3s;
+}
 
 .header .btn-getstarted:hover,
 .header .btn-getstarted:focus:hover {
@@ -331,11 +331,11 @@ h6 {
     padding-right: 0;
   }
 
-    .navmenu li:hover > a,
-    .navmenu .active,
-    .navmenu .active:focus {
-        color: red;
-    }
+  .navmenu li:hover>a,
+  .navmenu .active,
+  .navmenu .active:focus {
+    color: var(--nav-hover-color);
+  }
 
   .navmenu .dropdown ul {
     margin: 0;
@@ -917,23 +917,23 @@ section,
   font-size: 24px;
 }
 
-    .hero .btn-get-started {
-        font-weight: 500;
-        font-size: 15px;
-        letter-spacing: 1px;
-        display: inline-block;
-        padding: 8px 35px 10px 35px;
-        border-radius: 50px;
-        transition: 0.4s;
-        margin-top: 30px;
-        border: 2px solid #c82333;
-        color: #c82333;
-    }
+.hero .btn-get-started {
+  font-weight: 500;
+  font-size: 15px;
+  letter-spacing: 1px;
+  display: inline-block;
+  padding: 8px 35px 10px 35px;
+  border-radius: 50px;
+  transition: 0.4s;
+  margin-top: 30px;
+  border: 2px solid var(--default-color);
+  color: var(--default-color);
+}
 
-        .hero .btn-get-started:hover {
-            background: #b33434a2;
-            border: 2px solid var(--accent-color);
-        }
+.hero .btn-get-started:hover {
+  background: var(--accent-color);
+  border: 2px solid var(--accent-color);
+}
 
 @media (max-width: 768px) {
   .hero h2 {
@@ -1015,12 +1015,12 @@ section,
   width: 100%;
 }
 
-.counts .stats-item span {
-  font-size: 48px;
-  display: block;
-  color: var(--accent-color);
-  font-weight: 700;
-}
+    .counts .stats-item span {
+        font-size: 48px;
+        display: block;
+        color: #212529cc;
+        font-weight: 700;
+    }
 
 .counts .stats-item p {
   color: color-mix(in srgb, var(--default-color), transparent 40%);
@@ -1035,9 +1035,9 @@ section,
 # Why Us Section
 --------------------------------------------------------------*/
 .why-us .why-box {
-  color: var(--contrast-color);
-  background: var(--accent-color);
-  padding: 30px;
+    color: var(--contrast-color);
+    background: #7d6666cc;
+    padding: 30px;
 }
 
 .why-us .why-box h3 {
