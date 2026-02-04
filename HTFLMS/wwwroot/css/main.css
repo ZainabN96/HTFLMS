@@ -234,7 +234,7 @@ h6 {
 }
 
 .header .logo img {
-  max-height: 36px;
+  max-height: 40px;
   margin-right: 8px;
 }
 
@@ -764,16 +764,50 @@ h6 {
 # Global Page Titles & Breadcrumbs
 --------------------------------------------------------------*/
 .page-title {
-  --default-color: var(--contrast-color);
-  --background-color: var(--accent-color);
-  --heading-color: var(--contrast-color);
-  color: var(--default-color);
-  background-color: var(--background-color);
-  position: relative;
+    --default-color: var(--contrast-color);
+    --heading-color: var(--contrast-color);
+    color: var(--default-color);
+    position: relative;
+    overflow: hidden;
 }
 
+    .page-title::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        filter: blur(4px);
+        transform: scale(1.05); /* prevents blur edges */
+        z-index: 0;
+    }
+
+
+.page-title-about::after {
+    background-image: url('/img/about/bg1.jpg');
+}
+
+.page-title-courses::after {
+    background-image: url('/img/course/bg2.jpg');
+}
+
+.page-title-trainers::after {
+    background-image: url('/img/trainers/bg3.jpg');
+}
+
+.page-title-contact::after {
+    background-image: url('/img/contact/bg4.jpg');
+}
+
+.page-title > * {
+    position: relative;
+    z-index: 2;
+}
+
+
 .page-title .heading {
-  padding: 80px 0;
+  padding: 300px 0;
   border-top: 1px solid color-mix(in srgb, var(--default-color), transparent 90%);
 }
 
