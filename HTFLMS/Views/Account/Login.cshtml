@@ -1,0 +1,77 @@
+﻿@model HTFLMS.Models.Auth.LoginViewModel
+@{
+    ViewData["Title"] = "Login";
+    Layout = "_Layout";
+    var returnUrl = (string?)ViewBag.ReturnUrl;
+}
+
+<main class="main">
+    <section class="auth-wrap">
+        <div class="auth-card">
+            <h1 class="auth-title">LOGIN</h1>
+            <p class="auth-subtitle">Access to our Dashboard</p>
+
+            <form asp-action="Login" asp-controller="Account" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="returnUrl" value="@returnUrl" />
+
+                <div class="auth-field">
+                    <input asp-for="UserId" class="auth-input" placeholder=" "/>
+                    <label>Email Id</label>
+                    <span asp-validation-for="UserId" class="text-danger small"></span>
+                </div>
+
+
+                <div class="auth-field">
+                    <label>Password</label>
+
+                    <div class="auth-password-row">
+                        <div class="auth-password">
+                            <input asp-for="Password" class="auth-input" id="pwd" placeholder=" " />
+                        </div>
+
+                        <button type="button" class="eye-btn" onclick="togglePwd()" aria-label="Toggle password">
+                            <i class="bi bi-eye-slash"></i>
+                        </button>
+                    </div>
+
+                    <span asp-validation-for="Password" class="text-danger small"></span>
+                </div>
+
+
+                <div class="auth-links">
+                    <a asp-action="Register" asp-controller="Account" asp-route-returnUrl="@returnUrl">Create account</a>
+                    <a href="#" class="forgot">Forgot Password?</a>
+                </div>
+
+                <div class="text-danger small mb-2">
+                    @foreach (var err in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                    {
+                        <div>@err.ErrorMessage</div>
+                    }
+                </div>
+
+                <button type="submit" class="auth-btn">Login</button>
+            </form>
+        </div>
+    </section>
+</main>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        function togglePwd() {
+            const el = document.getElementById('pwd');
+            const btnIcon = document.querySelector('.eye-btn i');
+
+            const isHidden = el.type === 'password';
+            el.type = isHidden ? 'text' : 'password';
+
+            if (btnIcon) {
+                btnIcon.classList.toggle('bi-eye', isHidden);
+                btnIcon.classList.toggle('bi-eye-slash', !isHidden);
+            }
+        }
+    </script>
+
+}

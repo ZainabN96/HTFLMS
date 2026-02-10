@@ -25,6 +25,8 @@
     --accent-color: #c82333; /* Accent color that represents your brand on the website. It's used for buttons, links, and other elements that need to stand out */
     --surface-color: #ffffff; /* The surface color is used as a background of boxed elements within sections, such as cards, icon boxes, or other elements that require a visual separation from the global background. */
     --contrast-color: #ffffff; /* Contrast color for text, ensuring readability against backgrounds of accent, heading, or default colors. */
+    --red-color: #f52717;
+    --danger-color: #c82333;
 }
 
 /* Nav Menu Colors - The following color variables are used specifically for the navigation menu. They are separate from the global colors to allow for more customization options */
@@ -1241,6 +1243,23 @@ section,
   color: color-mix(in srgb, var(--default-color), transparent 20%);
 }
 
+.btn-danger {
+    background: linear-gradient(to bottom, var(--red-color), #c1282a);
+    border: none;
+    border-radius: 25px;
+    padding: 10px 45px;
+    font-weight: 600;
+    color: #fff;
+    transition: all 0.25s ease;
+}
+
+/*    .btn-danger:hover {
+        background: var(--danger-color);
+        color: #fff;
+        transform: translateY(-1px);
+    }
+*/
+
 .courses .trainer {
   padding-top: 15px;
   border-top: 1px solid color-mix(in srgb, var(--default-color), transparent 90%);
@@ -2284,4 +2303,378 @@ section,
 --------------------------------------------------------------*/
 .starter-section {
   /* Add your styles here */
+}
+
+/*-----Loader-----*/
+
+#loader-wrapper {
+    background-color: #DCDCDC;
+    bottom: 0;
+    height: 100%;
+    left: 0;
+    position: fixed;
+    right: 0;
+    top: 0;
+    width: 100%;
+    z-index: 9999;
+}
+
+    #loader-wrapper.is-hidden {
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity .35s ease, visibility .35s ease;
+    }
+
+#loader {
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    margin: -100px 0 0 -100px;
+}
+
+.loader-ellips {
+    font-size: 20px;
+    position: relative;
+    width: 64px;
+    margin: 100px auto 0;
+}
+
+.ring {
+    width: 200px;
+    height: 200px;
+    border: 0px solid rgb(0, 0, 0);
+    border-radius: 50%;
+    position: absolute;
+}
+
+    .ring:nth-child(1) {
+        border-bottom-width: 8px;
+        border-color: #dc271c;
+        animation: rotate1 2s linear infinite;
+    }
+
+    .ring:nth-child(2) {
+        border-right-width: 8px;
+        border-color: #000000;
+        animation: rotate2 2s linear infinite;
+    }
+
+    .ring:nth-child(3) {
+        border-top-width: 8px;
+        border-color: #fff;
+        animation: rotate3 2s linear infinite;
+    }
+
+@keyframes rotate1 {
+    0% {
+        transform: rotateX(35deg) rotateY(-45deg) rotateZ(0deg);
+    }
+
+    100% {
+        transform: rotateX(35deg) rotateY(-45deg) rotateZ(360deg);
+    }
+}
+
+@keyframes rotate2 {
+    0% {
+        transform: rotateX(50deg) rotateY(10deg) rotateZ(0deg);
+    }
+
+    100% {
+        transform: rotateX(50deg) rotateY(10deg) rotateZ(360deg);
+    }
+}
+
+@keyframes rotate3 {
+    0% {
+        transform: rotateX(35deg) rotateY(55deg) rotateZ(0deg);
+    }
+
+    100% {
+        transform: rotateX(35deg) rotateY(55deg) rotateZ(360deg);
+    }
+}
+
+
+/* ===== Login page (matches your screenshot) ===== */
+/* ===== Success popup (clean + modern) ===== */
+.login-success-popup {
+    position: fixed;
+    top: 28px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-10px);
+    z-index: 99999;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 320px;
+    max-width: 520px;
+    padding: 14px 18px;
+    border-radius: 14px;
+    background: rgba(34, 197, 94, 0.95); /* nice green */
+    color: #fff;
+    box-shadow: 0 18px 45px rgba(0,0,0,.18);
+    backdrop-filter: blur(6px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .25s ease, transform .25s ease;
+}
+
+    .login-success-popup.show {
+        opacity: 1;
+        pointer-events: auto;
+        transform: translateX(-50%) translateY(0);
+    }
+
+    .login-success-popup .popup-icon {
+        width: 34px;
+        height: 34px;
+        border-radius: 999px;
+        background: rgba(255,255,255,.18);
+        display: grid;
+        place-items: center;
+        font-size: 18px;
+        font-weight: 700;
+        line-height: 1;
+    }
+
+    .login-success-popup .popup-text {
+        font-size: 16px;
+        font-weight: 600;
+        letter-spacing: .2px;
+    }
+
+
+.auth-wrap {
+    min-height: calc(100vh - 120px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 50px 15px;
+    background: #f3f3f3;
+}
+
+.auth-card {
+
+    width: 420px; /* smaller card */
+    max-width: 92%;
+    background: #fff;
+    border-radius: 4px;
+    padding: 23px 15px; /* tighter padding */
+    box-shadow: 0 10px 30px rgba(0,0,0,.08);
+}
+
+
+.auth-title {
+    font-weight: 500;
+    font-family: "Poppins", sans-serif;
+    font-size: 1.5rem;
+    text-align: center;
+    letter-spacing: 1px;
+    color: #dc271c;
+    margin: 15px 0 6px 0;
+}
+
+.auth-subtitle {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: .875em;
+    color: #555;
+}
+
+.auth-field {
+    position: relative;
+    margin-bottom: 28px;
+    padding-top: 14px; /* IMPORTANT */
+}
+/* input */
+.auth-input {
+    width: 93%;
+    height: 45px;
+    padding: 0.625rem 10px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background: transparent;
+/*    margin-bottom: 1.875rem;*/
+    outline: none;
+}
+
+    /* focus border like screenshot */
+    .auth-input:focus {
+        border: 2px solid #dc271c;
+    }
+
+
+.auth-field > label {
+    position: absolute;
+    top: 14px; 
+    left: 2px;
+    transform: translateY(-50%);
+    background: #fff;
+    padding: 0 6px;
+    z-index: 5; 
+    color: #dc271c;
+    font-size: 0.75rem;
+    line-height: 1;
+    pointer-events: none;
+}
+
+.auth-password-row {
+    display: flex; 
+    align-items: center;
+}
+
+.auth-password .auth-input {
+    height: 45px;
+    border-radius: 4px;
+    padding-right: 192px; 
+}
+
+
+.eye-btn {
+    margin-left: -24px;
+    width: 20px;
+    height: 20px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+    /* Make bootstrap icon match the screenshot style */
+    .eye-btn .bi {
+        font-size: 16px;
+    }
+
+    /* Optional: hover */
+    .eye-btn:hover {
+        opacity: .8;
+    }
+
+.auth-links {
+    display: flex;
+    justify-content: space-between;
+    margin: 10px 0 20px;
+}
+
+    .auth-links a {
+        color: #dc271c;
+        text-decoration: none;
+    }
+
+        .auth-links a:hover {
+            text-decoration: none;
+        }
+
+.auth-btn {
+    width: 100%;
+    border: none;
+    height: 54px;
+    font-size: 22px;
+    border-radius: 4px;
+    color: #fff;
+    background: linear-gradient(to right, #5e4545 0%, #dc271c 100%);
+}
+
+/* ===== Registration page (clean like your screenshot) ===== */
+.reg-wrap {
+    padding: 45px 15px;
+    background: #f3f3f3;
+}
+
+.reg-card {
+    max-width: 1250px;
+    margin: 0 auto;
+    background: #f7f9fb;
+    border-radius: 18px;
+    padding: 40px 35px;
+    box-shadow: 0 10px 30px rgba(0,0,0,.08);
+}
+
+.reg-title {
+    text-align: center;
+    margin-bottom: 30px;
+    font-weight: 700;
+}
+
+.reg-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px 22px;
+}
+
+.reg-field {
+}
+
+    .reg-field label {
+        font-size: 14px;
+        margin-bottom: 6px;
+        display: block;
+    }
+
+    .reg-field .req {
+        color: #c1282a;
+    }
+
+.reg-input {
+    width: 100%;
+    height: 56px;
+    border: 1px solid #d7dee6;
+    border-radius: 12px;
+    padding: 0 16px;
+    background: #fff;
+    outline: none;
+}
+
+    .reg-input:focus {
+        border-color: #c1282a;
+        box-shadow: 0 0 0 3px rgba(193,40,42,.12);
+    }
+
+.reg-pill {
+    grid-column: 1 / -1;
+    display: inline-block;
+    width: fit-content;
+    background: #1f1f1f;
+    color: #fff;
+    padding: 8px 18px;
+    border-radius: 8px;
+    font-size: 14px;
+    margin-top: 6px;
+}
+
+.span-2 {
+    grid-column: 1 / -1;
+}
+
+/* reuse your existing button style */
+.btn-danger {
+    background: linear-gradient(to bottom, var(--red-color), #c1282a);
+    border: none;
+    border-radius: 25px;
+    padding: 10px 45px;
+    font-weight: 600;
+    color: #fff;
+    transition: all 0.25s ease;
+}
+
+    .btn-danger:hover {
+        background-color: var(--danger-color);
+        color: #fff;
+        transform: translateY(-1px);
+    }
+
+.sub-btn {
+    padding: 10px 45px;
+}
+
+/* fallback vars if not defined */
+@media (max-width: 992px) {
+    .reg-grid {
+        grid-template-columns: 1fr;
+    }
 }

@@ -35,6 +35,17 @@
     ======================================================== -->
 </head>
 <body>
+        <!-- Page Loader -->
+    <div id="loader-wrapper">
+        <div id="loader">
+            <div class="loader-ellips">
+                <span class="ring"></span>
+                <span class="ring"></span>
+                <span class="ring"></span>
+            </div>
+        </div>
+    </div>
+
     <header id="header" class="header d-flex align-items-center sticky-top">
         <div class="container-fluid container-xl position-relative d-flex align-items-center">
 
@@ -168,9 +179,6 @@
     <!-- Scroll Top -->
     <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
 
-    <!-- Preloader -->
-    <div id="preloader"></div>
-
     <!-- Vendor JS Files -->
     <script src="~/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="~/vendor/php-email-form/validate.js"></script>
@@ -181,6 +189,54 @@
 
     <!-- Main JS File -->
     <script src="~/js/main.js"></script>
+
+    @* Login/Registration success popup *@
     @await RenderSectionAsync("Scripts", required: false)
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div id="loginSuccessPopup" class="login-success-popup" role="status" aria-live="polite">
+            <span class="popup-icon">✓</span>
+            <span class="popup-text">@TempData["SuccessMessage"]</span>
+        </div>
+
+        <script>
+            window.addEventListener("load", function () {
+                const loader = document.getElementById("loader-wrapper");
+
+                if (loader) {
+                    loader.classList.add("is-hidden");
+
+                    setTimeout(() => {
+                        loader.remove();
+                        showLoginSuccessPopup();
+                    }, 400);
+                } else {
+                    showLoginSuccessPopup();
+                }
+
+                function showLoginSuccessPopup() {
+                    const popup = document.getElementById("loginSuccessPopup");
+                    if (!popup) return;
+
+                    popup.classList.add("show");
+                    setTimeout(() => popup.classList.remove("show"), 3500);
+                }
+            });
+        </script>
+    }
+    <script>
+        window.addEventListener("load", function () {
+            const wrapper = document.getElementById("loader-wrapper");
+            if (!wrapper) return;
+
+            // fade out nicely
+            wrapper.classList.add("is-hidden");
+
+            // remove from DOM after transition (optional)
+            setTimeout(() => wrapper.remove(), 600);
+        });
+    </script>
+
+
 </body>
 </html>
