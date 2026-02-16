@@ -102,56 +102,39 @@ namespace HTFLMS.Controllers
                 return View(model);
             }
 
-            var exists = await _db.Users.AnyAsync(u => u.UserId == model.UserId);
-            if (exists)
+            // Email must be unique
+            var emailExists = await _db.Users.AnyAsync(u => u.Email == model.Email);
+            if (emailExists)
             {
-                ModelState.AddModelError("", "User Id already exists.");
+                ModelState.AddModelError("Email", "Email already exists.");
                 return View(model);
             }
 
-            // save profile picture (same logic as you had)
-            string? savedPath = null;
-            if (model.ProfilePicture != null && model.ProfilePicture.Length > 0)
-            {
-                var uploadsDir = Path.Combine(_env.WebRootPath, "uploads", "profiles");
-                Directory.CreateDirectory(uploadsDir);
-
-                var ext = Path.GetExtension(model.ProfilePicture.FileName);
-                var fileName = $"{Guid.NewGuid()}{ext}";
-                var fullPath = Path.Combine(uploadsDir, fileName);
-
-                using var stream = new FileStream(fullPath, FileMode.Create);
-                await model.ProfilePicture.CopyToAsync(stream);
-
-                savedPath = $"/uploads/profiles/{fileName}";
-            }
+            // Generate only UserId automatically
+            string generatedUserId = GenerateUserId();
+            while (await _db.Users.AnyAsync(u => u.UserId == generatedUserId))
+                generatedUserId = GenerateUserId();
 
             var user = new User
             {
-                UserId = model.UserId,
+                UserId = generatedUserId,
                 Email = model.Email,
 
-                Title = model.Title,
+                Gender = model.Gender,
                 FirstName = model.FirstName,
                 LastName = model.LastName,
                 DateOfBirth = model.DateOfBirth,
                 MemberType = model.MemberType,
                 Qualification = model.Qualification,
-                BloodGroup = model.BloodGroup,
                 CNIC = model.CNIC,
 
                 Address = model.Address,
-                PostCode = model.PostCode,
                 Country = model.Country,
                 City = model.City,
 
                 MobileNumber = model.MobileNumber,
                 LinkedIn = model.LinkedIn,
-                EmploymentStatus = model.EmploymentStatus,
-
-                ProfileImagePath = savedPath,
-                SecurityQuestion = model.SecurityQuestion,
-                SecurityAnswer = model.SecurityAnswer
+                EmploymentStatus = model.EmploymentStatus
             };
 
             user.PasswordHash = _hasher.HashPassword(user, model.Password);
@@ -160,10 +143,14 @@ namespace HTFLMS.Controllers
             await _db.SaveChangesAsync();
 
             TempData["SuccessMessage"] = "Registered successfully! Please login.";
-            TempData["PrefillUserId"] = model.UserId;
-
             return RedirectToAction("Login", "Account", new { returnUrl });
         }
+
+        private static string GenerateUserId()
+        {
+            return $"HCC-{DateTime.UtcNow:yyyy}-{Random.Shared.Next(10000, 99999)}";
+        }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]

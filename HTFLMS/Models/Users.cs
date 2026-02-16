@@ -16,7 +16,9 @@ namespace HTFLMS.Models
         [Required]
         public string PasswordHash { get; set; } = "";
 
-        public string? Title { get; set; }
+        // Title -> Gender
+        [Required]
+        public string Gender { get; set; } = "";
 
         [Required]
         public string FirstName { get; set; } = "";
@@ -24,32 +26,32 @@ namespace HTFLMS.Models
         [Required]
         public string LastName { get; set; } = "";
 
+        // optional
         public DateTime? DateOfBirth { get; set; }
+        public string? Qualification { get; set; }
 
         [Required]
         public string MemberType { get; set; } = "Student";
 
-        public string? Qualification { get; set; }
-        public string? BloodGroup { get; set; }
-
         [Required]
         public string CNIC { get; set; } = "";
 
+        // Address optional, Country/City required
         public string? Address { get; set; }
-        public string? PostCode { get; set; }
-        public string? Country { get; set; }
-        public string? City { get; set; }
+
+        [Required]
+        public string Country { get; set; } = "";
+
+        [Required]
+        public string City { get; set; } = "";
 
         [Required]
         public string MobileNumber { get; set; } = "";
 
         public string? LinkedIn { get; set; }
-        public string? EmploymentStatus { get; set; }
 
-        public string? ProfileImagePath { get; set; }
-
-        public string? SecurityQuestion { get; set; }
-        public string? SecurityAnswer { get; set; }
+        [Required]
+        public string EmploymentStatus { get; set; } = "";
 
         public bool IsActive { get; set; } = true;
         public DateTime CreatedAt { get; set; } = DateTime.Now;

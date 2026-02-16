@@ -10,26 +10,22 @@
         <div class="reg-card">
             <h2 class="reg-title">Registration Form</h2>
 
-            <form asp-action="Register" asp-controller="Account" method="post" enctype="multipart/form-data">
+            <form asp-action="Register" asp-controller="Account" method="post">
                 @Html.AntiForgeryToken()
                 <input type="hidden" name="returnUrl" value="@returnUrl" />
 
                 <div class="reg-grid">
                     <div class="reg-pill">Profile</div>
 
-                    <div class="reg-field span-2">
-                        <label class="req">Profile Picture*</label>
-                        <input asp-for="ProfilePicture" type="file" class="reg-input" />
-                    </div>
-
                     <div class="reg-field">
-                        <label class="req">Title*</label>
-                        <select asp-for="Title" class="reg-input">
+                        <label class="req">Gender*</label>
+                        <select asp-for="Gender" class="reg-input">
                             <option value="">Select</option>
-                            <option>Mr</option>
-                            <option>Ms</option>
-                            <option>Mrs</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
                         </select>
+                        <span asp-validation-for="Gender" class="text-danger small"></span>
                     </div>
 
                     <div class="reg-field">
@@ -39,9 +35,7 @@
                             <option value="Student">Student</option>
                             <option value="Trainer">Trainer</option>
                         </select>
-
                         <span asp-validation-for="MemberType" class="text-danger small"></span>
-
                     </div>
 
                     <div class="reg-field">
@@ -55,31 +49,21 @@
                     </div>
 
                     <div class="reg-field">
-                        <label class="req">Date of Birth*</label>
-                        <input asp-for="DateOfBirth" type="date" class="reg-input" />
+                        <input asp-for="DateOfBirth"
+                               type="date"
+                               class="reg-input"
+                               placeholder="Date of Birth" />
                     </div>
+
+
 
                     <div class="reg-field">
                         <select asp-for="Qualification" class="reg-input">
-                            <option value="">Qualification*</option>
+                            <option value="">Qualification</option>
                             <option>Matric</option>
                             <option>Intermediate</option>
                             <option>Bachelors</option>
                             <option>Masters</option>
-                        </select>
-                    </div>
-
-                    <div class="reg-field">
-                        <select asp-for="BloodGroup" class="reg-input">
-                            <option value="">Blood Group*</option>
-                            <option>A+</option>
-                            <option>A-</option>
-                            <option>B+</option>
-                            <option>B-</option>
-                            <option>AB+</option>
-                            <option>AB-</option>
-                            <option>O+</option>
-                            <option>O-</option>
                         </select>
                     </div>
 
@@ -91,29 +75,27 @@
                     <div class="reg-pill">Home Address</div>
 
                     <div class="reg-field">
-                        <input asp-for="Address" class="reg-input" placeholder="Address*" />
-                    </div>
-
-                    <div class="reg-field">
-                        <input asp-for="PostCode" class="reg-input" placeholder="PostCode/ZIP*" />
+                        <input asp-for="Address" class="reg-input" placeholder="Address" />
                     </div>
 
                     <div class="reg-field">
                         <select asp-for="Country" class="reg-input">
-                            <option value="">Select Country</option>
+                            <option value="">Select Country*</option>
                             <option>Pakistan</option>
                             <option>United States</option>
                             <option>UAE</option>
                         </select>
+                        <span asp-validation-for="Country" class="text-danger small"></span>
                     </div>
 
                     <div class="reg-field">
                         <select asp-for="City" class="reg-input">
-                            <option value="">Select City</option>
+                            <option value="">Select City*</option>
                             <option>Lahore</option>
                             <option>Karachi</option>
                             <option>Islamabad</option>
                         </select>
+                        <span asp-validation-for="City" class="text-danger small"></span>
                     </div>
 
                     <div class="reg-field">
@@ -121,10 +103,10 @@
                         <span asp-validation-for="MobileNumber" class="text-danger small"></span>
                     </div>
 
-                    <div class="reg-field">
+                    @* <div class="reg-field">
                         <input asp-for="Email" class="reg-input" placeholder="Email Address*" />
                         <span asp-validation-for="Email" class="text-danger small"></span>
-                    </div>
+                    </div> *@
 
                     <div class="reg-field span-2">
                         <input asp-for="LinkedIn" class="reg-input" placeholder="LinkedIn" />
@@ -133,41 +115,30 @@
                     <div class="reg-field span-2">
                         <select asp-for="EmploymentStatus" class="reg-input">
                             <option value="">Employment Status*</option>
-                            <option>Employed</option>
-                            <option>Unemployed</option>
-                            <option>Student</option>
+                            <option value="Searching for Job">Searching for Job</option>
+                            <option value="Employed">Employed</option>
+                            <option value="Student">Student</option>
                         </select>
+                        <span asp-validation-for="EmploymentStatus" class="text-danger small"></span>
                     </div>
 
                     <div class="reg-pill">Login Details</div>
 
                     <div class="reg-field">
-                        <input asp-for="UserId" class="reg-input" placeholder="Email Id*" />
-                        <span asp-validation-for="UserId" class="text-danger small"></span>
+                        <input asp-for="Email" class="reg-input" placeholder="Email Address*" />
+                        <span asp-validation-for="Email" class="text-danger small"></span>
                     </div>
 
                     <div class="reg-field">
-                        <input asp-for="Password" class="reg-input" placeholder="Password*" />
+                        <input asp-for="Password" type="password" class="reg-input" placeholder="Password*" />
                         <span asp-validation-for="Password" class="text-danger small"></span>
                     </div>
 
                     <div class="reg-field">
-                        <input asp-for="ConfirmPassword" class="reg-input" placeholder="Confirm Password*" />
+                        <input asp-for="ConfirmPassword" type="password" class="reg-input" placeholder="Confirm Password*" />
                         <span asp-validation-for="ConfirmPassword" class="text-danger small"></span>
                     </div>
 
-                    <div class="reg-field">
-                        <select asp-for="SecurityQuestion" class="reg-input">
-                            <option value="">Please Select One Of The Following Question:</option>
-                            <option>What is your pet name?</option>
-                            <option>What is your favorite city?</option>
-                            <option>What is your school name?</option>
-                        </select>
-                    </div>
-
-                    <div class="reg-field">
-                        <input asp-for="SecurityAnswer" class="reg-input" placeholder="Secret Answer" />
-                    </div>
                 </div>
 
                 <div class="text-danger small mb-2">
