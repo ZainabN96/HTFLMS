@@ -23,6 +23,7 @@
 
   <ItemGroup>
     <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
+    <PackageReference Include="MailKit" Version="4.15.0" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.23" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="8.0.23" />
     <PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="2.3.9" />
@@ -31,9 +32,12 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="MimeKit" Version="4.15.0" />
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Areas\Student\Controllers\" />
+    <Folder Include="Areas\Student\Views\" />
     <Folder Include="Migrations\" />
   </ItemGroup>
 

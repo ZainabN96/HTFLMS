@@ -1,0 +1,47 @@
+﻿@model HTFLMS.Models.Auth.VerifyOtpViewModel
+@{
+    ViewData["Title"] = "Verify OTP";
+    Layout = "_AuthLayout";
+}
+
+<main class="main auth">
+    <section class="auth-wrap">
+        <div class="auth-logo">
+            <img src="~/img/hcc_logo(1).png" alt="HCC Logo" />
+        </div>
+
+        <div class="auth-card">
+            <h1 class="auth-title">Verify OTP</h1>
+            <p class="auth-subtitle">Enter the 6-digit code sent to your email</p>
+
+            <form asp-action="VerifyOtp" asp-controller="Account" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" asp-for="FlowId" />
+                <input type="hidden" asp-for="Email" />
+
+                <div class="auth-field">
+                    <input asp-for="Otp" class="auth-input" placeholder=" " inputmode="numeric" maxlength="6" />
+                    <label>OTP (6 digits)</label>
+                    <span asp-validation-for="Otp" class="text-danger small"></span>
+                </div>
+
+                <div class="text-danger small mb-2">
+                    @foreach (var err in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                    {
+                        <div>@err.ErrorMessage</div>
+                    }
+                </div>
+
+                <button type="submit" class="auth-btn">Verify</button>
+
+                <div class="auth-links mt-3">
+                    <a asp-action="ForgotPassword" asp-controller="Account">Resend OTP</a>
+                </div>
+            </form>
+        </div>
+    </section>
+</main>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

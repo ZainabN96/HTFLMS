@@ -22,7 +22,23 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.AccessDeniedPath = "/Account/AccessDenied";
     });
 
+builder.Services.Configure<HTFLMS.Services.MailSettings>(
+    builder.Configuration.GetSection("MailSettings"));
+
+builder.Services.AddScoped<HTFLMS.Services.IMailService, HTFLMS.Services.MailService>();
+
 var app = builder.Build();
+
+app.MapControllerRoute(
+    name: "areas",
+    pattern: "{area:exists}/{controller=Dashboard}/{action=Index}/{id?}"
+);
+
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}"
+);
+
 
 if (!app.Environment.IsDevelopment())
 {

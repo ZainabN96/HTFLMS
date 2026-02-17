@@ -8,5 +8,10 @@ namespace HTFLMS.Controllers
         {
             return View();
         }
+
+        public IActionResult CourseHome()
+        {
+            return View();
+        }
     }
 }

@@ -1,0 +1,429 @@
+﻿@{
+    ViewData["Title"] = "My Course";
+    Layout = "_Layout";
+}
+
+<main class="main">
+
+    <section class="course-shell section">
+        <div class="container">
+
+            <div class="course-grid">
+
+                <!-- LEFT SIDEBAR -->
+                <aside class="course-left">
+                    <div class="course-brand">
+                        <div class="course-org">Stanford Online</div>
+                        <div class="course-name">Writing in the Sciences</div>
+                        <div class="course-uni">Stanford University</div>
+                    </div>
+
+                    <div class="course-nav-title">Course Material</div>
+
+                    <!-- Modules -->
+                    <nav class="course-nav" id="courseNav">
+                        <button type="button" class="course-nav-item active" data-view="module" data-module="1">
+                            <span class="nav-dot done"></span>
+                            Module 1
+                        </button>
+
+                        <button type="button" class="course-nav-item" data-view="module" data-module="2">
+                            <span class="nav-dot"></span>
+                            Module 2
+                        </button>
+
+                        <button type="button" class="course-nav-item" data-view="module" data-module="3">
+                            <span class="nav-dot"></span>
+                            Module 3
+                        </button>
+
+                        <button type="button" class="course-nav-item" data-view="module" data-module="4">
+                            <span class="nav-dot"></span>
+                            Module 4
+                        </button>
+                    </nav>
+
+                    <!-- Bottom links (no Discussion / Messages) -->
+                    <div class="course-nav-bottom" id="courseBottomNav">
+                        <button type="button" class="course-nav-link-item" data-view="grades">
+                            Grades
+                        </button>
+                        <button type="button" class="course-nav-link-item" data-view="notes">
+                            Notes
+                        </button>
+                        <button type="button" class="course-nav-link-item" data-view="info">
+                            Course Info
+                        </button>
+                    </div>
+                </aside>
+
+                <!-- MIDDLE CONTENT -->
+                <section class="course-center" id="courseCenter">
+
+                    <!-- MODULE HEADER (shown only for module view) -->
+                    <div class="course-center-header" id="moduleHeader">
+                        <div class="course-module-title">
+                            <span class="module-num" id="moduleNum">1</span>
+                            <span id="moduleTitle">Module 1</span>
+                        </div>
+
+                        <span class="status-pill" id="moduleStatus">
+                            <span class="status-dot"></span>
+                            <span id="moduleStatusText">Complete</span>
+                        </span>
+                    </div>
+
+                    <div class="course-center-sub" id="moduleSummary">
+                        <span class="mini-check">✓</span> All videos completed
+                        <span class="mini-check">✓</span> All graded assessments completed
+                    </div>
+
+                    <!-- MODULE BODY -->
+                    <div class="course-card" id="moduleCard">
+                        <p class="course-desc">
+                            Unit 1 introduces the course and reviews key principles of effective writing.
+                            In particular, you will practice cutting clutter from writing.
+                        </p>
+
+                        <button class="course-link-btn" type="button">
+                            Show Learning Objectives
+                        </button>
+
+                        <div class="lesson-list" id="lessonList"></div>
+                    </div>
+
+                    <!-- GRADES VIEW -->
+                    <div class="course-card course-view" id="gradesView" style="display:none;">
+                        <h2 class="page-h2">Grades</h2>
+
+                        <div class="notice-card">
+                            <div class="notice-icon">✓</div>
+                            <div class="notice-text">You have completed all of the assessments that are currently due.</div>
+                        </div>
+
+                        <div class="grade-table">
+                            <div class="grade-row grade-head">
+                                <div>Item</div>
+                                <div>Status</div>
+                                <div>Due</div>
+                                <div>Weight</div>
+                                <div>Grade</div>
+                            </div>
+
+                            <div class="grade-row">
+                                <div class="item-cell">
+                                    <div class="item-title"><span class="item-check">✓</span> Unit 1 Homework</div>
+                                    <div class="item-sub">Graded Assignment</div>
+                                </div>
+                                <div>Passed</div>
+                                <div>Feb 13<br /><span class="muted">11:59 PM</span></div>
+                                <div>10%</div>
+                                <div>93.75%</div>
+                            </div>
+
+                            <div class="grade-row">
+                                <div class="item-cell">
+                                    <div class="item-title"><span class="item-doc">▦</span> Unit 2 Homework</div>
+                                    <div class="item-sub">Graded Assignment</div>
+                                </div>
+                                <div class="muted">--</div>
+                                <div>Feb 16<br /><span class="muted">11:59 PM</span></div>
+                                <div>10%</div>
+                                <div class="muted">--</div>
+                            </div>
+
+                            <div class="grade-row">
+                                <div class="item-cell">
+                                    <div class="item-title"><span class="item-doc">▦</span> Unit 3 Homework</div>
+                                    <div class="item-sub">Graded Assignment</div>
+                                </div>
+                                <div class="muted">--</div>
+                                <div>Feb 18<br /><span class="muted">11:59 PM</span></div>
+                                <div>10%</div>
+                                <div class="muted">--</div>
+                            </div>
+
+                            <div class="grade-row">
+                                <div class="item-cell">
+                                    <div class="item-title"><span class="item-doc">▦</span> Paragraph editing exercise</div>
+                                    <div class="item-sub">Submit your assignment and review 3 peers to get your grade.</div>
+                                </div>
+                                <div class="muted">--</div>
+                                <div class="muted">--</div>
+                                <div>10%</div>
+                                <div class="muted">--</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- NOTES VIEW -->
+                    <div class="course-card course-view" id="notesView" style="display:none;">
+                        <div class="notes-top">
+                            <h2 class="page-h2">Notes</h2>
+                            <div class="notes-filter">
+                                Filter: <button type="button" class="mini-dd">All notes ▾</button>
+                            </div>
+                        </div>
+
+                        <div class="empty-state">
+                            <div class="empty-illus">
+                                <div class="illus-box">📝</div>
+                                <div class="illus-box">✏️</div>
+                            </div>
+                            <div class="empty-title">You have not added any notes yet.</div>
+                            <div class="empty-sub">Notes can be created from video pages.</div>
+                        </div>
+                    </div>
+
+                    <!-- COURSE INFO VIEW -->
+                    <div class="course-card course-view" id="infoView" style="display:none;">
+                        <div class="course-info-hero">
+                            <h2 class="page-h2 big-title">Writing in the Sciences</h2>
+                            <div class="muted">by Stanford University</div>
+                        </div>
+
+                        <div class="info-section">
+                            <div class="info-h">About this Course</div>
+                            <p class="muted">
+                                This course teaches scientists to become more effective writers, using practical examples and exercises.
+                                You’ll learn how to write with clarity, reduce clutter, and structure scientific content.
+                            </p>
+                            <a href="#" class="more-link">More</a>
+                        </div>
+
+                        <div class="info-section taught-by">
+                            <div class="teacher-pic"></div>
+                            <div>
+                                <div class="info-h">Taught by:</div>
+                                <div class="teacher-name">Dr. Kristin Sainani</div>
+                                <div class="muted">Associate Professor • Health Research and Policy</div>
+                            </div>
+                        </div>
+
+                        <div class="info-table">
+                            <div class="info-row">
+                                <div class="info-key">Level</div>
+                                <div class="info-val">Beginner</div>
+                            </div>
+                            <div class="info-row">
+                                <div class="info-key">Commitment</div>
+                                <div class="info-val">8 weeks of study, 3–5 hours/week</div>
+                            </div>
+                            <div class="info-row">
+                                <div class="info-key">Language</div>
+                                <div class="info-val">English (Subtitles available)</div>
+                            </div>
+                            <div class="info-row">
+                                <div class="info-key">How To Pass</div>
+                                <div class="info-val">Pass all graded assignments to complete the course.</div>
+                            </div>
+                            <div class="info-row">
+                                <div class="info-key">User Ratings</div>
+                                <div class="info-val">★★★★★ <span class="muted">Average 4.9</span></div>
+                            </div>
+                        </div>
+                    </div>
+
+                </section>
+
+                <!-- RIGHT PANEL (keep as-is for module view; you can also show it on other views if you want) -->
+                <aside class="course-right">
+                    <div class="side-card">
+                        <div class="side-title">Learning plan</div>
+                        <p class="side-text">
+                            Set a learning plan to stay on track. We’ll tailor your milestones and deadlines.
+                        </p>
+                        <button class="side-btn" type="button">Set your learning plan</button>
+                    </div>
+
+                    <div class="side-card">
+                        <div class="side-title">Course timeline</div>
+
+                        <div class="timeline-block">
+                            <div class="timeline-label">Start date</div>
+                            <div class="timeline-value">February 1, 2026</div>
+                        </div>
+
+                        <div class="timeline-block">
+                            <div class="timeline-label">Your next deadlines</div>
+
+                            <a href="#" class="deadline-item">
+                                <div class="deadline-title">Unit 2 Homework</div>
+                                <div class="deadline-sub">Due today by 11:59 PM</div>
+                            </a>
+
+                            <a href="#" class="deadline-item">
+                                <div class="deadline-title">Unit 3 Homework</div>
+                                <div class="deadline-sub">Due in 2 days</div>
+                            </a>
+                        </div>
+
+                        <div class="timeline-block">
+                            <div class="timeline-label">Estimated end date</div>
+                            <div class="timeline-value">March 7, 2026</div>
+                        </div>
+                    </div>
+                </aside>
+
+            </div>
+        </div>
+    </section>
+
+</main>
+
+@section Scripts {
+    <script>
+        (function () {
+            // Module data (same idea as before)
+            const data = {
+                1: {
+                    title: "Module 1",
+                    status: "Complete",
+                    summary: "✓ All videos completed &nbsp;&nbsp; ✓ All graded assessments completed",
+                    lessons: [
+                        { done: true, title: "1.1: Introduction: principles of effective writing", meta: "Video • 11 min" },
+                        { done: true, title: "1.2: Examples of what not to do", meta: "Video • 6 min" },
+                        { done: true, highlight: true, title: "Recognizing and Applying Effective Writing", meta: "Dialogue • 15 min" },
+                        { done: true, title: "1.3: Overview, principles of effective writing", meta: "Video • 6 min" },
+                        { done: true, title: "1.4: Cut the clutter", meta: "Video • 17 min" },
+                        { done: true, graded: true, title: "Unit 1 Practice", meta: "Practice Assignment • Submitted • Grade: 90%" },
+                        { done: true, graded: true, title: "Unit 1 Homework", meta: "Graded Assignment • Submitted • Grade: 93.75%" }
+                    ]
+                },
+                2: {
+                    title: "Module 2",
+                    status: "In progress",
+                    summary: "✓ Some videos completed &nbsp;&nbsp; • Graded assessments pending",
+                    lessons: [
+                        { done: true, title: "2.1: Structure and story", meta: "Video • 9 min" },
+                        { done: false, title: "2.2: Active vs passive", meta: "Video • 12 min" },
+                        { done: false, title: "2.3: Clarity practice", meta: "Exercise • 15 min" },
+                        { done: false, graded: true, title: "Unit 2 Homework", meta: "Graded Assignment • Due today 11:59 PM" }
+                    ]
+                },
+                3: {
+                    title: "Module 3",
+                    status: "Not started",
+                    summary: "• Start this module to unlock lessons",
+                    lessons: [
+                        { done: false, title: "3.1: Figures and tables", meta: "Video • 10 min" },
+                        { done: false, title: "3.2: Titles and abstracts", meta: "Video • 14 min" },
+                        { done: false, graded: true, title: "Unit 3 Homework", meta: "Graded Assignment • Due in 2 days" }
+                    ]
+                },
+                4: {
+                    title: "Module 4",
+                    status: "Not started",
+                    summary: "• Start this module to unlock lessons",
+                    lessons: [
+                        { done: false, title: "4.1: Editing checklist", meta: "Video • 8 min" },
+                        { done: false, title: "4.2: Final polishing", meta: "Video • 11 min" }
+                    ]
+                }
+            };
+
+            const courseNav = document.getElementById("courseNav");
+            const bottomNav = document.getElementById("courseBottomNav");
+
+            // Module DOM
+            const moduleHeader = document.getElementById("moduleHeader");
+            const moduleCard = document.getElementById("moduleCard");
+            const moduleNum = document.getElementById("moduleNum");
+            const moduleTitle = document.getElementById("moduleTitle");
+            const moduleStatusText = document.getElementById("moduleStatusText");
+            const moduleSummary = document.getElementById("moduleSummary");
+            const lessonList = document.getElementById("lessonList");
+
+            // Views
+            const gradesView = document.getElementById("gradesView");
+            const notesView = document.getElementById("notesView");
+            const infoView = document.getElementById("infoView");
+
+            function renderLessons(lessons) {
+                lessonList.innerHTML = lessons.map(l => {
+                    const classes = ["lesson-item"];
+                    if (l.done) classes.push("done");
+                    if (l.highlight) classes.push("highlight");
+                    if (l.graded) classes.push("graded");
+
+                    const icon = l.done ? "✓" : "•";
+                    const iconClass = l.done ? "lesson-check" : "lesson-bullet";
+
+                    const meta = l.graded
+                        ? `<span class="badge-graded">Graded</span> ${l.meta}`
+                        : l.meta;
+
+                    return `
+                        <div class="${classes.join(" ")}">
+                            <div class="lesson-left">
+                                <span class="${iconClass}">${icon}</span>
+                                <div>
+                                    <div class="lesson-title">${l.title}</div>
+                                    <div class="lesson-meta">${meta}</div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join("");
+            }
+
+            function showOnly(view) {
+                // module elements
+                const isModule = view === "module";
+                moduleHeader.style.display = isModule ? "" : "none";
+                moduleSummary.style.display = isModule ? "" : "none";
+                moduleCard.style.display = isModule ? "" : "none";
+
+                // other views
+                gradesView.style.display = view === "grades" ? "" : "none";
+                notesView.style.display = view === "notes" ? "" : "none";
+                infoView.style.display = view === "info" ? "" : "none";
+            }
+
+            function setActiveSidebar(btn) {
+                // active in modules
+                [...courseNav.querySelectorAll(".course-nav-item")].forEach(b => b.classList.remove("active"));
+                // active in bottom
+                [...bottomNav.querySelectorAll(".course-nav-link-item")].forEach(b => b.classList.remove("active"));
+
+                btn.classList.add("active");
+            }
+
+            function setModule(moduleId) {
+                const m = data[moduleId];
+                if (!m) return;
+
+                moduleNum.textContent = moduleId;
+                moduleTitle.textContent = m.title;
+                moduleStatusText.textContent = m.status;
+                moduleSummary.innerHTML = m.summary;
+
+                renderLessons(m.lessons);
+                showOnly("module");
+            }
+
+            // Modules click
+            courseNav.addEventListener("click", (e) => {
+                const btn = e.target.closest(".course-nav-item");
+                if (!btn) return;
+
+                setActiveSidebar(btn);
+                setModule(btn.dataset.module);
+            });
+
+            // Bottom links click
+            bottomNav.addEventListener("click", (e) => {
+                const btn = e.target.closest(".course-nav-link-item");
+                if (!btn) return;
+
+                setActiveSidebar(btn);
+                showOnly(btn.dataset.view);
+            });
+
+            // Init default
+            const first = courseNav.querySelector('[data-module="1"]');
+            setActiveSidebar(first);
+            setModule(1);
+        })();
+    </script>
+}

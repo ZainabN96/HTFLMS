@@ -17,8 +17,6 @@ namespace HTFLMS.Models.Auth
 
         public string? Qualification { get; set; }  // optional
 
-        [Required]
-        [RegularExpression("^(Student|Trainer)$", ErrorMessage = "Member type must be Student or Trainer.")]
         public string MemberType { get; set; } = "";
 
         [Required]

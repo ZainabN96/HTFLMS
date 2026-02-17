@@ -26,7 +26,6 @@ namespace HTFLMS.Models
         // optional
         public string? Qualification { get; set; }
 
-        [Required]
         public string MemberType { get; set; } = "Student";
 
         [Required]

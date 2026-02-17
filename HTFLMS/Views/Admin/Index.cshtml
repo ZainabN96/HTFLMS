@@ -1,0 +1,139 @@
+﻿@{
+    ViewData["Title"] = "Admin Dashboard";
+    Layout = "_AdminLayout";
+}
+
+<div class="admin-page">
+
+    <div class="admin-page-head">
+        <div>
+            <h1 class="admin-h1">Dashboard</h1>
+            <p class="admin-sub">Overview of activity, users, enrollments, and courses.</p>
+        </div>
+
+        <div class="admin-head-actions">
+            <a class="admin-btn admin-btn-outline" href="#"><i class="bi bi-plus-circle"></i> Add Course</a>
+            <a class="admin-btn admin-btn-outline" href="#"><i class="bi bi-person-plus"></i> Add User</a>
+        </div>
+    </div>
+
+    <div class="admin-stats">
+        <div class="admin-stat-card">
+            <div class="admin-stat-top">
+                <div class="admin-stat-title">Total Students</div>
+                <i class="bi bi-people"></i>
+            </div>
+            <div class="admin-stat-value">1,232</div>
+            <div class="admin-stat-meta">+32 this week</div>
+        </div>
+
+        <div class="admin-stat-card">
+            <div class="admin-stat-top">
+                <div class="admin-stat-title">Courses</div>
+                <i class="bi bi-journal-bookmark"></i>
+            </div>
+            <div class="admin-stat-value">64</div>
+            <div class="admin-stat-meta">+3 published</div>
+        </div>
+
+        <div class="admin-stat-card">
+            <div class="admin-stat-top">
+                <div class="admin-stat-title">Active Enrollments</div>
+                <i class="bi bi-person-check"></i>
+            </div>
+            <div class="admin-stat-value">2,915</div>
+            <div class="admin-stat-meta">78 pending approvals</div>
+        </div>
+
+        <div class="admin-stat-card">
+            <div class="admin-stat-top">
+                <div class="admin-stat-title">Trainers</div>
+                <i class="bi bi-person-badge"></i>
+            </div>
+            <div class="admin-stat-value">24</div>
+            <div class="admin-stat-meta">2 new this month</div>
+        </div>
+    </div>
+
+    <div class="admin-grid">
+
+        <div class="admin-panel">
+            <div class="admin-panel-head">
+                <div class="admin-panel-title">Recent Enrollments</div>
+                <a href="#" class="admin-panel-link">View all</a>
+            </div>
+
+            <div class="admin-table">
+                <div class="admin-table-row admin-table-head">
+                    <div>User</div>
+                    <div>Course</div>
+                    <div>Date</div>
+                    <div>Status</div>
+                </div>
+
+                <div class="admin-table-row">
+                    <div class="admin-cell-strong">Sehrish</div>
+                    <div>Website Design</div>
+                    <div>Feb 16</div>
+                    <div><span class="pill pill-green">Active</span></div>
+                </div>
+
+                <div class="admin-table-row">
+                    <div class="admin-cell-strong">Zainab</div>
+                    <div>SEO Basics</div>
+                    <div>Feb 17</div>
+                    <div><span class="pill pill-yellow">Pending</span></div>
+                </div>
+
+                <div class="admin-table-row">
+                    <div class="admin-cell-strong">Ariba Iqbal</div>
+                    <div>Copywriting</div>
+                    <div>Feb 17</div>
+                    <div><span class="pill pill-green">Active</span></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="admin-panel">
+            <div class="admin-panel-head">
+                <div class="admin-panel-title">Quick Management</div>
+            </div>
+
+            <div class="admin-actions">
+                <a href="#" class="admin-action-card">
+                    <div class="admin-action-icon"><i class="bi bi-journal-plus"></i></div>
+                    <div>
+                        <div class="admin-action-title">Create a Course</div>
+                        <div class="admin-action-sub">Add course info, modules, lessons</div>
+                    </div>
+                </a>
+
+                <a href="#" class="admin-action-card">
+                    <div class="admin-action-icon"><i class="bi bi-collection-play"></i></div>
+                    <div>
+                        <div class="admin-action-title">Manage Modules</div>
+                        <div class="admin-action-sub">Organize lessons and content</div>
+                    </div>
+                </a>
+
+                <a href="#" class="admin-action-card">
+                    <div class="admin-action-icon"><i class="bi bi-people"></i></div>
+                    <div>
+                        <div class="admin-action-title">Manage Users</div>
+                        <div class="admin-action-sub">Students, Trainers, Admins</div>
+                    </div>
+                </a>
+
+                <a href="#" class="admin-action-card">
+                    <div class="admin-action-icon"><i class="bi bi-award"></i></div>
+                    <div>
+                        <div class="admin-action-title">Grades & Results</div>
+                        <div class="admin-action-sub">Review performance and reports</div>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+    </div>
+
+</div>

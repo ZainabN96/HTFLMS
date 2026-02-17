@@ -190,40 +190,6 @@
     <!-- Main JS File -->
     <script src="~/js/main.js"></script>
 
-    @* Login/Registration success popup *@
-    @await RenderSectionAsync("Scripts", required: false)
-    @if (TempData["SuccessMessage"] != null)
-    {
-        <div id="loginSuccessPopup" class="login-success-popup" role="status" aria-live="polite">
-            <span class="popup-icon">✓</span>
-            <span class="popup-text">@TempData["SuccessMessage"]</span>
-        </div>
-
-        <script>
-            window.addEventListener("load", function () {
-                const loader = document.getElementById("loader-wrapper");
-
-                if (loader) {
-                    loader.classList.add("is-hidden");
-
-                    setTimeout(() => {
-                        loader.remove();
-                        showLoginSuccessPopup();
-                    }, 400);
-                } else {
-                    showLoginSuccessPopup();
-                }
-
-                function showLoginSuccessPopup() {
-                    const popup = document.getElementById("loginSuccessPopup");
-                    if (!popup) return;
-
-                    popup.classList.add("show");
-                    setTimeout(() => popup.classList.remove("show"), 3500);
-                }
-            });
-        </script>
-    }
     <script>
         window.addEventListener("load", function () {
             const wrapper = document.getElementById("loader-wrapper");
