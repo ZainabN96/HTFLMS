@@ -1,13 +1,16 @@
 ﻿@model HTFLMS.Models.Auth.RegisterViewModel
 @{
     ViewData["Title"] = "Registration Form";
-    Layout = "_Layout";
+    Layout = "_AuthLayout";
     var returnUrl = (string?)ViewBag.ReturnUrl;
 }
 
 <main class="main">
     <section class="reg-wrap">
         <div class="reg-card">
+            <div class="auth-logo">
+                <img src="~/img/hcc_logo(1).png" alt="HCC Logo" />
+            </div>
             <h2 class="reg-title">Registration Form</h2>
 
             <form asp-action="Register" asp-controller="Account" method="post">
@@ -18,9 +21,28 @@
                     <div class="reg-pill">Profile</div>
 
                     <div class="reg-field">
-                        <label class="req">Gender*</label>
+                        <input asp-for="Name" class="reg-input" placeholder="Name*" />
+                        <span asp-validation-for="Name" class="text-danger small"></span>
+                    </div>
+
+                    <div class="reg-field">
+                        <input asp-for="Email" class="reg-input" placeholder="Email Address*" />
+                        <span asp-validation-for="Email" class="text-danger small"></span>
+                    </div>
+
+                    <div class="reg-field">
+                        <input asp-for="Password" type="password" class="reg-input" placeholder="Password*" />
+                        <span asp-validation-for="Password" class="text-danger small"></span>
+                    </div>
+
+                    <div class="reg-field">
+                        <input asp-for="ConfirmPassword" type="password" class="reg-input" placeholder="Confirm Password*" />
+                        <span asp-validation-for="ConfirmPassword" class="text-danger small"></span>
+                    </div>
+
+                    <div class="reg-field">
                         <select asp-for="Gender" class="reg-input">
-                            <option value="">Select</option>
+                            <option value="">Gender*</option>
                             <option value="Male">Male</option>
                             <option value="Female">Female</option>
                             <option value="Other">Other</option>
@@ -29,33 +51,13 @@
                     </div>
 
                     <div class="reg-field">
-                        <label class="req">Member*</label>
                         <select asp-for="MemberType" class="reg-input">
-                            <option value="">Select</option>
+                            <option value="">Member*</option>
                             <option value="Student">Student</option>
                             <option value="Trainer">Trainer</option>
                         </select>
                         <span asp-validation-for="MemberType" class="text-danger small"></span>
                     </div>
-
-                    <div class="reg-field">
-                        <input asp-for="FirstName" class="reg-input" placeholder="First Name*" />
-                        <span asp-validation-for="FirstName" class="text-danger small"></span>
-                    </div>
-
-                    <div class="reg-field">
-                        <input asp-for="LastName" class="reg-input" placeholder="Last Name*" />
-                        <span asp-validation-for="LastName" class="text-danger small"></span>
-                    </div>
-
-                    <div class="reg-field">
-                        <input asp-for="DateOfBirth"
-                               type="date"
-                               class="reg-input"
-                               placeholder="Date of Birth" />
-                    </div>
-
-
 
                     <div class="reg-field">
                         <select asp-for="Qualification" class="reg-input">
@@ -67,10 +69,11 @@
                         </select>
                     </div>
 
-                    <div class="reg-field span-2">
+                    <div class="reg-field">
                         <input asp-for="CNIC" class="reg-input" placeholder="CNIC*" />
                         <span asp-validation-for="CNIC" class="text-danger small"></span>
                     </div>
+
 
                     <div class="reg-pill">Home Address</div>
 
@@ -103,16 +106,11 @@
                         <span asp-validation-for="MobileNumber" class="text-danger small"></span>
                     </div>
 
-                    @* <div class="reg-field">
-                        <input asp-for="Email" class="reg-input" placeholder="Email Address*" />
-                        <span asp-validation-for="Email" class="text-danger small"></span>
-                    </div> *@
-
-                    <div class="reg-field span-2">
+                    <div class="reg-field">
                         <input asp-for="LinkedIn" class="reg-input" placeholder="LinkedIn" />
                     </div>
 
-                    <div class="reg-field span-2">
+                    <div class="reg-field">
                         <select asp-for="EmploymentStatus" class="reg-input">
                             <option value="">Employment Status*</option>
                             <option value="Searching for Job">Searching for Job</option>
@@ -122,22 +120,6 @@
                         <span asp-validation-for="EmploymentStatus" class="text-danger small"></span>
                     </div>
 
-                    <div class="reg-pill">Login Details</div>
-
-                    <div class="reg-field">
-                        <input asp-for="Email" class="reg-input" placeholder="Email Address*" />
-                        <span asp-validation-for="Email" class="text-danger small"></span>
-                    </div>
-
-                    <div class="reg-field">
-                        <input asp-for="Password" type="password" class="reg-input" placeholder="Password*" />
-                        <span asp-validation-for="Password" class="text-danger small"></span>
-                    </div>
-
-                    <div class="reg-field">
-                        <input asp-for="ConfirmPassword" type="password" class="reg-input" placeholder="Confirm Password*" />
-                        <span asp-validation-for="ConfirmPassword" class="text-danger small"></span>
-                    </div>
 
                 </div>
 

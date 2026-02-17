@@ -13,12 +13,8 @@ namespace HTFLMS.Models.Auth
         public string Gender { get; set; } = "";
 
         [Required]
-        public string FirstName { get; set; } = "";
+        public string Name { get; set; } = "";
 
-        [Required]
-        public string LastName { get; set; } = "";
-
-        public DateTime? DateOfBirth { get; set; }   // optional
         public string? Qualification { get; set; }  // optional
 
         [Required]
@@ -45,7 +41,6 @@ namespace HTFLMS.Models.Auth
         [RegularExpression("^(Searching for Job|Employed|Student)$", ErrorMessage = "Select a valid employment status.")]
         public string EmploymentStatus { get; set; } = "";
 
-        // 🔥 Added back
         [Required]
         [DataType(DataType.Password)]
         public string Password { get; set; } = "";

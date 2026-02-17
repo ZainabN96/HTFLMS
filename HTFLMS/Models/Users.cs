@@ -21,13 +21,9 @@ namespace HTFLMS.Models
         public string Gender { get; set; } = "";
 
         [Required]
-        public string FirstName { get; set; } = "";
-
-        [Required]
-        public string LastName { get; set; } = "";
+        public string Name { get; set; } = "";
 
         // optional
-        public DateTime? DateOfBirth { get; set; }
         public string? Qualification { get; set; }
 
         [Required]
@@ -54,6 +50,6 @@ namespace HTFLMS.Models
         public string EmploymentStatus { get; set; } = "";
 
         public bool IsActive { get; set; } = true;
-        public DateTime CreatedAt { get; set; } = DateTime.Now;
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     }
 }

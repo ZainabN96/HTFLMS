@@ -8,9 +8,7 @@ namespace HTFLMS.Models
         public string UserId { get; set; } = "";
         // Profile section
         public string? Title { get; set; }
-        public string FirstName { get; set; } = "";
-        public string LastName { get; set; } = "";
-        public DateTime? DateOfBirth { get; set; }
+        public string Name { get; set; } = "";
 
         // Enrollment-related
         public string? MemberType { get; set; }   // Student / Learner

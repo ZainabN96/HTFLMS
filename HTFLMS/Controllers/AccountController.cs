@@ -30,8 +30,9 @@ namespace HTFLMS.Controllers
 
             var vm = new LoginViewModel();
 
-            if (TempData.ContainsKey("PrefillUserId"))
-                vm.UserId = TempData["PrefillUserId"]?.ToString();
+            // changed: prefill email after registration
+            if (TempData.ContainsKey("PrefillEmail"))
+                vm.Email = TempData["PrefillEmail"]?.ToString();
 
             return View(vm);
         }
@@ -43,17 +44,18 @@ namespace HTFLMS.Controllers
             ViewBag.ReturnUrl = returnUrl;
             if (!ModelState.IsValid) return View(model);
 
-            var user = await _db.Users.FirstOrDefaultAsync(u => u.UserId == model.UserId);
+            // changed: login by email
+            var user = await _db.Users.FirstOrDefaultAsync(u => u.Email == model.Email);
             if (user == null)
             {
-                ModelState.AddModelError("", "Invalid User Id or password.");
+                ModelState.AddModelError("", "Invalid email or password.");
                 return View(model);
             }
 
             var verify = _hasher.VerifyHashedPassword(user, user.PasswordHash, model.Password);
             if (verify == PasswordVerificationResult.Failed)
             {
-                ModelState.AddModelError("", "Invalid User Id or password.");
+                ModelState.AddModelError("", "Invalid email or password.");
                 return View(model);
             }
 
@@ -61,7 +63,7 @@ namespace HTFLMS.Controllers
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Name, user.UserId),
+                new Claim(ClaimTypes.Name, user.Email ?? ""),
                 new Claim("UserId", user.UserId),
                 new Claim(ClaimTypes.Email, user.Email ?? "")
             };
@@ -121,9 +123,7 @@ namespace HTFLMS.Controllers
                 Email = model.Email,
 
                 Gender = model.Gender,
-                FirstName = model.FirstName,
-                LastName = model.LastName,
-                DateOfBirth = model.DateOfBirth,
+                Name = model.Name,
                 MemberType = model.MemberType,
                 Qualification = model.Qualification,
                 CNIC = model.CNIC,
@@ -142,6 +142,9 @@ namespace HTFLMS.Controllers
             _db.Users.Add(user);
             await _db.SaveChangesAsync();
 
+            // changed: prefill email on login page after registration
+            TempData["PrefillEmail"] = model.Email;
+
             TempData["SuccessMessage"] = "Registered successfully! Please login.";
             return RedirectToAction("Login", "Account", new { returnUrl });
         }
@@ -150,7 +153,6 @@ namespace HTFLMS.Controllers
         {
             return $"HCC-{DateTime.UtcNow:yyyy}-{Random.Shared.Next(10000, 99999)}";
         }
-
 
         [HttpPost]
         [ValidateAntiForgeryToken]

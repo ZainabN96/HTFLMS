@@ -1,13 +1,18 @@
 ﻿@model HTFLMS.Models.Auth.LoginViewModel
 @{
     ViewData["Title"] = "Login";
-    Layout = "_Layout";
+    Layout = "_AuthLayout";
     var returnUrl = (string?)ViewBag.ReturnUrl;
 }
 
-<main class="main">
+<main class="main auth">
     <section class="auth-wrap">
+        <div class="auth-logo">
+            <img src="~/img/hcc_logo(1).png" alt="HCC Logo" />
+        </div>
+
         <div class="auth-card">
+           
             <h1 class="auth-title">LOGIN</h1>
             <p class="auth-subtitle">Access to our Dashboard</p>
 
@@ -16,10 +21,11 @@
                 <input type="hidden" name="returnUrl" value="@returnUrl" />
 
                 <div class="auth-field">
-                    <input asp-for="UserId" class="auth-input" placeholder=" "/>
+                    <input asp-for="Email" class="auth-input" placeholder=" " />
                     <label>Email Id</label>
-                    <span asp-validation-for="UserId" class="text-danger small"></span>
+                    <span asp-validation-for="Email" class="text-danger small"></span>
                 </div>
+
 
 
                 <div class="auth-field">
