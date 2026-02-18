@@ -11,7 +11,7 @@
     margin: 0;
     background: var(--background-color, #fff);
     color: var(--default-color, #444);
-    font-family: var(--default-font, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif);
+    font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif !important;
 }
 
     /* Links */
@@ -22,7 +22,7 @@
 
 /* Helpers */
 :root {
-    --admin-border: rgba(0, 0, 0, 0.08);
+    --admin-border: rgb(0 0 0 / 15%);
     --admin-border-2: rgba(0, 0, 0, 0.06);
     --admin-muted: rgba(0, 0, 0, 0.55);
     --admin-muted-2: rgba(0, 0, 0, 0.40);
@@ -46,8 +46,9 @@
     gap: 12px;
     align-items: center;
     padding: 10px 14px;
-    border-bottom: 1px solid var(--admin-border);
-    background: var(--admin-surface);
+    border-bottom: none;
+    background: linear-gradient(135deg, #cc4451, rgba(200, 35, 51, 0.10));
+/*    background: linear-gradient(135deg, var(--admin-accent), rgba(200,35,51,0.10));*/
 }
 
 .admin-topbar-left,
@@ -68,9 +69,9 @@
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    font-weight: 700;
+    font-weight: 600;
     color: var(--admin-heading);
-    font-family: var(--heading-font, inherit);
+    font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
 }
 
 .admin-brand-badge {
@@ -81,11 +82,11 @@
     border-radius: 10px;
     background: rgba(200, 35, 51, 0.12);
     color: var(--admin-accent);
-    font-weight: 700;
+    font-weight: 600;
 }
 
 .admin-brand-text {
-    font-weight: 700;
+    font-weight: 600;
 }
 
 /* Icon buttons */
@@ -144,7 +145,8 @@
     padding: 10px 12px;
     border: 1px solid var(--admin-border);
     border-radius: 14px;
-    background: rgba(0, 0, 0, 0.02);
+    /*    background: rgba(0, 0, 0, 0.02);*/
+        background: #ffffff !important;
 }
 
     .admin-search i {
@@ -178,7 +180,7 @@
     border-radius: 999px;
     display: grid;
     place-items: center;
-    font-weight: 700;
+    font-weight: 600;
     color: #fff;
     background: var(--admin-accent);
     font-family: var(--heading-font, inherit);
@@ -190,13 +192,13 @@
 }
 
 .admin-username {
-    font-weight: 700;
+    font-weight: 600;
     color: var(--admin-heading);
     font-size: 13px;
 }
 
 .admin-role {
-    font-weight: 700;
+    font-weight: 600;
     color: var(--admin-muted);
     font-size: 12px;
 }
@@ -208,7 +210,7 @@
     gap: 8px;
     border-radius: 12px;
     padding: 10px 12px;
-    font-weight: 700;
+    font-weight: 600;
     border: 1px solid transparent;
     cursor: pointer;
     transition: background 0.12s ease, border-color 0.12s ease, transform 0.12s ease;
@@ -268,7 +270,7 @@
     margin: 10px 8px 6px;
     font-size: 12px;
     letter-spacing: 0.3px;
-    font-weight: 700;
+    font-weight: 600;
     color: var(--admin-muted);
     text-transform: uppercase;
 }
@@ -279,7 +281,7 @@
     gap: 10px;
     padding: 10px 10px;
     border-radius: 12px;
-    font-weight: 800;
+    font-weight: 600;
     color: rgba(0, 0, 0, 0.72);
     border: 1px solid transparent;
     transition: background 0.12s ease, border-color 0.12s ease;
@@ -311,7 +313,7 @@
 }
 
 .admin-mini-title {
-    font-weight: 700;
+    font-weight: 600;
     color: var(--admin-heading);
     margin: 0 6px 8px;
 }
@@ -329,7 +331,7 @@
     border-radius: 12px;
     border: 1px solid var(--admin-border);
     background: rgba(200, 35, 51, 0.06);
-    font-weight: 700;
+    font-weight: 600;
     color: var(--admin-heading);
 }
 
@@ -404,7 +406,7 @@
 
 .admin-h1 {
     font-family: var(--heading-font, inherit);
-    font-weight: 700;
+    font-weight: 600;
     color: var(--admin-heading);
     margin: 0;
     font-size: 34px;
@@ -413,7 +415,7 @@
 .admin-sub {
     margin: 6px 0 0;
     color: var(--admin-muted);
-    font-weight: 700;
+    font-weight: 600;
 }
 
 .admin-head-actions {
@@ -446,7 +448,7 @@
 }
 
 .admin-stat-title {
-    font-weight: 700;
+    font-weight: 600;
     color: rgba(0, 0, 0, 0.68);
 }
 
@@ -458,7 +460,7 @@
 
 .admin-stat-value {
     font-size: 28px;
-    font-weight: 700;
+    font-weight: 600;
     color: var(--admin-heading);
     margin-top: 8px;
     font-family: var(--heading-font, inherit);
@@ -467,7 +469,7 @@
 .admin-stat-meta {
     margin-top: 6px;
     color: var(--admin-muted);
-    font-weight: 700;
+    font-weight: 600;
 }
 
 /* Grid */
@@ -492,12 +494,12 @@
 }
 
 .admin-panel-title {
-    font-weight: 700;
+    font-weight: 600;
     color: var(--admin-heading);
 }
 
 .admin-panel-link {
-    font-weight: 700;
+    font-weight: 600;
     color: var(--admin-accent);
 }
 
@@ -521,12 +523,12 @@
 .admin-table-head {
     border-top: 0;
     background: rgba(0, 0, 0, 0.03);
-    font-weight: 700;
+    font-weight: 600;
     color: var(--admin-heading);
 }
 
 .admin-cell-strong {
-    font-weight: 700;
+    font-weight: 600;
     color: var(--admin-heading);
 }
 
@@ -537,7 +539,7 @@
     justify-content: center;
     padding: 6px 10px;
     border-radius: 999px;
-    font-weight: 700;
+    font-weight: 600;
     font-size: 12px;
     border: 1px solid transparent;
 }
@@ -589,13 +591,13 @@
 }
 
 .admin-action-title {
-    font-weight: 700;
+    font-weight: 600;
     color: var(--admin-heading);
 }
 
 .admin-action-sub {
     color: var(--admin-muted);
-    font-weight: 700;
+    font-weight: 600;
     margin-top: 2px;
 }
 
@@ -608,7 +610,7 @@
     justify-content: space-between;
     gap: 12px;
     color: var(--admin-muted);
-    font-weight: 700;
+    font-weight: 600;
 }
 
 .admin-footer-links {
@@ -618,7 +620,7 @@
 
     .admin-footer-links a {
         color: var(--admin-muted);
-        font-weight: 800;
+        font-weight: 600;
     }
 
         .admin-footer-links a:hover {
@@ -692,6 +694,12 @@
     }
 }
 
+.admin-logo {
+    height: 36px;
+    width: auto;
+    display: block;
+}
+
 /* ===== Login page ===== */
 .login-success-popup {
     position: fixed;
@@ -729,7 +737,7 @@
         display: grid;
         place-items: center;
         font-size: 18px;
-        font-weight: 700;
+        font-weight: 600;
         line-height: 1;
     }
 

@@ -105,6 +105,8 @@
         </main>
     </div>
 
+    @await Html.PartialAsync("_SuccessPopup")
+
     <footer id="footer" class="footer position-relative light-background">
 
         <div class="container footer-top">
@@ -203,6 +205,7 @@
         });
     </script>
 
+    @await RenderSectionAsync("Scripts", required: false)
 
 </body>
 </html>
