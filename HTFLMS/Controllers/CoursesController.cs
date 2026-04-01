@@ -1,14 +1,25 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using HTFLMS.Data;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace HTFLMS.Controllers
 {
     public class CoursesController : Controller
     {
-        public IActionResult CoursesIndex()
-        {
-            return View();
-        }
+        private readonly ApplicationDbContext _db;
 
+        public CoursesController(ApplicationDbContext db)
+        {
+            _db = db;
+        }
+        public async Task<IActionResult> CoursesIndex()
+        {
+            var courses = await _db.Courses
+                .OrderByDescending(c => c.Id)
+                .ToListAsync();
+
+            return View(courses);
+        }
         public IActionResult CourseHome()
         {
             return View();

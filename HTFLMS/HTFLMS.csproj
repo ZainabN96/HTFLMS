@@ -36,8 +36,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Areas\Student\Controllers\" />
-    <Folder Include="Areas\Student\Views\" />
     <Folder Include="Migrations\" />
   </ItemGroup>
 

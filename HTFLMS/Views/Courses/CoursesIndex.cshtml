@@ -1,147 +1,90 @@
-﻿@{
+﻿@model List<HTFLMS.Models.Course>
+@{
     ViewData["Title"] = "Courses";
     Layout = "_Layout";
 }
+
 <main class="main">
 
-    <!-- Page Title -->
     <div class="page-title page-title-courses" data-aos="fade">
         <div class="heading">
             <div class="container">
                 <div class="row d-flex justify-content-center text-center">
                     <div class="col-lg-8">
                         <h1>Courses</h1>
-                        <p class="mb-0">Odio et unde deleniti. Deserunt numquam exercitationem. Officiis quo odio sint voluptas consequatur ut a odio voluptatem. Sit dolorum debitis veritatis natus dolores. Quasi ratione sint. Sit quaerat ipsum dolorem.</p>
+                        <p class="mb-0">Explore our courses and start learning today.</p>
                     </div>
                 </div>
             </div>
         </div>
-        @* <nav class="breadcrumbs">
-            <div class="container">
-                <ol>
-                    <li><a href="index.html">Home</a></li>
-                    <li class="current">Courses</li>
-                </ol>
-            </div>
-        </nav> *@
-    </div><!-- End Page Title -->
-    <!-- Courses Section -->
+    </div>
+
     <section id="courses" class="courses section">
-
         <div class="container">
+            <div class="row g-4">
 
-            <div class="row">
+                @if (Model == null || Model.Count == 0)
+                {
+                    <div class="col-12">
+                        <div class="text-center p-5">
+                            <h4>No courses available yet</h4>
+                            <p class="mb-0">Please check back soon.</p>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    @foreach (var c in Model)
+                    {
+                        <div class="col-lg-4 col-md-6 d-flex align-items-stretch"
+                             data-aos="zoom-in" data-aos-delay="100">
+                            <div class="course-item">
 
-                <div class="col-lg-4 col-md-6 d-flex align-items-stretch" data-aos="zoom-in" data-aos-delay="100">
-                    <div class="course-item">
-                        <img src="~/img/course/course-1.webp" class="img-fluid" alt="...">
-                        <div class="course-content">
-                            <div class="d-flex justify-content-between align-items-center mb-3">
-                                <p class="category">Web Development</p>
-                                <p class="price">$169</p>
-                            </div>
+                                <img src="@(string.IsNullOrWhiteSpace(c.ImageUrl)
+                                                                             ? Url.Content("~/img/course/course-2.webp")
+                                                                             : c.ImageUrl)"
+                                                                                          class="img-fluid course-cover" alt="">
 
-                            <h3><a href="course-details.html">Website Design</a></h3>
-                            <p class="description">Et architecto provident deleniti facere repellat nobis iste. Id facere quia quae dolores dolorem tempore.</p>
-                            <!-- Enroll Button -->
-                            <div class="text-center mt-3 mb-3">
-                                <a asp-controller="Account"
-                                   asp-action="Login"
-                                   class="btn btn-danger sub-btn">
-                                    Enroll Now
-                                </a>
+                                <div class="course-content">
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <p class="category">@c.Category</p>
+                                        @* price removed because your DB course has no price field *@
+                                    </div>
 
-                            </div>
+                                    <h3><a href="#">@c.Title</a></h3>
 
-                            <div class="trainer d-flex justify-content-between align-items-center">
-                                <div class="trainer-profile d-flex align-items-center">
-                                    <img src="~/img/person/person-m-7.webp" class="img-fluid" alt="">
-                                    <a href="" class="trainer-link">Antonio</a>
-                                </div>
-                                <div class="trainer-rank d-flex align-items-center">
-                                    <i class="bi bi-person user-icon"></i>&nbsp;50
-                                    &nbsp;&nbsp;
-                                    <i class="bi bi-heart heart-icon"></i>&nbsp;65
+                                    <p class="description">
+                                        @(string.IsNullOrWhiteSpace(c.ShortDescription)
+                                                                        ? "Course description coming soon."
+                                                                        : c.ShortDescription)
+                            </p>
+
+                                    <div class="text-center mt-3 mb-3">
+                                        <a asp-controller="Account"
+                                           asp-action="Login"
+                                           class="btn btn-danger sub-btn">
+                                            Enroll Now
+                                        </a>
+                                    </div>
+
+                                    <div class="trainer d-flex justify-content-between align-items-center">
+                                        <div class="trainer-profile d-flex align-items-center">
+                                            <img src="~/img/trainers/trainer-2.jpg" class="img-fluid" alt="">
+                                            <a href="#" class="trainer-link">@c.InstructorName</a>
+                                        </div>
+                                        <div class="trainer-rank d-flex align-items-center">
+                                            <i class="bi bi-person user-icon"></i>&nbsp;35
+                                            &nbsp;&nbsp;
+                                            <i class="bi bi-heart heart-icon"></i>&nbsp;42
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div> <!-- End Course Item-->
-
-                <div class="col-lg-4 col-md-6 d-flex align-items-stretch mt-4 mt-md-0" data-aos="zoom-in" data-aos-delay="200">
-                    <div class="course-item">
-                        <img src="~/img/course/course-2.webp" class="img-fluid" alt="...">
-                        <div class="course-content">
-                            <div class="d-flex justify-content-between align-items-center mb-3">
-                                <p class="category">Marketing</p>
-                                <p class="price">$250</p>
-                            </div>
-
-                            <h3><a href="course-details.html">Search Engine Optimization</a></h3>
-                            <p class="description">Et architecto provident deleniti facere repellat nobis iste. Id facere quia quae dolores dolorem tempore.</p>
-                            <!-- Enroll Button -->
-                            <div class="text-center mt-3 mb-3">
-                                <a asp-controller="Account"
-                                   asp-action="Login"
-                                   class="btn btn-danger sub-btn">
-                                    Enroll Now
-                                </a>
-                            </div>
-
-                            <div class="trainer d-flex justify-content-between align-items-center">
-                                <div class="trainer-profile d-flex align-items-center">
-                                    <img src="~/img/person/person-f-14.webp" class="img-fluid" alt="">
-                                    <a href="" class="trainer-link">Lana</a>
-                                </div>
-                                <div class="trainer-rank d-flex align-items-center">
-                                    <i class="bi bi-person user-icon"></i>&nbsp;35
-                                    &nbsp;&nbsp;
-                                    <i class="bi bi-heart heart-icon"></i>&nbsp;42
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div> <!-- End Course Item-->
-
-                <div class="col-lg-4 col-md-6 d-flex align-items-stretch mt-4 mt-lg-0" data-aos="zoom-in" data-aos-delay="300">
-                    <div class="course-item">
-                        <img src="~/img/course/course-3.webp" class="img-fluid" alt="...">
-                        <div class="course-content">
-                            <div class="d-flex justify-content-between align-items-center mb-3">
-                                <p class="category">Content</p>
-                                <p class="price">$180</p>
-                            </div>
-
-                            <h3><a href="course-details.html">Copywriting</a></h3>
-                            <p class="description">Et architecto provident deleniti facere repellat nobis iste. Id facere quia quae dolores dolorem tempore.</p>
-                            <!-- Enroll Button -->
-                            <div class="text-center mt-3 mb-3">
-                                <a asp-controller="Account"
-                                   asp-action="Login"
-                                   class="btn btn-danger sub-btn">
-                                    Enroll Now
-                                </a>
-                            </div>
-
-                            <div class="trainer d-flex justify-content-between align-items-center">
-                                <div class="trainer-profile d-flex align-items-center">
-                                    <img src="~/img/person/person-m-12.webp" class="img-fluid" alt="">
-                                    <a href="" class="trainer-link">Brandon</a>
-                                </div>
-                                <div class="trainer-rank d-flex align-items-center">
-                                    <i class="bi bi-person user-icon"></i>&nbsp;20
-                                    &nbsp;&nbsp;
-                                    <i class="bi bi-heart heart-icon"></i>&nbsp;85
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div> <!-- End Course Item-->
+                                }
+                }
 
             </div>
-
         </div>
-
-    </section><!-- /Courses Section -->
-
+    </section>
 </main>

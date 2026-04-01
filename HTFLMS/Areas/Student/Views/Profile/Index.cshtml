@@ -1,0 +1,314 @@
+﻿@{
+    ViewData["Title"] = "Profile";
+    Layout = "_StudentLayout";
+}
+
+<div class="student-profile-page">
+    <div class="student-profile-head">
+        <div>
+            <h1 class="dashboard-h1">My Profile</h1>
+            <p class="dashboard-sub">Manage your personal details, account information, and password.</p>
+        </div>
+    </div>
+
+    <div class="student-profile-grid">
+
+        <!-- LEFT: PROFILE SUMMARY -->
+        <div class="student-profile-summary-wrap">
+            <div class="dashboard-panel student-profile-summary-card">
+                <div class="student-profile-summary-top">
+                    <div class="student-profile-avatar-lg">D</div>
+
+                    <div class="student-profile-summary-text">
+                        <h3 class="student-profile-name">Daud Iqbal</h3>
+                        <div class="student-profile-role">Student</div>
+                        <div class="student-profile-email">daudrana400@gmail.com</div>
+                    </div>
+                </div>
+
+                <div class="student-profile-status-row">
+                    <span class="student-profile-status active">Active Account</span>
+                    <span class="student-profile-joined">Joined Feb 18, 2026</span>
+                </div>
+
+                <div class="student-profile-mini-stats">
+                    <div class="student-profile-mini-stat">
+                        <span class="student-profile-mini-label">User ID</span>
+                        <strong>HCC-2026-86819</strong>
+                    </div>
+
+                    <div class="student-profile-mini-stat">
+                        <span class="student-profile-mini-label">Qualification</span>
+                        <strong>Bachelors</strong>
+                    </div>
+
+                    <div class="student-profile-mini-stat">
+                        <span class="student-profile-mini-label">University</span>
+                        <strong>NYU</strong>
+                    </div>
+
+                    <div class="student-profile-mini-stat">
+                        <span class="student-profile-mini-label">Employment</span>
+                        <strong>Searching for Job</strong>
+                    </div>
+
+                    <div class="student-profile-mini-stat">
+                        <span class="student-profile-mini-label">City</span>
+                        <strong>Lahore</strong>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dashboard-panel student-profile-side-card">
+                <h3 class="student-profile-block-title">Account Information</h3>
+
+                <div class="student-profile-info-list">
+                    <div class="student-profile-info-row">
+                        <span class="student-profile-info-key">Member Type</span>
+                        <span class="student-profile-info-val">Student</span>
+                    </div>
+
+                    <div class="student-profile-info-row">
+                        <span class="student-profile-info-key">Email</span>
+                        <span class="student-profile-info-val">daudrana400@gmail.com</span>
+                    </div>
+
+                    <div class="student-profile-info-row">
+                        <span class="student-profile-info-key">Gender</span>
+                        <span class="student-profile-info-val">Female</span>
+                    </div>
+
+                    <div class="student-profile-info-row">
+                        <span class="student-profile-info-key">Account Status</span>
+                        <span class="student-profile-info-val good">Active</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT: PROFILE FORMS -->
+        <div class="student-profile-main-wrap">
+            <!-- PERSONAL DETAILS -->
+            <div class="dashboard-panel student-profile-form-panel">
+                <div class="student-profile-section-head">
+                    <div>
+                        <h3 class="student-profile-block-title">Personal Details</h3>
+                        <p class="student-profile-block-sub">
+                            Update your profile information below.
+                        </p>
+                    </div>
+                </div>
+
+                <form class="student-profile-form">
+                    <div class="student-profile-form-grid">
+
+                        <div class="student-profile-field">
+                            <label>Full Name</label>
+                            <input type="text" class="student-profile-input" value="Daud Iqbal" />
+                        </div>
+
+                        <div class="student-profile-field">
+                            <label>Email Address</label>
+                            <input type="email" class="student-profile-input readonly" value="daudrana400@gmail.com" readonly />
+                        </div>
+
+                        <div class="student-profile-field">
+                            <label>User ID</label>
+                            <input type="text" class="student-profile-input readonly" value="HCC-2026-86819" readonly />
+                        </div>
+
+                        <div class="student-profile-field">
+                            <label>Member Type</label>
+                            <input type="text" class="student-profile-input readonly" value="Student" readonly />
+                        </div>
+
+                        <div class="student-profile-field">
+                            <label>Qualification</label>
+                            <select class="student-profile-input">
+                                <option>Matric</option>
+                                <option>Intermediate</option>
+                                <option selected>Bachelors</option>
+                                <option>Masters</option>
+                                <option>PhD</option>
+                            </select>
+                        </div>
+
+                        <div class="student-profile-field">
+                            <label>University</label>
+                            <input type="text"
+                                   class="student-profile-input"
+                                   value="NYU"
+                                   placeholder="Enter your university" />
+                        </div>
+
+                        <div class="student-profile-field">
+                            <label>Gender</label>
+                            <select class="student-profile-input">
+                                <option>Male</option>
+                                <option selected>Female</option>
+                                <option>Other</option>
+                            </select>
+                        </div>
+
+                        <div class="student-profile-field">
+                            <label>CNIC</label>
+                            <input type="text" class="student-profile-input" value="234567" />
+                        </div>
+
+                        <div class="student-profile-field">
+                            <label>Mobile Number</label>
+                            <input type="text" class="student-profile-input" value="1234" />
+                        </div>
+
+                        <div class="student-profile-field">
+                            <label>Country</label>
+                            <select class="student-profile-input" id="countrySelect">
+                                <option value="">Select Country</option>
+                                <option selected>Pakistan</option>
+                                <option>United States</option>
+                                <option>United Kingdom</option>
+                                <option>Canada</option>
+                                <option>Australia</option>
+                                <option>Germany</option>
+                                <option>UAE</option>
+                                <option>Saudi Arabia</option>
+                            </select>
+                        </div>
+
+                        <div class="student-profile-field">
+                            <label>City</label>
+                            <select class="student-profile-input" id="citySelect">
+                                <option value="">Select City</option>
+                                <option selected>Lahore</option>
+                                <option>Karachi</option>
+                                <option>Islamabad</option>
+                                <option>Rawalpindi</option>
+                                <option>Faisalabad</option>
+                                <option>Multan</option>
+                                <option>Peshawar</option>
+                                <option>Quetta</option>
+                            </select>
+                        </div>
+
+                        <div class="student-profile-field student-profile-field-full">
+                            <label>Address</label>
+                            <input type="text" class="student-profile-input" value="123-sabzazar" />
+                        </div>
+
+                        <div class="student-profile-field">
+                            <label>LinkedIn</label>
+                            <input type="text" class="student-profile-input" value="daud" />
+                        </div>
+
+                        <div class="student-profile-field">
+                            <label>Employment Status</label>
+                            <select class="student-profile-input">
+                                <option selected>Searching for Job</option>
+                                <option>Employed</option>
+                                <option>Student</option>
+                                <option>Internship Seeking</option>
+                                <option>Freelancing</option>
+                            </select>
+                        </div>
+
+                        <div class="student-profile-field">
+                            <label>Created At</label>
+                            <input type="text" class="student-profile-input readonly" value="2026-02-18 07:32 AM" readonly />
+                        </div>
+
+                        <div class="student-profile-field">
+                            <label>Account Status</label>
+                            <input type="text" class="student-profile-input readonly" value="Active" readonly />
+                        </div>
+                    </div>
+
+                    <div class="student-profile-form-actions">
+                        <button type="button" class="student-profile-cancel-btn">Cancel</button>
+                        <button type="submit" class="dashboard-btn dashboard-btn-outline student-profile-save-btn">
+                            <i class="bi bi-floppy"></i> Save Changes
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- CHANGE PASSWORD -->
+            <div class="dashboard-panel student-profile-password-panel">
+                <div class="student-profile-section-head">
+                    <div>
+                        <h3 class="student-profile-block-title">Change Password</h3>
+                        <p class="student-profile-block-sub">
+                            Update your password to keep your account secure.
+                        </p>
+                    </div>
+                </div>
+
+                <form class="student-profile-form">
+                    <div class="student-profile-password-grid">
+                        <div class="student-profile-field">
+                            <label>Current Password</label>
+                            <div class="student-profile-password-wrap">
+                                <input type="password" class="student-profile-input" placeholder="Enter current password" />
+                                <button type="button" class="student-profile-password-toggle">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="student-profile-field">
+                            <label>New Password</label>
+                            <div class="student-profile-password-wrap">
+                                <input type="password" class="student-profile-input" placeholder="Enter new password" />
+                                <button type="button" class="student-profile-password-toggle">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="student-profile-field">
+                            <label>Confirm New Password</label>
+                            <div class="student-profile-password-wrap">
+                                <input type="password" class="student-profile-input" placeholder="Confirm new password" />
+                                <button type="button" class="student-profile-password-toggle">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="student-profile-password-note">
+                        <i class="bi bi-shield-lock"></i>
+                        <span>Password should be strong and easy for you to remember securely.</span>
+                    </div>
+
+                    <div class="student-profile-form-actions">
+                        <button type="button" class="student-profile-cancel-btn">Cancel</button>
+                        <button type="submit" class="dashboard-btn dashboard-btn-outline student-profile-save-btn">
+                            <i class="bi bi-key"></i> Update Password
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div>
+</div>
+@section Scripts {
+    <script>
+        document.querySelectorAll('.student-profile-password-toggle').forEach(btn => {
+            btn.addEventListener('click', function () {
+                const input = this.parentElement.querySelector('input');
+                const icon = this.querySelector('i');
+
+                if (input.type === 'password') {
+                    input.type = 'text';
+                    icon.classList.remove('bi-eye');
+                    icon.classList.add('bi-eye-slash');
+                } else {
+                    input.type = 'password';
+                    icon.classList.remove('bi-eye-slash');
+                    icon.classList.add('bi-eye');
+                }
+            });
+        });
+    </script>
+}

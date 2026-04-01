@@ -1,0 +1,85 @@
+﻿@{
+    ViewData["Title"] = "Add Lesson";
+    Layout = "~/Views/Shared/_TrainerLayout.cshtml";
+    var courseId = ViewBag.CourseId ?? 0;
+    var moduleId = ViewBag.ModuleId ?? 0;
+}
+
+<div class="dashboard-page trainer-content-page">
+    <div class="dashboard-page-head trainer-content-head">
+        <div>
+            <h1 class="dashboard-h1">Add Lesson</h1>
+            <p class="dashboard-sub">Create a lesson and assign it to a module.</p>
+        </div>
+
+        <div class="trainer-content-head-actions">
+            <a asp-area="Trainer"
+               asp-controller="ModulesLessons"
+               asp-action="Index"
+               asp-route-id="@courseId"
+               class="dashboard-btn dashboard-btn-outline">
+                <i class="bi bi-arrow-left"></i>
+                Back to Modules & Lessons
+            </a>
+        </div>
+    </div>
+
+    <div class="dashboard-panel trainer-form-panel">
+        <div class="dashboard-panel-head">
+            <div>
+                <div class="dashboard-panel-title">Lesson Details</div>
+                <div class="dashboard-muted-small">Add lesson content for the selected course and module.</div>
+            </div>
+        </div>
+
+        <form asp-area="Trainer"
+              asp-controller="ModulesLessons"
+              asp-action="CreateLesson"
+              method="post"
+              class="trainer-form-grid">
+
+            <input type="hidden" name="courseId" value="@courseId" />
+
+            <div class="trainer-form-group">
+                <label class="trainer-form-label">Module</label>
+                <select name="moduleId" class="course-input">
+                    <option value="">Select module</option>
+                    <option value="1" selected="@(moduleId?.ToString() == "1")">Module 1: Introduction to Web Development</option>
+                    <option value="2" selected="@(moduleId?.ToString() == "2")">Module 2: JavaScript Fundamentals</option>
+                    <option value="3" selected="@(moduleId?.ToString() == "3")">Module 3: React Basics</option>
+                    <option value="4" selected="@(moduleId?.ToString() == "4")">Module 4: Advanced React Patterns</option>
+                </select>
+            </div>
+
+            <div class="trainer-form-group">
+                <label class="trainer-form-label">Display Order</label>
+                <input type="number" name="displayOrder" class="course-input" placeholder="1" min="1" />
+            </div>
+
+            <div class="trainer-form-group trainer-form-group-full">
+                <label class="trainer-form-label">Lesson Title</label>
+                <input type="text" name="title" class="course-input" placeholder="Enter lesson title" />
+            </div>
+
+            <div class="trainer-form-group trainer-form-group-full">
+                <label class="trainer-form-label">Lesson Content</label>
+                <textarea name="content" class="course-input trainer-textarea trainer-content-textarea" placeholder="Add lesson text, summary, instructions, or links here"></textarea>
+            </div>
+
+            <div class="trainer-form-actions trainer-form-group-full">
+                <a asp-area="Trainer"
+                   asp-controller="ModulesLessons"
+                   asp-action="Index"
+                   asp-route-id="@courseId"
+                   class="dashboard-btn dashboard-btn-outline">
+                    Cancel
+                </a>
+
+                <button type="submit" class="dashboard-btn add-course-btn">
+                    <i class="bi bi-plus-circle"></i>
+                    Save Lesson
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

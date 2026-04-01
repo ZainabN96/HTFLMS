@@ -1,0 +1,362 @@
+﻿@{
+    ViewData["Title"] = "Slides & Assignments";
+    Layout = "_TrainerLayout";
+}
+
+<div class="dashboard-page trainer-content-page trainer-slides-assignments-page">
+    <div class="dashboard-page-head trainer-content-head">
+        <div>
+            <h1 class="dashboard-h1">Slides & Assignments</h1>
+            <p class="dashboard-sub">Manage course files, videos, and assignments for each module.</p>
+        </div>
+    </div>
+
+    <!-- QUICK STATS -->
+    <div class="dashboard-stats trainer-content-stats trainer-sa-stats">
+        <div class="dashboard-stat-card">
+            <div class="dashboard-stat-top">
+                <div class="dashboard-stat-title">Total Files</div>
+                <i class="bi bi-folder2-open"></i>
+            </div>
+            <div class="dashboard-stat-value">4</div>
+            <div class="dashboard-stat-meta">Across selected module</div>
+        </div>
+
+        <div class="dashboard-stat-card">
+            <div class="dashboard-stat-top">
+                <div class="dashboard-stat-title">Assignments</div>
+                <i class="bi bi-journal-text"></i>
+            </div>
+            <div class="dashboard-stat-value">2</div>
+            <div class="dashboard-stat-meta">Currently created</div>
+        </div>
+
+        <div class="dashboard-stat-card">
+            <div class="dashboard-stat-top">
+                <div class="dashboard-stat-title">Video Lessons</div>
+                <i class="bi bi-play-btn"></i>
+            </div>
+            <div class="dashboard-stat-value">1</div>
+            <div class="dashboard-stat-meta">Uploaded content</div>
+        </div>
+
+        <div class="dashboard-stat-card">
+            <div class="dashboard-stat-top">
+                <div class="dashboard-stat-title">Submissions</div>
+                <i class="bi bi-people"></i>
+            </div>
+            <div class="dashboard-stat-value">40</div>
+            <div class="dashboard-stat-meta">Combined assignment activity</div>
+        </div>
+    </div>
+
+    <!-- SELECT SCOPE -->
+    <div class="dashboard-panel trainer-content-panel trainer-sa-filter-panel">
+        <div class="dashboard-panel-head trainer-content-panel-head">
+            <div>
+                <div class="dashboard-panel-title">Select Course & Module</div>
+            </div>
+
+            <div class="trainer-panel-actions trainer-inline-tools trainer-sa-filter-tools">
+                <select class="course-input trainer-inline-select trainer-sa-course-select">
+                    <option selected>React Advanced Patterns</option>
+                    <option>Node.js Backend Development</option>
+                    <option>Python for Data Science</option>
+                    <option>Full Stack Web Development</option>
+                </select>
+
+                <select class="course-input trainer-inline-select trainer-sa-module-select">
+                    <option selected>Module 1: Introduction to Web Development</option>
+                    <option>Module 2: JavaScript Fundamentals</option>
+                    <option>Module 3: React Basics</option>
+                    <option>Module 4: Advanced React Patterns</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <!-- FILES SECTION -->
+    <div class="dashboard-panel trainer-content-panel trainer-sa-panel">
+        <div class="dashboard-panel-head trainer-content-panel-head">
+            <div>
+                <div class="dashboard-panel-title">Slides & Videos</div>
+            </div>
+
+            <div class="trainer-panel-actions">
+                <a asp-area="Trainer"
+                   asp-controller="SlidesAssignments"
+                   asp-action="CreateMaterial"
+                   asp-route-courseId="@ViewBag.CourseId"
+                   asp-route-moduleId="@ViewBag.ModuleId"
+                   class="dashboard-btn add-course-btn trainer-sa-action-btn">
+                    <i class="bi bi-plus-circle"></i>
+                    Upload File
+                </a>
+            </div>
+        </div>
+
+        <div class="trainer-sa-files-wrap">
+            <div class="trainer-sa-files-head">
+                <div>File</div>
+                <div>Type</div>
+                <div>Size / Length</div>
+                <div>Status</div>
+                <div>Actions</div>
+            </div>
+
+            <div class="trainer-sa-files-row">
+                <div class="trainer-sa-file-main">
+                    <div class="trainer-sa-file-icon trainer-sa-file-pdf">
+                        <i class="bi bi-file-earmark-pdf"></i>
+                    </div>
+                    <div class="trainer-sa-file-text">
+                        <div class="trainer-sa-file-title">Lecture 1: Introduction to Clear Writing</div>
+                    </div>
+                </div>
+                <div><span class="trainer-course-chip">PDF</span></div>
+                <div class="trainer-sa-meta-text">12 Pages</div>
+                <div>
+                    <span class="pill pill-green">Active</span>
+                </div>
+                <div class="trainer-courses-actions">
+                    <a asp-area="Trainer"
+                       asp-controller="SlidesAssignments"
+                       asp-action="EditMaterial"
+                       asp-route-id="1"
+                       asp-route-courseId="@ViewBag.CourseId"
+                       asp-route-moduleId="@ViewBag.ModuleId"
+                       class="dashboard-btn dashboard-btn-outline trainer-course-action-btn">
+                        Edit
+                    </a>                    
+                    <a href="javascript:void(0)" class="dashboard-btn trainer-delete-soft-btn trainer-course-action-btn">Delete</a>
+                </div>
+            </div>
+
+            <div class="trainer-sa-files-row">
+                <div class="trainer-sa-file-main">
+                    <div class="trainer-sa-file-icon trainer-sa-file-ppt">
+                        <i class="bi bi-file-earmark-slides"></i>
+                    </div>
+                    <div class="trainer-sa-file-text">
+                        <div class="trainer-sa-file-title">Lesson Slides: Publishing Examples</div>
+                    </div>
+                </div>
+                <div><span class="trainer-course-chip">PPTX</span></div>
+                <div class="trainer-sa-meta-text">18 Slides</div>
+                <div>
+                    <span class="pill pill-green">Active</span>
+                </div>
+                <div class="trainer-courses-actions">
+                    <a asp-area="Trainer"
+                       asp-controller="SlidesAssignments"
+                       asp-action="EditMaterial"
+                       asp-route-id="1"
+                       asp-route-courseId="@ViewBag.CourseId"
+                       asp-route-moduleId="@ViewBag.ModuleId"
+                       class="dashboard-btn dashboard-btn-outline trainer-course-action-btn">
+                        Edit
+                    </a>                    
+                    <a href="javascript:void(0)" class="dashboard-btn trainer-delete-soft-btn trainer-course-action-btn">Delete</a>
+                </div>
+            </div>
+
+            <div class="trainer-sa-files-row">
+                <div class="trainer-sa-file-main">
+                    <div class="trainer-sa-file-icon trainer-sa-file-pdf">
+                        <i class="bi bi-file-earmark-pdf"></i>
+                    </div>
+                    <div class="trainer-sa-file-text">
+                        <div class="trainer-sa-file-title">Exercise Sheet: Rewrite Technical Sentences</div>
+                    </div>
+                </div>
+                <div><span class="trainer-course-chip">PDF</span></div>
+                <div class="trainer-sa-meta-text">6 Pages</div>
+                <div>
+                    <span class="pill pill-green">Active</span>
+                </div>
+                <div class="trainer-courses-actions">
+                    <a asp-area="Trainer"
+                       asp-controller="SlidesAssignments"
+                       asp-action="EditMaterial"
+                       asp-route-id="1"
+                       asp-route-courseId="@ViewBag.CourseId"
+                       asp-route-moduleId="@ViewBag.ModuleId"
+                       class="dashboard-btn dashboard-btn-outline trainer-course-action-btn">
+                        Edit
+                    </a>
+                    <a href="javascript:void(0)" class="dashboard-btn trainer-delete-soft-btn trainer-course-action-btn">Delete</a>
+                </div>
+            </div>
+
+            <div class="trainer-sa-files-row">
+                <div class="trainer-sa-file-main">
+                    <div class="trainer-sa-file-icon trainer-sa-file-mp4">
+                        <i class="bi bi-play-btn"></i>
+                    </div>
+                    <div class="trainer-sa-file-text">
+                        <div class="trainer-sa-file-title">Lecture Recording: Publishing Examples</div>
+                    </div>
+                </div>
+
+                <div>
+                    <span class="trainer-course-chip">Video Link</span>
+                </div>
+
+                <div class="trainer-sa-meta-text">External</div>
+                <div>
+                    <span class="pill pill-green">Active</span>
+                </div>
+
+                <div class="trainer-courses-actions">
+                    <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+                       target="_blank"
+                       class="dashboard-btn dashboard-btn-outline trainer-course-action-btn">
+                        Open
+                    </a>
+
+                    <a asp-area="Trainer"
+                       asp-controller="SlidesAssignments"
+                       asp-action="EditMaterial"
+                       asp-route-id="1"
+                       asp-route-courseId="@ViewBag.CourseId"
+                       asp-route-moduleId="@ViewBag.ModuleId"
+                       class="dashboard-btn dashboard-btn-outline trainer-course-action-btn">
+                        Edit
+                    </a>
+
+                    <button type="button"
+                            class="dashboard-btn trainer-delete-soft-btn trainer-course-action-btn">
+                        Delete
+                    </button>
+                </div>
+            </div>
+
+            <div class="trainer-sa-files-row">
+                <div class="trainer-sa-file-main">
+                    <div class="trainer-sa-file-icon trainer-sa-file-mp4">
+                        <i class="bi bi-play-btn"></i>
+                    </div>
+                    <div class="trainer-sa-file-text">
+                        <div class="trainer-sa-file-title">Lecture Recording: Technical Sentence Rewriting</div>
+                    </div>
+                </div>
+
+                <div>
+                    <span class="trainer-course-chip">Video Link</span>
+                </div>
+
+                <div class="trainer-sa-meta-text">External</div>
+                <div>
+                    <span class="pill pill-yellow">Draft</span>
+                </div>
+
+                <div class="trainer-courses-actions">
+                    <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+                       target="_blank"
+                       class="dashboard-btn dashboard-btn-outline trainer-course-action-btn">
+                        Open
+                    </a>
+
+                    <a asp-area="Trainer"
+                       asp-controller="SlidesAssignments"
+                       asp-action="EditMaterial"
+                       asp-route-id="1"
+                       asp-route-courseId="@ViewBag.CourseId"
+                       asp-route-moduleId="@ViewBag.ModuleId"
+                       class="dashboard-btn dashboard-btn-outline trainer-course-action-btn">
+                        Edit
+                    </a>
+
+                    <button type="button"
+                            class="dashboard-btn trainer-delete-soft-btn trainer-course-action-btn">
+                        Delete
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ASSIGNMENTS SECTION -->
+    <div class="dashboard-panel trainer-content-panel trainer-sa-panel">
+        <div class="dashboard-panel-head trainer-content-panel-head">
+            <div>
+                <div class="dashboard-panel-title">Module Assignments</div>
+            </div>
+
+            <div class="trainer-panel-actions">
+                <a asp-area="Trainer"
+                   asp-controller="SlidesAssignments"
+                   asp-action="CreateAssignment"
+                   asp-route-courseId="@ViewBag.CourseId"
+                   asp-route-moduleId="@ViewBag.ModuleId"
+                   class="dashboard-btn add-course-btn trainer-sa-action-btn">
+                    <i class="bi bi-plus-circle"></i>
+                    Create Assignment
+                </a>
+            </div>
+        </div>
+
+        <div class="trainer-sa-assignment-list">
+            <div class="trainer-sa-assignment-card">
+                <div class="trainer-sa-assignment-top">
+                    <div class="trainer-sa-assignment-main">
+                        <div class="trainer-sa-assignment-title">Assignment 1: Rewrite the Abstract</div>
+                        <div class="trainer-sa-assignment-meta">Marks: 20 · Due: 12 Mar, 11:59 PM</div>
+                        <span class="pill pill-green">Active</span>
+                    </div>
+
+                    <div class="trainer-sa-assignment-right">
+                        <span class="trainer-sa-submit-badge submitted-good">22/24 submitted</span>
+                        <div class="trainer-courses-actions">
+                            <a asp-area="Trainer"
+                               asp-controller="SlidesAssignments"
+                               asp-action="EditAssignment"
+                               asp-route-id="1"
+                               asp-route-courseId="@ViewBag.CourseId"
+                               asp-route-moduleId="@ViewBag.ModuleId"
+                               class="dashboard-btn dashboard-btn-outline trainer-course-action-btn">
+                                Edit
+                            </a>
+                            <a href="javascript:void(0)" class="dashboard-btn trainer-delete-soft-btn trainer-course-action-btn">Delete</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="trainer-sa-assignment-stats">
+                    <span>2 not submitted</span>
+                </div>
+            </div>
+
+            <div class="trainer-sa-assignment-card">
+                <div class="trainer-sa-assignment-top">
+                    <div class="trainer-sa-assignment-main">
+                        <div class="trainer-sa-assignment-title">Assignment 2: Analyze the Reading Passage</div>
+                        <div class="trainer-sa-assignment-meta">Marks: 15 · Due: 18 Mar, 11:59 PM</div>
+                        <span class="pill pill-green">Active</span>
+                    </div>
+
+                    <div class="trainer-sa-assignment-right">
+                        <span class="trainer-sa-submit-badge submitted-warn">18/24 submitted</span>
+                        <div class="trainer-courses-actions">
+                            <a asp-area="Trainer"
+                               asp-controller="SlidesAssignments"
+                               asp-action="EditAssignment"
+                               asp-route-id="1"
+                               asp-route-courseId="@ViewBag.CourseId"
+                               asp-route-moduleId="@ViewBag.ModuleId"
+                               class="dashboard-btn dashboard-btn-outline trainer-course-action-btn">
+                                Edit
+                            </a>                            
+                            <a href="javascript:void(0)" class="dashboard-btn trainer-delete-soft-btn trainer-course-action-btn">Delete</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="trainer-sa-assignment-stats">
+                    <span>6 not submitted</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

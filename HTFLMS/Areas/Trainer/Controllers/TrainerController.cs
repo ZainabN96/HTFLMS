@@ -1,13 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace HTFLMS.Controllers
+namespace HTFLMS.Areas.Trainer.Controllers
 {
-    [Area("Admin")]
-    [Authorize(Roles = "Admin")]
-    public class DashboardController : Controller
+    [Area("Trainer")]
+    public class TrainerController : Controller
     {
-        [Authorize(Roles = "Admin")]
         public IActionResult Index()
         {
             return View();
