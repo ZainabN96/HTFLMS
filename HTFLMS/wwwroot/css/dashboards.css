@@ -5358,3 +5358,88 @@
 .trainer-form-page .trainer-form-actions {
     margin-top: 8px;
 }
+
+
+/*//// ////////////////////////////////////
+////Admin Side Total Trainer Dashboard////
+//////////////////////////////////////////
+*/
+.ManageTrainer-stat {
+
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 14px;
+}
+/* =========================
+   MANAGE TRAINER TABLE - UPDATED
+   ========================= */
+
+.manage-trainer-table-head,
+.manage-trainer-table-row {
+    grid-template-columns: 1.3fr 1.7fr 1.2fr 1.3fr 1.4fr 0.9fr 1fr 1.1fr;
+}
+
+.manage-trainer-table-fix {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.manage-trainer-table-head {
+    align-items: center;
+    padding-top: 8px;
+    padding-bottom: 8px;
+}
+
+.manage-trainer-table-head > div {
+    text-align: center;
+}
+
+.manage-trainer-table-row {
+    align-items: center;
+    padding-top: 10px !important;
+    padding-bottom: 10px !important;
+}
+
+.manage-trainer-table-row > div {
+    min-width: 0;
+}
+
+.manage-trainer-cell-ellipsis {
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.manage-trainer-name-text {
+    font-weight: 700;
+    color: var(--dashboard-heading);
+}
+
+.manage-trainer-assigned-text {
+    display: block;
+    min-width: 0;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--dashboard-heading);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.manage-trainer-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: nowrap;
+    white-space: nowrap;
+    justify-content: center;
+}
+
+@media (max-width: 1200px) {
+    .manage-trainer-table-head,
+    .manage-trainer-table-row {
+        grid-template-columns: 1.2fr 1.5fr 1.1fr 1.2fr 1.3fr 0.9fr 1fr 1.3fr;
+    }
+}

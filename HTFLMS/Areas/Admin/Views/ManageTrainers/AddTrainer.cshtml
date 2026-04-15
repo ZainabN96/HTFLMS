@@ -1,0 +1,116 @@
+﻿ @model HTFLMS.Models.Auth.AddTrainerViewModel 
+@{
+    ViewData["Title"] = "Add New Trainer";
+    Layout = "_AuthLayout";
+}
+
+<main class="main">
+    <section class="reg-wrap">
+        <div class="reg-card">
+            <div class="auth-logo">
+                <img src="~/img/hcc_logo(1).png" alt="HCC Logo" />
+            </div>
+
+            <h2 class="reg-title">Add New Trainer</h2>
+
+            <form asp-action="AddTrainer" asp-controller="ManageTrainers" asp-area="Admin" method="post">
+                @Html.AntiForgeryToken()
+
+                <div class="reg-grid">
+                    <div class="reg-pill">Trainer Information</div>
+
+                    <div class="reg-field">
+                        <input asp-for="Name" class="reg-input" placeholder="Name*" />
+                        <span asp-validation-for="Name" class="text-danger small"></span>
+                    </div>
+
+                    <div class="reg-field">
+                        <input asp-for="Email" class="reg-input" placeholder="Email Address*" />
+                        <span asp-validation-for="Email" class="text-danger small"></span>
+                    </div>
+
+                    <div class="reg-field">
+                        <input asp-for="Password" type="password" class="reg-input" placeholder="Password*" />
+                        <span asp-validation-for="Password" class="text-danger small"></span>
+                    </div>
+
+                    <div class="reg-field">
+                        <input asp-for="ConfirmPassword" type="password" class="reg-input" placeholder="Confirm Password*" />
+                        <span asp-validation-for="ConfirmPassword" class="text-danger small"></span>
+                    </div>
+
+                    <div class="reg-field">
+                        <input asp-for="Designation" class="reg-input" placeholder="Designation*" />
+                        <span asp-validation-for="Designation" class="text-danger small"></span>
+                    </div>
+
+                    <div class="reg-field">
+                        <input asp-for="CNIC" class="reg-input" placeholder="CNIC*" />
+                        <span asp-validation-for="CNIC" class="text-danger small"></span>
+                    </div>
+
+                    <div class="reg-field">
+                        <input asp-for="MobileNumber" class="reg-input" placeholder="Mobile Number*" />
+                        <span asp-validation-for="MobileNumber" class="text-danger small"></span>
+                    </div>
+
+                    <div class="reg-field">
+                        <select asp-for="IsActive" class="reg-input">
+                            <option value="">Status*</option>
+                            <option value="true">Active</option>
+                            <option value="false">Inactive</option>
+                        </select>
+                        <span asp-validation-for="IsActive" class="text-danger small"></span>
+                    </div>
+
+                    <div class="reg-pill">Additional Details</div>
+
+                    <div class="reg-field">
+                        <select asp-for="Gender" class="reg-input">
+                            <option value="">Gender</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
+                        </select>
+                        <span asp-validation-for="Gender" class="text-danger small"></span>
+                    </div>
+
+                    <div class="reg-field">
+                        <select asp-for="Qualification" class="reg-input">
+                            <option value="">Qualification</option>
+                            <option>Matric</option>
+                            <option>Intermediate</option>
+                            <option>Bachelors</option>
+                            <option>Masters</option>
+                        </select>
+                        <span asp-validation-for="Qualification" class="text-danger small"></span>
+                    </div>
+
+                    <div class="reg-field" style="grid-column: 1 / -1;">
+                        <input asp-for="Address" class="reg-input" placeholder="Address" />
+                        <span asp-validation-for="Address" class="text-danger small"></span>
+                    </div>
+                </div>
+
+                <div class="text-danger small mb-2">
+                    @foreach (var err in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                    {
+                        <div>@err.ErrorMessage</div>
+                    }
+                </div>
+
+                <div class="text-center">
+                    <button type="submit" class="btn btn-danger sub-btn">Save Trainer</button>
+                </div>
+
+                <div class="text-center mt-3">
+                    <a asp-area="Admin" asp-controller="ManageTrainers" asp-action="Trainers">Back to Trainers</a>
+                </div>
+            </form>
+        </div>
+    </section>
+</main>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
