@@ -1,0 +1,148 @@
+﻿@model List<HTFLMS.Models.User>
+@{
+    ViewData["Title"] = "Trainers";
+    Layout = "_AdminLayout";
+}
+
+<div class="dashboard-page trainer-courses-page">
+    <div class="dashboard-page-head trainer-courses-page-head">
+        <div>
+            <h1 class="dashboard-h1">Trainers</h1>
+            <p class="dashboard-sub">Add, manage and assign trainers to courses</p>
+        </div>
+
+        <div class="trainer-courses-head-actions">
+            <div class="courses-head-search">
+                <i class="bi bi-search"></i>
+                <input type="text" placeholder="Search Trainer..." />
+            </div>
+
+            <a asp-area="Admin"
+               asp-controller="ManageTrainers"
+               asp-action="AddTrainer"
+               class="dashboard-btn add-course-btn trainer-add-course-btn">
+                <i class="bi bi-plus-circle"></i> Add Trainer
+            </a>
+        </div>
+    </div>
+
+    <div class="ManageTrainer-stat">
+        <div class="dashboard-stat-card">
+            <div class="dashboard-stat-top">
+                <div class="dashboard-stat-title">Total Trainers</div>
+                <i class="bi bi-people"></i>
+            </div>
+            <div class="dashboard-stat-value">@Model.Count</div>
+            <div class="dashboard-stat-meta">All registered trainers</div>
+        </div>
+
+        <div class="dashboard-stat-card">
+            <div class="dashboard-stat-top">
+                <div class="dashboard-stat-title">Active Trainers</div>
+                <i class="bi bi-person-check"></i>
+            </div>
+            <div class="dashboard-stat-value">@Model.Count(t => t.IsActive)</div>
+            <div class="dashboard-stat-meta">Currently active trainers</div>
+        </div>
+
+        <div class="dashboard-stat-card">
+            <div class="dashboard-stat-top">
+                <div class="dashboard-stat-title">Inactive Trainers</div>
+                <i class="bi bi-person-x"></i>
+            </div>
+            <div class="dashboard-stat-value">@Model.Count(t => !t.IsActive)</div>
+            <div class="dashboard-stat-meta">Currently inactive trainers</div>
+        </div>
+    </div>
+
+    <div class="dashboard-panel trainer-courses-table-panel">
+        <div class="dashboard-panel-head">
+            <div class="dashboard-panel-title">All Trainers</div>
+            <div class="dashboard-muted-small">@Model.Count trainer(s)</div>
+        </div>
+
+        <div class="dashboard-table-wrap manage-trainer-table-fix">
+            <div class="dashboard-table-row dashboard-table-head courses-table-row trainer-courses-table-head manage-trainer-table-head">
+                <div>Name</div>
+                <div>Email</div>
+                <div>Designation</div>
+                <div>Qualification</div>
+                <div>Assigned Course</div>
+                <div>Status</div>
+                <div>Created At</div>
+                <div>Actions</div>
+            </div>
+
+            @if (Model != null && Model.Any())
+            {
+                @foreach (var trainer in Model)
+                {
+                    <div class="dashboard-table-row courses-table-row trainer-courses-table-row manage-trainer-table-row">
+
+                        <div class="manage-trainer-name-text manage-trainer-cell-ellipsis" title="@trainer.Name">
+                            @trainer.Name
+                        </div>
+
+                        <div class="manage-trainer-cell-ellipsis" title="@trainer.Email">
+                            @trainer.Email
+                        </div>
+
+                        <div class="manage-trainer-cell-ellipsis" title="@trainer.Designation">
+                            @trainer.Designation
+                        </div>
+
+                        <div class="manage-trainer-cell-ellipsis" title="@trainer.Qualification">
+                            @trainer.Qualification
+                        </div>
+
+                        <div>
+                            <span class="manage-trainer-assigned-text" title="No Course Assigned">
+                                No Course Assigned
+                            </span>
+                        </div>
+
+                        <div>
+                            @if (trainer.IsActive)
+                            {
+                                <span class="pill pill-green">Active</span>
+                            }
+                            else
+                            {
+                                <span class="pill pill-yellow">Inactive</span>
+                            }
+                        </div>
+
+                        <div class="manage-trainer-cell-ellipsis" title="@trainer.CreatedAt.ToString("MMM dd, yyyy")">
+                            @trainer.CreatedAt.ToString("MMM dd, yyyy")
+                        </div>
+
+                        <div class="trainer-courses-actions manage-trainer-actions">
+                            <a asp-area="Admin"
+                               asp-controller="ManageTrainers"
+                               asp-action="EditTrainer"
+                               asp-route-id="@trainer.Id"
+                               class="dashboard-btn dashboard-btn-outline trainer-course-action-btn">
+                                Edit
+                            </a>
+
+                            <button type="button" class="dashboard-btn trainer-delete-soft-btn trainer-course-action-btn">
+                                Delete
+                            </button>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="dashboard-empty">
+                    <div>
+                        <div class="dashboard-empty-icon">
+                            <i class="bi bi-people"></i>
+                        </div>
+                        <div class="dashboard-empty-title">No trainers found</div>
+                        <div class="dashboard-empty-sub">Add your first trainer to get started.</div>
+                    </div>
+                </div>
+            }
+
+</div>
