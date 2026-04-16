@@ -86,7 +86,7 @@ namespace HTFLMS.Controllers
 
             // role-based redirect (Areas)
             if (string.Equals(user.MemberType, "Admin", StringComparison.OrdinalIgnoreCase))
-                return RedirectToAction("Index", "Admin", new { area = "Admin" });
+                return RedirectToAction("AdminDashboard", "Admin", new { area = "Admin" });
 
             if (string.Equals(user.MemberType, "Trainer", StringComparison.OrdinalIgnoreCase))
                 return RedirectToAction("Index", "Dashboard", new { area = "Trainer" });
