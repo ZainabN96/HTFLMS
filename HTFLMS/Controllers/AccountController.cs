@@ -86,12 +86,12 @@ namespace HTFLMS.Controllers
 
             // role-based redirect (Areas)
             if (string.Equals(user.MemberType, "Admin", StringComparison.OrdinalIgnoreCase))
-                return RedirectToAction("Index", "Dashboard", new { area = "Admin" });
+                return RedirectToAction("Index", "Admin", new { area = "Admin" });
 
             if (string.Equals(user.MemberType, "Trainer", StringComparison.OrdinalIgnoreCase))
                 return RedirectToAction("Index", "Dashboard", new { area = "Trainer" });
 
-            return RedirectToAction("CourseHome", "Courses");
+            return RedirectToAction("Index", "Student", new { area = "Student" });
 
         }
 
@@ -164,7 +164,10 @@ namespace HTFLMS.Controllers
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            return RedirectToAction("Index", "Home");
+
+            TempData["SuccessMessage"] = "Logged out successfully.";
+
+            return RedirectToAction("Login", "Account");
         }
 
         public IActionResult AccessDenied() => View();

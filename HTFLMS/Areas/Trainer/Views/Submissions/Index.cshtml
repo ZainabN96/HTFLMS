@@ -1,0 +1,222 @@
+﻿@{
+    ViewData["Title"] = "All Submissions";
+    Layout = "_TrainerLayout";
+}
+
+<div class="dashboard-page trainer-content-page trainer-submissions-page">
+    <div class="dashboard-page-head trainer-content-head">
+        <div>
+            <h1 class="dashboard-h1">All Submissions</h1>
+            <p class="dashboard-sub">Review student submissions across your assigned courses and modules.</p>
+        </div>
+    </div>
+
+    <!-- STATS -->
+    <div class="dashboard-stats trainer-content-stats trainer-submissions-stats">
+        <div class="dashboard-stat-card">
+            <div class="dashboard-stat-top">
+                <div class="dashboard-stat-title">Total Submissions</div>
+                <i class="bi bi-inbox"></i>
+            </div>
+            <div class="dashboard-stat-value">186</div>
+            <div class="dashboard-stat-meta">Across all assigned courses</div>
+        </div>
+
+        <div class="dashboard-stat-card">
+            <div class="dashboard-stat-top">
+                <div class="dashboard-stat-title">Graded</div>
+                <i class="bi bi-check2-circle"></i>
+            </div>
+            <div class="dashboard-stat-value">140</div>
+            <div class="dashboard-stat-meta">Reviewed and graded</div>
+        </div>
+
+        <div class="dashboard-stat-card">
+            <div class="dashboard-stat-top">
+                <div class="dashboard-stat-title">Pending Review</div>
+                <i class="bi bi-hourglass-split"></i>
+            </div>
+            <div class="dashboard-stat-value">34</div>
+            <div class="dashboard-stat-meta">Waiting for grading</div>
+        </div>
+
+        <div class="dashboard-stat-card">
+            <div class="dashboard-stat-top">
+                <div class="dashboard-stat-title">Missing / Not Submitted</div>
+                <i class="bi bi-exclamation-circle"></i>
+            </div>
+            <div class="dashboard-stat-value">12</div>
+            <div class="dashboard-stat-meta">No student submission yet</div>
+        </div>
+    </div>
+
+    <!-- FILTERS -->
+    <div class="dashboard-panel trainer-content-panel trainer-submissions-filter-panel">
+
+        <div class="dashboard-panel-head trainer-content-panel-head trainer-submissions-filter-head">
+            <div class="dashboard-panel-title">
+                Search & Filter
+            </div>
+
+            <div class="courses-head-search trainer-submissions-search">
+                <i class="bi bi-search"></i>
+                <input type="text" placeholder="Search student or assignment..." />
+            </div>
+        </div>
+
+        <div class="trainer-submissions-filter-row">
+            <select class="course-input trainer-inline-select trainer-submissions-select">
+                <option selected>All courses</option>
+                <option>React Advanced Patterns</option>
+                <option>Node.js Backend Development</option>
+                <option>Python for Data Science</option>
+            </select>
+
+            <select class="course-input trainer-inline-select trainer-submissions-select">
+                <option selected>All modules</option>
+                <option>Module 1</option>
+                <option>Module 2</option>
+                <option>Module 3</option>
+            </select>
+
+            <select class="course-input trainer-inline-select trainer-submissions-select">
+                <option selected>All statuses</option>
+                <option>Graded</option>
+                <option>Pending Review</option>
+                <option>Not Submitted</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- TABLE -->
+    <div class="dashboard-panel trainer-content-panel trainer-submissions-panel">
+        <div class="dashboard-panel-head trainer-content-panel-head">
+            <div>
+                <div class="dashboard-panel-title">Submission Records</div>
+            </div>
+
+            <div class="dashboard-muted-small">6 record(s)</div>
+        </div>
+
+        <div class="dashboard-table-wrap trainer-submissions-table-wrap">
+            <div class="dashboard-table-row dashboard-table-head trainer-submissions-table-row trainer-submissions-table-head">
+                <div>Student</div>
+                <div>Assignment</div>
+                <div>Course</div>
+                <div>Module</div>
+                <div>Submitted</div>
+                <div>Status</div>
+                <div>Score</div>
+                <div>Action</div>
+            </div>
+
+            <div class="dashboard-table-row trainer-submissions-table-row">
+                <div class="dashboard-cell-strong">daudrana400</div>
+                <div>Rewrite the abstract</div>
+                <div>Full Stack Web Dev</div>
+                <div>Module 1</div>
+                <div>10 Mar, 08:30</div>
+                <div><span class="pill pill-green">Graded</span></div>
+                <div class="trainer-score-good">18/20</div>
+                <div class="trainer-courses-actions trainer-submissions-actions">
+                    <a asp-area="Trainer"
+                       asp-controller="Submissions"
+                       asp-action="Edit"
+                       asp-route-id="1"
+                       class="dashboard-btn dashboard-btn-outline trainer-course-action-btn">
+                        Edit
+                    </a>
+                </div>
+            </div>
+
+            <div class="dashboard-table-row trainer-submissions-table-row">
+                <div class="dashboard-cell-strong">daudrana400</div>
+                <div>Module 1 Assessment</div>
+                <div>Full Stack Web Dev</div>
+                <div>Module 1</div>
+                <div>09 Mar, 06:15</div>
+                <div><span class="pill pill-green">Graded</span></div>
+                <div class="trainer-score-warn">23/30</div>
+                <div class="trainer-courses-actions trainer-submissions-actions">
+                    <a asp-area="Trainer"
+                       asp-controller="Submissions"
+                       asp-action="Edit"
+                       asp-route-id="2"
+                       class="dashboard-btn dashboard-btn-outline trainer-course-action-btn">
+                        Edit
+                    </a>
+                </div>
+            </div>
+
+            <div class="dashboard-table-row trainer-submissions-table-row">
+                <div class="dashboard-cell-strong">daudrana400</div>
+                <div>Analyze the reading passage</div>
+                <div>Full Stack Web Dev</div>
+                <div>Module 2</div>
+                <div>18 Mar, 10:42</div>
+                <div><span class="pill pill-yellow">Pending Review</span></div>
+                <div class="trainer-score-muted">--/15</div>
+                <div class="trainer-courses-actions trainer-submissions-actions">
+                    <a asp-area="Trainer"
+                       asp-controller="Submissions"
+                       asp-action="Grade"
+                       asp-route-id="3"
+                       class="dashboard-btn trainer-sub-soft-btn trainer-course-action-btn">
+                        Grade
+                    </a>
+                </div>
+            </div>
+
+            <div class="dashboard-table-row trainer-submissions-table-row">
+                <div class="dashboard-cell-strong">daudrana400</div>
+                <div>Module 2 Assessment</div>
+                <div>Full Stack Web Dev</div>
+                <div>Module 2</div>
+                <div>—</div>
+                <div><span class="trainer-pill-danger">Not Submitted</span></div>
+                <div class="trainer-score-muted">--/25</div>
+                <div class="trainer-courses-actions trainer-submissions-actions">
+                    <span class="trainer-action-dash">—</span>
+                </div>
+            </div>
+
+            <div class="dashboard-table-row trainer-submissions-table-row">
+                <div class="dashboard-cell-strong">Ali Hassan</div>
+                <div>Rewrite the abstract</div>
+                <div>Full Stack Web Dev</div>
+                <div>Module 1</div>
+                <div>11 Mar, 09:00</div>
+                <div><span class="pill pill-green">Graded</span></div>
+                <div class="trainer-score-good">20/20</div>
+                <div class="trainer-courses-actions trainer-submissions-actions">
+                    <a asp-area="Trainer"
+                       asp-controller="Submissions"
+                       asp-action="Edit"
+                       asp-route-id="4"
+                       class="dashboard-btn dashboard-btn-outline trainer-course-action-btn">
+                        Edit
+                    </a>
+                </div>
+            </div>
+
+            <div class="dashboard-table-row trainer-submissions-table-row">
+                <div class="dashboard-cell-strong">Sara Malik</div>
+                <div>Rewrite the abstract</div>
+                <div>Full Stack Web Dev</div>
+                <div>Module 1</div>
+                <div>11 Mar, 14:20</div>
+                <div><span class="pill pill-yellow">Pending Review</span></div>
+                <div class="trainer-score-muted">--/20</div>
+                <div class="trainer-courses-actions trainer-submissions-actions">
+                    <a asp-area="Trainer"
+                       asp-controller="Submissions"
+                       asp-action="Grade"
+                       asp-route-id="5"
+                       class="dashboard-btn trainer-sub-soft-btn trainer-course-action-btn">
+                        Grade
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

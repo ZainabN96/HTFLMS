@@ -1,0 +1,583 @@
+﻿@{
+    ViewData["Title"] = "Notes";
+    Layout = "_StudentLayout";
+}
+
+<div class="student-notes-dashboard-page">
+    <div class="student-notes-dashboard-head">
+        <div>
+            <h1 class="dashboard-h1">Notes</h1>
+            <p class="dashboard-sub">Manage your saved notes across all courses.</p>
+        </div>
+
+        <div class="student-notes-dashboard-head-actions ms-auto">
+            <div class="dashboard-search student-notes-toolbar-search">
+                <i class="bi bi-search"></i>
+                <input type="text" id="dashboardNotesSearch" placeholder="Search by title, course, lesson, or tag..." />
+            </div>
+
+            <button type="button" class="dashboard-btn course-save-btn student-notes-open-btn" id="openDashboardNoteFormBtn">
+                <i class="bi bi-plus-circle"></i>
+                <span>Add Note</span>
+            </button>
+        </div>
+    </div>
+    <!-- Summary cards -->
+    <div class="dashboard-stats student-notes-dashboard-stats">
+        <div class="dashboard-stat-card">
+            <div class="dashboard-stat-top">
+                <div class="dashboard-stat-title">Total Notes</div>
+                <i class="bi bi-journal-text"></i>
+            </div>
+            <div class="dashboard-stat-value">12</div>
+            <div class="dashboard-stat-meta">Across all your courses</div>
+        </div>
+
+        <div class="dashboard-stat-card">
+            <div class="dashboard-stat-top">
+                <div class="dashboard-stat-title">Pinned Notes</div>
+                <i class="bi bi-pin-angle"></i>
+            </div>
+            <div class="dashboard-stat-value">3</div>
+            <div class="dashboard-stat-meta">Quick access notes</div>
+        </div>
+
+        <div class="dashboard-stat-card">
+            <div class="dashboard-stat-top">
+                <div class="dashboard-stat-title">Courses Covered</div>
+                <i class="bi bi-journal-bookmark"></i>
+            </div>
+            <div class="dashboard-stat-value">4</div>
+            <div class="dashboard-stat-meta">Notes saved from 4 courses</div>
+        </div>
+
+        <div class="dashboard-stat-card">
+            <div class="dashboard-stat-top">
+                <div class="dashboard-stat-title">Recent Activity</div>
+                <i class="bi bi-clock-history"></i>
+            </div>
+            <div class="dashboard-stat-value">Today</div>
+            <div class="dashboard-stat-meta">Last note updated</div>
+        </div>
+    </div>
+
+    <!-- Search + filters -->
+    <div class="student-notes-toolbar">
+
+        <div class="student-notes-toolbar-filters">
+            <button type="button" class="student-notes-filter-btn active" data-filter="all">All Notes</button>
+            <button type="button" class="student-notes-filter-btn" data-filter="pinned">Pinned</button>
+            <button type="button" class="student-notes-filter-btn" data-filter="recent">Recent</button>
+        </div>
+    </div>
+
+    <div class="student-notes-dashboard-layout">
+        <!-- left -->
+        <div class="student-notes-dashboard-main">
+            <div class="dashboard-panel">
+                <div class="dashboard-panel-head student-panel-head">
+                    <div>
+                        <h3 class="page-h2 student-panel-title">My Notes</h3>
+                        <p class="student-panel-sub">Your notes from all courses in one place.</p>
+                    </div>
+
+                    <div class="student-count-pill">12 notes</div>
+                </div>
+
+                <div class="student-dashboard-note-list" id="studentDashboardNoteList">
+
+                    <div class="student-dashboard-note-card pinned recent"
+                         data-filter-type="pinned recent"
+                         data-search="html structure basics full stack web development html basics html structure semantic"
+                         data-course="Full Stack Web Development"
+                         data-lesson="HTML Basics"
+                         data-title="HTML Structure Basics"
+                         data-note="HTML gives structure to a webpage. I should remember semantic tags like header, section, article, and footer because they make content more meaningful and easier to organize."
+                         data-pinned="true">
+                        <div class="student-dashboard-note-top">
+                            <div class="student-dashboard-note-left">
+                                <div class="student-dashboard-note-title-row">
+                                    <h4 class="student-dashboard-note-title">HTML Structure Basics</h4>
+                                    <span class="student-dashboard-note-badge pinned">
+                                        <i class="bi bi-pin-angle-fill"></i> Pinned
+                                    </span>
+                                </div>
+
+                                <div class="student-dashboard-note-meta">
+                                    <span><i class="bi bi-book"></i> Full Stack Web Development</span>
+                                    <span>•</span>
+                                    <span>Lesson: HTML Basics</span>
+                                    <span>•</span>
+                                    <span>Updated: Today, 10:24 AM</span>
+                                </div>
+                            </div>
+
+                            <div class="student-dashboard-note-actions">
+                                <button type="button" class="student-dashboard-note-action-btn js-dashboard-edit-note-btn">
+                                    <i class="bi bi-pencil-square"></i> Edit
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="student-dashboard-note-content">
+                            HTML gives structure to a webpage. I should remember semantic tags like header, section,
+                            article, and footer because they make content more meaningful and easier to organize.
+                        </div>
+
+                        <div class="student-dashboard-note-footer">
+                            <span class="student-dashboard-note-tag">HTML</span>
+                            <span class="student-dashboard-note-tag">Structure</span>
+                            <span class="student-dashboard-note-tag">Semantic</span>
+                        </div>
+                    </div>
+
+                    <div class="student-dashboard-note-card recent"
+                         data-filter-type="recent"
+                         data-search="css box model reminder full stack web development css fundamentals css box model layout"
+                         data-course="Full Stack Web Development"
+                         data-lesson="CSS Fundamentals"
+                         data-title="CSS Box Model Reminder"
+                         data-note="Remember the order: content, padding, border, margin. This helps when debugging layout spacing issues and unexpected element size problems."
+                         data-pinned="false">
+                        <div class="student-dashboard-note-top">
+                            <div class="student-dashboard-note-left">
+                                <div class="student-dashboard-note-title-row">
+                                    <h4 class="student-dashboard-note-title">CSS Box Model Reminder</h4>
+                                </div>
+
+                                <div class="student-dashboard-note-meta">
+                                    <span><i class="bi bi-book"></i> Full Stack Web Development</span>
+                                    <span>•</span>
+                                    <span>Lesson: CSS Fundamentals</span>
+                                    <span>•</span>
+                                    <span>Updated: Yesterday</span>
+                                </div>
+                            </div>
+
+                            <div class="student-dashboard-note-actions">
+                                <button type="button" class="student-dashboard-note-action-btn js-dashboard-edit-note-btn">
+                                    <i class="bi bi-pencil-square"></i> Edit
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="student-dashboard-note-content">
+                            Remember the order: content, padding, border, margin. This helps when debugging layout
+                            spacing issues and unexpected element size problems.
+                        </div>
+
+                        <div class="student-dashboard-note-footer">
+                            <span class="student-dashboard-note-tag">CSS</span>
+                            <span class="student-dashboard-note-tag">Box Model</span>
+                            <span class="student-dashboard-note-tag">Layout</span>
+                        </div>
+                    </div>
+
+                    <div class="student-dashboard-note-card pinned recent"
+                         data-filter-type="pinned recent"
+                         data-search="html structure basics full stack web development html basics html structure semantic"
+                         data-course="Full Stack Web Development"
+                         data-lesson="HTML Basics"
+                         data-title="HTML Structure Basics"
+                         data-note="HTML gives structure to a webpage. I should remember semantic tags like header, section, article, and footer because they make content more meaningful and easier to organize."
+                         data-pinned="true">
+                        <div class="student-dashboard-note-top">
+                            <div class="student-dashboard-note-left">
+                                <div class="student-dashboard-note-title-row">
+                                    <h4 class="student-dashboard-note-title">JavaScript Variables</h4>
+                                    <span class="student-dashboard-note-badge pinned">
+                                        <i class="bi bi-pin-angle-fill"></i> Pinned
+                                    </span>
+                                </div>
+
+                                <div class="student-dashboard-note-meta">
+                                    <span><i class="bi bi-book"></i> React Advanced Patterns</span>
+                                    <span>•</span>
+                                    <span>Lesson: Variables and Data Types</span>
+                                    <span>•</span>
+                                    <span>Updated: 2 days ago</span>
+                                </div>
+                            </div>
+
+                            <div class="student-dashboard-note-actions">
+                                <button type="button" class="student-dashboard-note-action-btn js-dashboard-edit-note-btn">
+                                    <i class="bi bi-pencil-square"></i> Edit
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="student-dashboard-note-content">
+                            Use const when value should not change, let when it can change, and avoid var in modern
+                            JavaScript unless there is a specific reason.
+                        </div>
+
+                        <div class="student-dashboard-note-footer">
+                            <span class="student-dashboard-note-tag">JavaScript</span>
+                            <span class="student-dashboard-note-tag">Variables</span>
+                            <span class="student-dashboard-note-tag">Data Types</span>
+                        </div>
+                    </div>
+
+                    <div class="student-dashboard-note-card"
+                         data-filter-type=""
+                         data-search="api routes node js backend development routing backend express api">
+                        <div class="student-dashboard-note-top">
+                            <div class="student-dashboard-note-left">
+                                <div class="student-dashboard-note-title-row">
+                                    <h4 class="student-dashboard-note-title">API Route Structure</h4>
+                                </div>
+
+                                <div class="student-dashboard-note-meta">
+                                    <span><i class="bi bi-book"></i> Node.js Backend Development</span>
+                                    <span>•</span>
+                                    <span>Lesson: Express Routing</span>
+                                    <span>•</span>
+                                    <span>Updated: 4 days ago</span>
+                                </div>
+                            </div>
+
+                            <div class="student-dashboard-note-actions">
+                                <button type="button" class="student-dashboard-note-action-btn js-dashboard-edit-note-btn">
+                                    <i class="bi bi-pencil-square"></i> Edit
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="student-dashboard-note-content">
+                            Keep route naming consistent. Use clear resource-based endpoints and separate controller logic
+                            from route declarations where possible.
+                        </div>
+
+                        <div class="student-dashboard-note-footer">
+                            <span class="student-dashboard-note-tag">Backend</span>
+                            <span class="student-dashboard-note-tag">API</span>
+                            <span class="student-dashboard-note-tag">Routing</span>
+                        </div>
+                    </div>
+
+                    <div class="student-dashboard-note-card"
+                         data-filter-type=""
+                         data-search="pandas dataframe python for data science dataframe pandas series data cleaning">
+                        <div class="student-dashboard-note-top">
+                            <div class="student-dashboard-note-left">
+                                <div class="student-dashboard-note-title-row">
+                                    <h4 class="student-dashboard-note-title">Pandas DataFrame Basics</h4>
+                                </div>
+
+                                <div class="student-dashboard-note-meta">
+                                    <span><i class="bi bi-book"></i> Python for Data Science</span>
+                                    <span>•</span>
+                                    <span>Lesson: Intro to Pandas</span>
+                                    <span>•</span>
+                                    <span>Updated: 1 week ago</span>
+                                </div>
+                            </div>
+
+                            <div class="student-dashboard-note-actions">
+                                <button type="button" class="student-dashboard-note-action-btn js-dashboard-edit-note-btn">
+                                    <i class="bi bi-pencil-square"></i> Edit
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="student-dashboard-note-content">
+                            DataFrame is tabular data with rows and columns. Series is one-dimensional. Need to practice
+                            filtering, selecting columns, and checking null values quickly.
+                        </div>
+
+                        <div class="student-dashboard-note-footer">
+                            <span class="student-dashboard-note-tag">Python</span>
+                            <span class="student-dashboard-note-tag">Pandas</span>
+                            <span class="student-dashboard-note-tag">DataFrame</span>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="student-dashboard-notes-empty" id="studentDashboardNotesEmpty" style="display:none;">
+                    <div class="student-dashboard-notes-empty-icon">
+                        <i class="bi bi-journal-x"></i>
+                    </div>
+                    <div class="student-dashboard-notes-empty-title">No notes found</div>
+                    <div class="student-dashboard-notes-empty-sub">Try a different search or filter.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Note Modal -->
+<div class="student-dashboard-note-modal" id="studentDashboardNoteModal" style="display:none;">
+    <div class="student-dashboard-note-modal-backdrop" id="studentDashboardNoteBackdrop"></div>
+
+    <div class="student-dashboard-note-modal-dialog">
+        <div class="student-dashboard-note-modal-head">
+            <h3 id="studentDashboardNoteModalTitle">Add New Note</h3>
+            <button type="button" class="student-dashboard-note-modal-close" id="closeDashboardNoteFormBtn">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+
+        <form class="student-dashboard-note-form" id="studentDashboardNoteForm">
+            <input type="hidden" id="dashboardEditingNoteIndex" />
+
+            <div class="student-dashboard-note-form-grid">
+                <div class="student-note-field">
+                    <label class="course-label">Course</label>
+                    <select class="course-input" id="dashboardNoteCourse">
+                        <option value="">Select course</option>
+                        <option>Full Stack Web Development</option>
+                        <option>React Advanced Patterns</option>
+                        <option>Node.js Backend Development</option>
+                        <option>Python for Data Science</option>
+                    </select>
+                </div>
+
+                <div class="student-note-field">
+                    <label class="course-label">Lesson</label>
+                    <select class="course-input" id="dashboardNoteLesson">
+                        <option value="">Select lesson</option>
+                        <option>HTML Basics</option>
+                        <option>CSS Fundamentals</option>
+                        <option>Variables and Data Types</option>
+                        <option>Express Routing</option>
+                        <option>Intro to Pandas</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="student-note-field">
+                <label class="course-label">Note Title</label>
+                <input type="text" class="course-input" id="dashboardNoteTitle" placeholder="Enter note title" />
+            </div>
+
+            <div class="student-note-field">
+                <label class="course-label">Your Note</label>
+                <textarea rows="6" class="course-input course-textarea student-dashboard-note-form-textarea" id="dashboardNoteContent" placeholder="Write your note here..."></textarea>
+            </div>
+
+            <div class="student-note-form-options">
+                <label class="student-note-check">
+                    <input type="checkbox" id="dashboardNotePinned" />
+                    <span>Pin this note</span>
+                </label>
+            </div>
+
+            <div class="student-note-form-actions">
+                <button type="button" class="dashboard-btn dashboard-btn-outline" id="cancelDashboardNoteFormBtn">Cancel</button>
+                <button type="submit" class="dashboard-btn course-save-btn" id="dashboardNoteSubmitBtn">
+                    <i class="bi bi-floppy"></i> Save Note
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        (function () {
+            const filterButtons = document.querySelectorAll('.student-notes-filter-btn');
+            const searchInput = document.getElementById('dashboardNotesSearch');
+            const noteCards = document.querySelectorAll('.student-dashboard-note-card');
+            const emptyState = document.getElementById('studentDashboardNotesEmpty');
+
+            let activeFilter = 'all';
+
+            function applyNotesFilter() {
+                const searchValue = (searchInput?.value || '').trim().toLowerCase();
+                let visibleCount = 0;
+
+                noteCards.forEach(card => {
+                    const searchable = (card.getAttribute('data-search') || '').toLowerCase();
+                    const types = (card.getAttribute('data-filter-type') || '').toLowerCase();
+
+                    const matchesSearch = searchable.includes(searchValue);
+                    const matchesFilter =
+                        activeFilter === 'all' ||
+                        types.includes(activeFilter);
+
+                    const shouldShow = matchesSearch && matchesFilter;
+
+                    card.style.display = shouldShow ? '' : 'none';
+
+                    if (shouldShow) visibleCount++;
+                });
+
+                if (emptyState) {
+                    emptyState.style.display = visibleCount === 0 ? 'grid' : 'none';
+                }
+            }
+
+            filterButtons.forEach(btn => {
+                btn.addEventListener('click', function () {
+                    activeFilter = this.getAttribute('data-filter') || 'all';
+
+                    filterButtons.forEach(x => x.classList.remove('active'));
+                    this.classList.add('active');
+
+                    applyNotesFilter();
+                });
+            });
+
+            if (searchInput) {
+                searchInput.addEventListener('input', applyNotesFilter);
+            }
+
+            applyNotesFilter();
+        })();
+
+        (function () {
+            const modal = document.getElementById('studentDashboardNoteModal');
+            const openBtn = document.getElementById('openDashboardNoteFormBtn');
+            const closeBtn = document.getElementById('closeDashboardNoteFormBtn');
+            const cancelBtn = document.getElementById('cancelDashboardNoteFormBtn');
+            const backdrop = document.getElementById('studentDashboardNoteBackdrop');
+            const form = document.getElementById('studentDashboardNoteForm');
+
+            const editButtons = document.querySelectorAll('.js-dashboard-edit-note-btn');
+
+            const modalTitle = document.getElementById('studentDashboardNoteModalTitle');
+            const submitBtn = document.getElementById('dashboardNoteSubmitBtn');
+
+            const noteCourse = document.getElementById('dashboardNoteCourse');
+            const noteLesson = document.getElementById('dashboardNoteLesson');
+            const noteTitle = document.getElementById('dashboardNoteTitle');
+            const noteContent = document.getElementById('dashboardNoteContent');
+            const notePinned = document.getElementById('dashboardNotePinned');
+
+            let currentEditingCard = null;
+
+            function openModal() {
+                if (modal) modal.style.display = 'block';
+                document.body.style.overflow = 'hidden';
+            }
+
+            function closeModal() {
+                if (modal) modal.style.display = 'none';
+                document.body.style.overflow = '';
+            }
+
+            function resetFormForAdd() {
+                currentEditingCard = null;
+
+                if (modalTitle) modalTitle.textContent = 'Add New Note';
+                if (submitBtn) {
+                    submitBtn.innerHTML = '<i class="bi bi-floppy"></i> Save Note';
+                }
+
+                if (noteCourse) noteCourse.value = '';
+                if (noteLesson) noteLesson.value = '';
+                if (noteTitle) noteTitle.value = '';
+                if (noteContent) noteContent.value = '';
+                if (notePinned) notePinned.checked = false;
+            }
+
+            function fillFormForEdit(card) {
+                if (!card) return;
+
+                currentEditingCard = card;
+
+                if (modalTitle) modalTitle.textContent = 'Edit Note';
+                if (submitBtn) {
+                    submitBtn.innerHTML = '<i class="bi bi-check2"></i> Update Note';
+                }
+
+                if (noteCourse) noteCourse.value = card.getAttribute('data-course') || '';
+                if (noteLesson) noteLesson.value = card.getAttribute('data-lesson') || '';
+                if (noteTitle) noteTitle.value = card.getAttribute('data-title') || '';
+                if (noteContent) noteContent.value = card.getAttribute('data-note') || '';
+                if (notePinned) notePinned.checked = card.getAttribute('data-pinned') === 'true';
+            }
+
+            function updateNoteCard(card) {
+                if (!card) return;
+
+                const courseText = noteCourse.value.trim();
+                const lessonText = noteLesson.value.trim();
+                const titleText = noteTitle.value.trim();
+                const contentText = noteContent.value.trim();
+                const isPinned = notePinned.checked;
+
+                const titleEl = card.querySelector('.student-dashboard-note-title');
+                const contentEl = card.querySelector('.student-dashboard-note-content');
+                const metaEl = card.querySelector('.student-dashboard-note-meta');
+                const titleRow = card.querySelector('.student-dashboard-note-title-row');
+
+                let pinnedBadge = card.querySelector('.student-dashboard-note-badge.pinned');
+
+                if (titleEl) titleEl.textContent = titleText;
+                if (contentEl) contentEl.textContent = contentText;
+
+                if (metaEl) {
+                    metaEl.innerHTML = `
+                        <span><i class="bi bi-book"></i> ${courseText}</span>
+                        <span>•</span>
+                        <span>Lesson: ${lessonText}</span>
+                        <span>•</span>
+                        <span>Updated: Just now</span>
+                    `;
+                }
+
+                card.setAttribute('data-course', courseText);
+                card.setAttribute('data-lesson', lessonText);
+                card.setAttribute('data-title', titleText);
+                card.setAttribute('data-note', contentText);
+                card.setAttribute('data-pinned', isPinned ? 'true' : 'false');
+
+                card.setAttribute(
+                    'data-search',
+                    `${titleText} ${courseText} ${lessonText} ${contentText}`.toLowerCase()
+                );
+
+                let filterType = 'recent';
+                if (isPinned) {
+                    filterType = 'pinned recent';
+                    card.classList.add('pinned');
+
+                    if (!pinnedBadge && titleRow) {
+                        pinnedBadge = document.createElement('span');
+                        pinnedBadge.className = 'student-dashboard-note-badge pinned';
+                        pinnedBadge.innerHTML = '<i class="bi bi-pin-angle-fill"></i> Pinned';
+                        titleRow.appendChild(pinnedBadge);
+                    }
+                } else {
+                    card.classList.remove('pinned');
+                    if (pinnedBadge) pinnedBadge.remove();
+                }
+
+                card.setAttribute('data-filter-type', filterType);
+            }
+
+            if (openBtn) {
+                openBtn.addEventListener('click', function () {
+                    resetFormForAdd();
+                    openModal();
+                });
+            }
+
+            editButtons.forEach(btn => {
+                btn.addEventListener('click', function () {
+                    const card = this.closest('.student-dashboard-note-card');
+                    fillFormForEdit(card);
+                    openModal();
+                });
+            });
+
+            if (closeBtn) closeBtn.addEventListener('click', closeModal);
+            if (cancelBtn) cancelBtn.addEventListener('click', closeModal);
+            if (backdrop) backdrop.addEventListener('click', closeModal);
+
+            if (form) {
+                form.addEventListener('submit', function (e) {
+                    e.preventDefault();
+
+                    if (currentEditingCard) {
+                        updateNoteCard(currentEditingCard);
+                    }
+
+                    closeModal();
+                });
+            }
+        })();
+    </script>
+}

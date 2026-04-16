@@ -1,0 +1,148 @@
+﻿@{
+    ViewData["Title"] = "Edit Student";
+    Layout = "_TrainerLayout";
+}
+
+<div class="dashboard-page trainer-student-form-page">
+    <div class="dashboard-page-head trainer-courses-page-head">
+        <div>
+            <h1 class="dashboard-h1">Edit Student</h1>
+            <p class="dashboard-sub">Update student details, course assignment, and status.</p>
+        </div>
+
+        <div class="dashboard-head-actions">
+            <a asp-area="Trainer"
+               asp-controller="Students"
+               asp-action="Index"
+               class="dashboard-btn dashboard-btn-outline">
+                <i class="bi bi-arrow-left"></i>
+                Back to Students
+            </a>
+        </div>
+    </div>
+
+    <div class="dashboard-panel trainer-student-form-panel">
+        <form method="post" asp-action="Edit" class="trainer-student-form">
+            <input type="hidden" name="Id" value="1" />
+
+            <div class="trainer-student-form-top">
+                <div class="trainer-student-avatar-upload">
+                    <label for="studentImageFile" class="trainer-student-avatar-box">
+                        <img id="studentImagePreview"
+                             src="~/img/default-avatar.png"
+                             class="trainer-student-avatar-preview"
+                             alt="Student preview" />
+                    </label>
+
+                    <input type="file"
+                           id="studentImageFile"
+                           name="studentImageFile"
+                           accept=".png,.jpg,.jpeg"
+                           class="trainer-hidden-file"
+                           onchange="previewStudentImage(event)" />
+
+                    <button type="button"
+                            class="dashboard-btn dashboard-btn-outline trainer-student-photo-btn"
+                            onclick="document.getElementById('studentImageFile').click()">
+                        Change Photo
+                    </button>
+                </div>
+
+                <div class="trainer-student-form-main">
+                    <div class="trainer-student-form-grid">
+                        <div class="trainer-student-form-group">
+                            <label class="trainer-student-label">First Name</label>
+                            <input type="text" name="FirstName" class="course-input" value="Ali" />
+                        </div>
+
+                        <div class="trainer-student-form-group">
+                            <label class="trainer-student-label">Last Name</label>
+                            <input type="text" name="LastName" class="course-input" value="Hassan" />
+                        </div>
+
+                        <div class="trainer-student-form-group">
+                            <label class="trainer-student-label">Email Address</label>
+                            <input type="email" name="Email" class="course-input" value="ali.hassan@gmail.com" />
+                        </div>
+
+                        <div class="trainer-student-form-group">
+                            <label class="trainer-student-label">Phone Number</label>
+                            <input type="text" name="PhoneNumber" class="course-input" value="+92 300 0000000" />
+                        </div>
+
+                        <div class="trainer-student-form-group">
+                            <label class="trainer-student-label">Assigned Course</label>
+                            <select name="CourseId" class="course-input">
+                                <option value="1">Web Development</option>
+                                <option value="2" selected>Digital Marketing</option>
+                                <option value="3">Graphic Design</option>
+                            </select>
+                        </div>
+
+                        <div class="trainer-student-form-group">
+                            <label class="trainer-student-label">Status</label>
+                            <select name="Status" class="course-input">
+                                <option value="Active" selected>Active</option>
+                                <option value="At Risk">At Risk</option>
+                                <option value="Inactive">Inactive</option>
+                            </select>
+                        </div>
+
+                        <div class="trainer-student-form-group">
+                            <label class="trainer-student-label">Average Grade</label>
+                            <input type="text" name="AverageGrade" class="course-input" value="87.2%" />
+                        </div>
+
+                        <div class="trainer-student-form-group">
+                            <label class="trainer-student-label">Join Date</label>
+                            <input type="date" name="JoinDate" class="course-input" value="2026-01-15" />
+                        </div>
+
+                        <div class="trainer-student-form-group trainer-student-form-group-full">
+                            <label class="trainer-student-label">Address</label>
+                            <textarea name="Address"
+                                      class="course-input trainer-student-textarea">Lahore, Pakistan</textarea>
+                        </div>
+
+                        <div class="trainer-student-form-group trainer-student-form-group-full">
+                            <label class="trainer-student-label">Notes</label>
+                            <textarea name="Notes"
+                                      class="course-input trainer-student-textarea">Doing well in coursework and attendance.</textarea>
+                        </div>
+                    </div>
+
+                    <div class="trainer-student-form-actions">
+                        <a asp-area="Trainer"
+                           asp-controller="Students"
+                           asp-action="Index"
+                           class="dashboard-btn dashboard-btn-outline">
+                            Cancel
+                        </a>
+
+                        <button type="submit" class="dashboard-btn add-course-btn">
+                            Update Student
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function previewStudentImage(e) {
+            const input = e.target;
+            const preview = document.getElementById('studentImagePreview');
+
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function (ev) {
+                    preview.src = ev.target.result;
+                    preview.style.display = 'block';
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+    </script>
+}

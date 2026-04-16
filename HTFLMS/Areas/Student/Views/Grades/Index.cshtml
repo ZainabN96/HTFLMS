@@ -1,0 +1,333 @@
+﻿@{
+    ViewData["Title"] = "Grades";
+    Layout = "_StudentLayout";
+}
+
+<div class="student-grades-page">
+    <div class="student-grades-head">
+        <div>
+            <h1 class="dashboard-h1">Grades</h1>
+            <p class="dashboard-sub">Track your performance across all enrolled courses.</p>
+        </div>
+
+        <div class="student-grades-head-actions">
+            <div class="dashboard-search student-grades-search">
+                <i class="bi bi-search"></i>
+                <input type="text" placeholder="Search courses or assignments..." />
+            </div>
+        </div>
+    </div>
+
+    <!-- Summary Cards -->
+    <div class="dashboard-stats student-grades-stats">
+        <div class="dashboard-stat-card">
+            <div class="dashboard-stat-top">
+                <div class="dashboard-stat-title">Overall Average</div>
+                <i class="bi bi-bar-chart-line"></i>
+            </div>
+            <div class="dashboard-stat-value">88.4%</div>
+            <div class="dashboard-stat-meta">Across all active courses</div>
+        </div>
+
+        <div class="dashboard-stat-card">
+            <div class="dashboard-stat-top">
+                <div class="dashboard-stat-title">Courses Tracked</div>
+                <i class="bi bi-journal-bookmark"></i>
+            </div>
+            <div class="dashboard-stat-value">4</div>
+            <div class="dashboard-stat-meta">All enrolled courses</div>
+        </div>
+
+        <div class="dashboard-stat-card">
+            <div class="dashboard-stat-top">
+                <div class="dashboard-stat-title">Completed Assignments</div>
+                <i class="bi bi-check2-circle"></i>
+            </div>
+            <div class="dashboard-stat-value">12</div>
+            <div class="dashboard-stat-meta">3 still pending review</div>
+        </div>
+
+        <div class="dashboard-stat-card">
+            <div class="dashboard-stat-top">
+                <div class="dashboard-stat-title">Best Course</div>
+                <i class="bi bi-trophy"></i>
+            </div>
+            <div class="dashboard-stat-value">Python</div>
+            <div class="dashboard-stat-meta">92% current average</div>
+        </div>
+    </div>
+
+    <!-- Filter tabs -->
+    <div class="student-grades-filterbar">
+        <button type="button" class="student-grades-filter active" data-filter="all">All Courses</button>
+        <button type="button" class="student-grades-filter" data-filter="good">Above 85%</button>
+        <button type="button" class="student-grades-filter" data-filter="mid">70% - 85%</button>
+        <button type="button" class="student-grades-filter" data-filter="low">Below 70%</button>
+    </div>
+
+    <div class="student-grades-layout">
+        <!-- Left Side -->
+        <div class="student-grades-main">
+            <div class="dashboard-panel">
+                <div class="dashboard-panel-head student-panel-head">
+                    <div>
+                        <h3 class="page-h2 student-panel-title">Course Grades Overview</h3>
+                        <p class="student-panel-sub">
+                            View your grade, completion progress, graded work, and current standing for each course.
+                        </p>
+                    </div>
+
+                    <div class="student-count-pill">4 courses</div>
+                </div>
+
+                <div class="student-course-grade-list">
+
+                    <!-- Course 1 -->
+                    <div class="student-course-grade-card" data-grade="good">
+                        <div class="student-course-grade-top">
+                            <div class="student-course-grade-left">
+                                <div class="student-course-grade-thumb">
+                                    <img src="~/img/course/course-3.webp" alt="Full Stack Web Development" />
+                                </div>
+
+                                <div class="student-course-grade-info">
+                                    <h4 class="student-course-grade-title">Full Stack Web Development</h4>
+                                    <div class="student-course-grade-meta">
+                                        <span><i class="bi bi-person"></i> John Doe</span>
+                                        <span>•</span>
+                                        <span><i class="bi bi-journal-text"></i> 8/12 Modules</span>
+                                        <span>•</span>
+                                        <span><i class="bi bi-check2-square"></i> 5 Graded Items</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="student-course-grade-right">
+                                <span class="student-course-grade-badge excellent">Excellent</span>
+                                <div class="student-course-grade-score">91%</div>
+                            </div>
+                        </div>
+
+                        <div class="student-course-grade-progress-wrap">
+                            <div class="student-course-grade-progress-top">
+                                <span>Course Progress</span>
+                                <span>65% Completed</span>
+                            </div>
+                            <div class="student-course-grade-progress">
+                                <div class="student-course-grade-progress-fill" style="width:65%;"></div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Course 2 -->
+                    <div class="student-course-grade-card" data-grade="mid">
+                        <div class="student-course-grade-top">
+                            <div class="student-course-grade-left">
+                                <div class="student-course-grade-thumb">
+                                    <img src="~/img/course/course-3.webp" alt="React Advanced Patterns" />
+                                </div>
+
+                                <div class="student-course-grade-info">
+                                    <h4 class="student-course-grade-title">React Advanced Patterns</h4>
+                                    <div class="student-course-grade-meta">
+                                        <span><i class="bi bi-person"></i> Jane Smith</span>
+                                        <span>•</span>
+                                        <span><i class="bi bi-journal-text"></i> 2/8 Modules</span>
+                                        <span>•</span>
+                                        <span><i class="bi bi-check2-square"></i> 3 Graded Items</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="student-course-grade-right">
+                                <span class="student-course-grade-badge good">Good</span>
+                                <div class="student-course-grade-score">82%</div>
+                            </div>
+                        </div>
+
+                        <div class="student-course-grade-progress-wrap">
+                            <div class="student-course-grade-progress-top">
+                                <span>Course Progress</span>
+                                <span>30% Completed</span>
+                            </div>
+                            <div class="student-course-grade-progress">
+                                <div class="student-course-grade-progress-fill" style="width:30%;"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Course 3 -->
+                    <div class="student-course-grade-card" data-grade="mid">
+                        <div class="student-course-grade-top">
+                            <div class="student-course-grade-left">
+                                <div class="student-course-grade-thumb">
+                                    <img src="~/img/course/course-3.webp" alt="Node.js Backend Development" />
+                                </div>
+
+                                <div class="student-course-grade-info">
+                                    <h4 class="student-course-grade-title">Node.js Backend Development</h4>
+                                    <div class="student-course-grade-meta">
+                                        <span><i class="bi bi-person"></i> Mike Johnson</span>
+                                        <span>•</span>
+                                        <span><i class="bi bi-journal-text"></i> 4/10 Modules</span>
+                                        <span>•</span>
+                                        <span><i class="bi bi-check2-square"></i> 4 Graded Items</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="student-course-grade-right">
+                                <span class="student-course-grade-badge fair">Fair</span>
+                                <div class="student-course-grade-score">74%</div>
+                            </div>
+                        </div>
+
+                        <div class="student-course-grade-progress-wrap">
+                            <div class="student-course-grade-progress-top">
+                                <span>Course Progress</span>
+                                <span>45% Completed</span>
+                            </div>
+                            <div class="student-course-grade-progress">
+                                <div class="student-course-grade-progress-fill" style="width:45%;"></div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Course 4 -->
+                    <div class="student-course-grade-card" data-grade="good">
+                        <div class="student-course-grade-top">
+                            <div class="student-course-grade-left">
+                                <div class="student-course-grade-thumb">
+                                    <img src="~/img/course/course-3.webp" alt="Python for Data Science" />
+                                </div>
+
+                                <div class="student-course-grade-info">
+                                    <h4 class="student-course-grade-title">Python for Data Science</h4>
+                                    <div class="student-course-grade-meta">
+                                        <span><i class="bi bi-person"></i> Sarah Lee</span>
+                                        <span>•</span>
+                                        <span><i class="bi bi-journal-text"></i> 10/12 Modules</span>
+                                        <span>•</span>
+                                        <span><i class="bi bi-check2-square"></i> 6 Graded Items</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="student-course-grade-right">
+                                <span class="student-course-grade-badge excellent">Excellent</span>
+                                <div class="student-course-grade-score">92%</div>
+                            </div>
+                        </div>
+
+                        <div class="student-course-grade-progress-wrap">
+                            <div class="student-course-grade-progress-top">
+                                <span>Course Progress</span>
+                                <span>80% Completed</span>
+                            </div>
+                            <div class="student-course-grade-progress">
+                                <div class="student-course-grade-progress-fill" style="width:80%;"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Side -->
+        <div class="student-grades-side">
+            <div class="dashboard-panel">
+                <div class="dashboard-panel-head">
+                    <div class="dashboard-panel-title">Recent Results</div>
+                </div>
+
+                <div class="student-grade-activity-list">
+                    <div class="student-grade-activity-item">
+                        <div class="student-grade-activity-top">
+                            <div class="student-grade-activity-title">Assignment 3 graded</div>
+                            <span class="student-grade-activity-mark good">18/20</span>
+                        </div>
+                        <div class="student-grade-activity-sub">Full Stack Web Development</div>
+                    </div>
+
+                    <div class="student-grade-activity-item">
+                        <div class="student-grade-activity-top">
+                            <div class="student-grade-activity-title">Quiz 2 graded</div>
+                            <span class="student-grade-activity-mark fair">14/20</span>
+                        </div>
+                        <div class="student-grade-activity-sub">Node.js Backend Development</div>
+                    </div>
+
+                    <div class="student-grade-activity-item">
+                        <div class="student-grade-activity-top">
+                            <div class="student-grade-activity-title">Assessment 1 graded</div>
+                            <span class="student-grade-activity-mark good">27/30</span>
+                        </div>
+                        <div class="student-grade-activity-sub">Python for Data Science</div>
+                    </div>
+
+                    <div class="student-grade-activity-item">
+                        <div class="student-grade-activity-top">
+                            <div class="student-grade-activity-title">Lab task graded</div>
+                            <span class="student-grade-activity-mark good">9/10</span>
+                        </div>
+                        <div class="student-grade-activity-sub">React Advanced Patterns</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dashboard-panel">
+                <div class="dashboard-panel-head">
+                    <div class="dashboard-panel-title">Grade Legend</div>
+                </div>
+
+                <div class="student-grade-legend-list">
+                    <div class="student-grade-legend-row">
+                        <span class="student-course-grade-badge excellent">Excellent</span>
+                        <span>85% and above</span>
+                    </div>
+                    <div class="student-grade-legend-row">
+                        <span class="student-course-grade-badge good">Good</span>
+                        <span>70% to 84%</span>
+                    </div>
+                    <div class="student-grade-legend-row">
+                        <span class="student-course-grade-badge fair">Fair</span>
+                        <span>Below 70%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        (function () {
+            const filterButtons = document.querySelectorAll('.student-grades-filter');
+            const cards = document.querySelectorAll('.student-course-grade-card');
+
+            filterButtons.forEach(btn => {
+                btn.addEventListener('click', function () {
+                    const filter = this.getAttribute('data-filter');
+
+                    filterButtons.forEach(x => x.classList.remove('active'));
+                    this.classList.add('active');
+
+                    cards.forEach(card => {
+                        const grade = card.getAttribute('data-grade');
+
+                        if (filter === 'all') {
+                            card.style.display = '';
+                        } else if (filter === grade) {
+                            card.style.display = '';
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    });
+                });
+            });
+        })();
+    </script>
+}

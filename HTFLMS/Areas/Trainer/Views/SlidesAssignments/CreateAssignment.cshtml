@@ -1,0 +1,82 @@
+﻿@{
+    ViewData["Title"] = "Create Assignment";
+    Layout = "_TrainerLayout";
+}
+
+<div class="dashboard-page trainer-form-page">
+    <div class="dashboard-page-head trainer-content-head">
+        <div>
+            <h1 class="dashboard-h1">Create Assignment</h1>
+            <p class="dashboard-sub">Add a new assignment with due date, marks, and file attachment.</p>
+        </div>
+
+        <div class="trainer-content-head-actions">
+            <a asp-area="Trainer"
+               asp-controller="SlidesAssignments"
+               asp-action="Index"
+               asp-route-courseId="@ViewBag.CourseId"
+               asp-route-moduleId="@ViewBag.ModuleId"
+               class="dashboard-btn dashboard-btn-outline">
+                <i class="bi bi-arrow-left"></i>
+                Back to Slides & Assignments
+            </a>
+        </div>
+    </div>
+
+    <div class="dashboard-panel trainer-form-panel trainer-form-panel-wide">
+        <form method="post" enctype="multipart/form-data" class="trainer-assignment-form">
+            <div class="trainer-form-grid">
+
+                <div class="trainer-form-group">
+                    <label class="trainer-form-label">Assignment Title</label>
+                    <input type="text" class="course-input" placeholder="Enter assignment title" />
+                </div>
+
+                <div class="trainer-form-group">
+                    <label class="trainer-form-label">Marks</label>
+                    <input type="number" class="course-input" placeholder="e.g. 20" />
+                </div>
+
+                <div class="trainer-form-group">
+                    <label class="trainer-form-label">Due Date</label>
+                    <input type="date" class="course-input" />
+                </div>
+
+                <div class="trainer-form-group">
+                    <label class="trainer-form-label">Due Time</label>
+                    <input type="time" class="course-input" />
+                </div>
+
+                <div class="trainer-form-group">
+                    <label class="trainer-form-label">Status</label>
+                    <select class="course-input">
+                        <option value="" selected disabled>Select option</option>
+                        <option>Active</option>
+                        <option>Draft</option>
+                        <option>Hidden</option>
+                    </select>
+                </div>
+
+                <div class="trainer-form-group trainer-form-group-full">
+                    <label class="trainer-form-label">Assignment File / Attachment</label>
+                    <input type="file" class="course-input" />
+                </div>
+            </div>
+
+            <div class="trainer-form-actions">
+                <a asp-area="Trainer"
+                   asp-controller="SlidesAssignments"
+                   asp-action="Index"
+                   asp-route-courseId="@ViewBag.CourseId"
+                   asp-route-moduleId="@ViewBag.ModuleId"
+                   class="dashboard-btn dashboard-btn-outline">
+                    Cancel
+                </a>
+
+                <button type="submit" class="dashboard-btn add-course-btn">
+                    Create Assignment
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

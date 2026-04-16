@@ -1,0 +1,151 @@
+﻿@{
+    ViewData["Title"] = "Add Student";
+    Layout = "_TrainerLayout";
+}
+
+<div class="dashboard-page trainer-student-form-page">
+    <div class="dashboard-page-head trainer-courses-page-head">
+        <div>
+            <h1 class="dashboard-h1">Add Student</h1>
+            <p class="dashboard-sub">Create a new student profile and assign course details.</p>
+        </div>
+
+        <div class="dashboard-head-actions">
+            <a asp-area="Trainer"
+               asp-controller="Students"
+               asp-action="Index"
+               class="dashboard-btn dashboard-btn-outline">
+                <i class="bi bi-arrow-left"></i>
+                Back to Students
+            </a>
+        </div>
+    </div>
+
+    <div class="dashboard-panel trainer-student-form-panel">
+        <form method="post" asp-action="Create" class="trainer-student-form">
+            <div class="trainer-student-form-top">
+                <div class="trainer-student-avatar-upload">
+                    <label for="studentImageFile" class="trainer-student-avatar-box">
+                        <div class="trainer-student-avatar-placeholder" id="studentUploadPlaceholder">
+                            <div class="trainer-student-avatar-icon">
+                                <i class="bi bi-person"></i>
+                            </div>
+                            <div class="trainer-student-avatar-title">Upload Student Photo</div>
+                            <div class="trainer-student-avatar-sub">
+                                PNG/JPG supported
+                            </div>
+                        </div>
+
+                        <img id="studentImagePreview"
+                             class="trainer-student-avatar-preview"
+                             alt="Student preview"
+                             style="display:none;" />
+                    </label>
+
+                    <input type="file"
+                           id="studentImageFile"
+                           name="studentImageFile"
+                           accept=".png,.jpg,.jpeg"
+                           class="trainer-hidden-file"
+                           onchange="previewStudentImage(event)" />
+                </div>
+
+                <div class="trainer-student-form-main">
+                    <div class="trainer-student-form-grid">
+                        <div class="trainer-student-form-group">
+                            <label class="trainer-student-label">First Name</label>
+                            <input type="text" name="FirstName" class="course-input" placeholder="Enter first name" />
+                        </div>
+
+                        <div class="trainer-student-form-group">
+                            <label class="trainer-student-label">Last Name</label>
+                            <input type="text" name="LastName" class="course-input" placeholder="Enter last name" />
+                        </div>
+
+                        <div class="trainer-student-form-group">
+                            <label class="trainer-student-label">Email Address</label>
+                            <input type="email" name="Email" class="course-input" placeholder="Enter email address" />
+                        </div>
+
+                        <div class="trainer-student-form-group">
+                            <label class="trainer-student-label">Phone Number</label>
+                            <input type="text" name="PhoneNumber" class="course-input" placeholder="Enter phone number" />
+                        </div>
+
+                        <div class="trainer-student-form-group">
+                            <label class="trainer-student-label">Assigned Course</label>
+                            <select name="CourseId" class="course-input">
+                                <option value="">Select course</option>
+                                <option value="1">Web Development</option>
+                                <option value="2">Digital Marketing</option>
+                                <option value="3">Graphic Design</option>
+                            </select>
+                        </div>
+
+                        <div class="trainer-student-form-group">
+                            <label class="trainer-student-label">Status</label>
+                            <select name="Status" class="course-input">
+                                <option value="">Select status</option>
+                                <option value="Active">Active</option>
+                                <option value="At Risk">At Risk</option>
+                                <option value="Inactive">Inactive</option>
+                            </select>
+                        </div>
+
+                        <div class="trainer-student-form-group">
+                            <label class="trainer-student-label">Join Date</label>
+                            <input type="date" name="JoinDate" class="course-input" />
+                        </div>
+
+                        <div class="trainer-student-form-group trainer-student-form-group-full">
+                            <label class="trainer-student-label">Address</label>
+                            <textarea name="Address"
+                                      class="course-input trainer-student-textarea"
+                                      placeholder="Enter student address"></textarea>
+                        </div>
+
+                        <div class="trainer-student-form-group trainer-student-form-group-full">
+                            <label class="trainer-student-label">Notes</label>
+                            <textarea name="Notes"
+                                      class="course-input trainer-student-textarea"
+                                      placeholder="Additional notes about the student"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="trainer-student-form-actions">
+                        <a asp-area="Trainer"
+                           asp-controller="Students"
+                           asp-action="Index"
+                           class="dashboard-btn dashboard-btn-outline">
+                            Cancel
+                        </a>
+
+                        <button type="submit" class="dashboard-btn add-course-btn">
+                            Save Student
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function previewStudentImage(e) {
+            const input = e.target;
+            const preview = document.getElementById('studentImagePreview');
+            const placeholder = document.getElementById('studentUploadPlaceholder');
+
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function (ev) {
+                    preview.src = ev.target.result;
+                    preview.style.display = 'block';
+                    if (placeholder) placeholder.style.display = 'none';
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+    </script>
+}

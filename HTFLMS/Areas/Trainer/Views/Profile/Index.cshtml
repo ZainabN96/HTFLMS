@@ -1,0 +1,97 @@
+﻿@{
+    ViewData["Title"] = "Profile";
+    Layout = "_TrainerLayout";
+}
+
+<div class="dashboard-page trainer-profile-page">
+    <div class="dashboard-page-head trainer-profile-head">
+        <div>
+            <h1 class="dashboard-h1">Profile</h1>
+            <p class="dashboard-sub">Manage your account details and security settings.</p>
+        </div>
+    </div>
+
+    <div class="dashboard-panel trainer-profile-panel">
+        <div class="trainer-profile-top">
+            <div class="trainer-profile-user">
+                <div class="trainer-profile-avatar">A</div>
+
+                <div class="trainer-profile-user-info">
+                    <div class="trainer-profile-name">Areeba Iqbal</div>
+                    <div class="trainer-profile-email">areeba@gmail.com</div>
+                </div>
+            </div>
+
+            <button type="button" class="dashboard-btn dashboard-btn-outline trainer-profile-photo-btn">
+                Change Photo
+            </button>
+        </div>
+    </div>
+
+    <div class="dashboard-panel trainer-profile-section">
+        <div class="dashboard-panel-head">
+            <div class="dashboard-panel-title">Personal Information</div>
+        </div>
+
+        <form class="trainer-profile-form">
+            <div class="trainer-profile-grid">
+                <div class="trainer-profile-group">
+                    <label class="trainer-profile-label">First Name</label>
+                    <input type="text" class="course-input" value="Areeba" />
+                </div>
+
+                <div class="trainer-profile-group">
+                    <label class="trainer-profile-label">Last Name</label>
+                    <input type="text" class="course-input" value="Iqbal" />
+                </div>
+
+                <div class="trainer-profile-group">
+                    <label class="trainer-profile-label">Email Address</label>
+                    <input type="email" class="course-input" value="areeba@gmail.com" />
+                </div>
+
+                <div class="trainer-profile-group">
+                    <label class="trainer-profile-label">Phone (Optional)</label>
+                    <input type="text" class="course-input" value="+92 300 0000000" />
+                </div>
+            </div>
+
+            <div class="trainer-profile-actions">
+                <button type="submit" class="dashboard-btn add-course-btn">
+                    Save Changes
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <div class="dashboard-panel trainer-profile-section">
+        <div class="dashboard-panel-head">
+            <div class="dashboard-panel-title">Change Password</div>
+        </div>
+
+        <form class="trainer-profile-form">
+            <div class="trainer-profile-grid">
+                <div class="trainer-profile-group">
+                    <label class="trainer-profile-label">Current Password</label>
+                    <input type="password" class="course-input" placeholder="Enter current password" />
+                </div>
+
+                <div class="trainer-profile-group">
+                    <label class="trainer-profile-label">New Password</label>
+                    <input type="password" class="course-input" placeholder="Enter new password" />
+                </div>
+
+                <div class="trainer-profile-group">
+                    <label class="trainer-profile-label">Confirm New Password</label>
+                    <input type="password" class="course-input" placeholder="Confirm new password" />
+                </div>
+            </div>
+
+            <div class="trainer-profile-actions">
+                <button type="submit" class="dashboard-btn add-course-btn">
+                    Update Password
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
