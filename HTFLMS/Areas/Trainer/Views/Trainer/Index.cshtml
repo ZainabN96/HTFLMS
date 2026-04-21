@@ -1,0 +1,214 @@
+﻿@{
+    ViewData["Title"] = "Trainer Dashboard";
+    Layout = "_TrainerLayout";
+}
+
+<div class="dashboard-page">
+
+    <div class="dashboard-page-head">
+        <div>
+            <h1 class="dashboard-h1">Dashboard</h1>
+            <p class="dashboard-sub">Overview of your courses, students, and teaching activity.</p>
+        </div>
+
+        <div class="dashboard-head-actions">
+            <a class="dashboard-btn dashboard-btn-outline"
+               asp-area="Trainer"
+               asp-controller="Courses"
+               asp-action="Create">
+                <i class="bi bi-journal-plus"></i> Create Course
+            </a>
+
+            <a class="dashboard-btn dashboard-btn-outline"
+               asp-area="Trainer"
+               asp-controller="SlidesAssignments"
+               asp-action="Index">
+                <i class="bi bi-upload"></i> Upload Material
+            </a>
+        </div>
+    </div>
+
+    <div class="dashboard-stats">
+
+        <div class="dashboard-stat-card">
+            <div class="dashboard-stat-top">
+                <div class="dashboard-stat-title">My Courses</div>
+                <i class="bi bi-journal-bookmark"></i>
+            </div>
+
+            <div class="dashboard-stat-value">8</div>
+            <div class="dashboard-stat-meta">2 active this week</div>
+        </div>
+
+        <div class="dashboard-stat-card">
+            <div class="dashboard-stat-top">
+                <div class="dashboard-stat-title">Students</div>
+                <i class="bi bi-people"></i>
+            </div>
+
+            <div class="dashboard-stat-value">124</div>
+            <div class="dashboard-stat-meta">+6 new enrollments</div>
+        </div>
+
+        <div class="dashboard-stat-card">
+            <div class="dashboard-stat-top">
+                <div class="dashboard-stat-title">Assignments</div>
+                <i class="bi bi-clipboard-check"></i>
+            </div>
+
+            <div class="dashboard-stat-value">18</div>
+            <div class="dashboard-stat-meta">5 pending review</div>
+        </div>
+
+        <div class="dashboard-stat-card">
+            <div class="dashboard-stat-top">
+                <div class="dashboard-stat-title">Lessons</div>
+                <i class="bi bi-collection-play"></i>
+            </div>
+
+            <div class="dashboard-stat-value">42</div>
+            <div class="dashboard-stat-meta">3 updated today</div>
+        </div>
+
+    </div>
+
+    <div class="dashboard-grid">
+
+        <div class="dashboard-panel">
+
+            <div class="dashboard-panel-head">
+                <div class="dashboard-panel-title">Recent Student Activity</div>
+                <a asp-area="Trainer"
+                   asp-controller="Students"
+                   asp-action="Index"
+                   class="dashboard-panel-link">View all</a>
+            </div>
+
+            <div class="dashboard-table">
+
+                <div class="dashboard-table-row dashboard-table-head">
+                    <div>Student</div>
+                    <div>Course</div>
+                    <div>Date</div>
+                    <div>Status</div>
+                </div>
+
+                <div class="dashboard-table-row">
+                    <div class="dashboard-cell-strong dashboard-table-cell-ellipsis" title="Sehrish">
+                        Sehrish
+                    </div>
+                    <div class="dashboard-table-cell-ellipsis" title="Web Development">
+                        Web Development
+                    </div>
+                    <div class="dashboard-table-cell-ellipsis" title="Mar 20">
+                        Mar 20
+                    </div>
+                    <div title="Submitted">
+                        <span class="pill pill-green">Submitted</span>
+                    </div>
+                </div>
+
+                <div class="dashboard-table-row">
+                    <div class="dashboard-cell-strong dashboard-table-cell-ellipsis" title="Zainab">
+                        Zainab
+                    </div>
+                    <div class="dashboard-table-cell-ellipsis" title="Digital Marketing">
+                        Digital Marketing
+                    </div>
+                    <div class="dashboard-table-cell-ellipsis" title="Mar 21">
+                        Mar 21
+                    </div>
+                    <div title="Pending">
+                        <span class="pill pill-yellow">Pending</span>
+                    </div>
+                </div>
+
+                <div class="dashboard-table-row">
+                    <div class="dashboard-cell-strong dashboard-table-cell-ellipsis" title="Ariba">
+                        Ariba
+                    </div>
+                    <div class="dashboard-table-cell-ellipsis" title="Graphic Design">
+                        Graphic Design
+                    </div>
+                    <div class="dashboard-table-cell-ellipsis" title="Mar 22">
+                        Mar 22
+                    </div>
+                    <div title="Reviewed">
+                        <span class="pill pill-green">Reviewed</span>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+        <div class="dashboard-panel">
+
+            <div class="dashboard-panel-head">
+                <div class="dashboard-panel-title">Quick Actions</div>
+            </div>
+
+            <div class="dashboard-actions">
+
+                <a asp-area="Trainer"
+                   asp-controller="Courses"
+                   asp-action="Create"
+                   class="dashboard-action-card">
+                    <div class="dashboard-action-icon">
+                        <i class="bi bi-journal-plus"></i>
+                    </div>
+
+                    <div>
+                        <div class="dashboard-action-title">Create Course</div>
+                        <div class="dashboard-action-sub">Add lessons and modules</div>
+                    </div>
+                </a>
+
+                <a asp-area="Trainer"
+                   asp-controller="SlidesAssignments"
+                   asp-action="Index"
+                   class="dashboard-action-card">
+                    <div class="dashboard-action-icon">
+                        <i class="bi bi-upload"></i>
+                    </div>
+
+                    <div>
+                        <div class="dashboard-action-title">Upload Content</div>
+                        <div class="dashboard-action-sub">Videos, PDFs, materials</div>
+                    </div>
+                </a>
+
+                <a asp-area="Trainer"
+                   asp-controller="Submissions"
+                   asp-action="Index"
+                   class="dashboard-action-card">
+                    <div class="dashboard-action-icon">
+                        <i class="bi bi-clipboard-check"></i>
+                    </div>
+
+                    <div>
+                        <div class="dashboard-action-title">Review Assignments</div>
+                        <div class="dashboard-action-sub">Grade student work</div>
+                    </div>
+                </a>
+
+                <a asp-area="Trainer"
+                   asp-controller="Gradebook"
+                   asp-action="Index"
+                   class="dashboard-action-card">
+                    <div class="dashboard-action-icon">
+                        <i class="bi bi-bar-chart"></i>
+                    </div>
+
+                    <div>
+                        <div class="dashboard-action-title">View Performance</div>
+                        <div class="dashboard-action-sub">Track progress</div>
+                    </div>
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

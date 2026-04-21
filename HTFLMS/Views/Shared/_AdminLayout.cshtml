@@ -1,6 +1,8 @@
 ﻿@using System.Security.Claims
 @{
     var name = User?.Identity?.Name ?? "Admin";
+    var controller = ViewContext.RouteData.Values["controller"]?.ToString();
+    var action = ViewContext.RouteData.Values["action"]?.ToString();
 }
 
 <!DOCTYPE html>
@@ -8,10 +10,11 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - HTF LMS Admin</title>
+    <title>@ViewData["Title"] - HTF LMS</title>
 
-    <!-- Admin-specific CSS -->
+    <!-- admin-specific CSS -->
     <link rel="stylesheet" href="~/css/dashboards.css" asp-append-version="true" />
+
 
     <!-- Bootstrap Icons (you already use bi icons) -->
     <link rel="icon" type="image/png" href="~/img/fav.png">
@@ -19,129 +22,163 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
 </head>
 
-<body class="admin-body">
+<body class="dashboard-body">
 
     <!-- Top header -->
-    <header class="admin-topbar">
-        <div class="admin-topbar-left">
-            <button class="admin-icon-btn" id="adminSidebarToggle" type="button" aria-label="Toggle sidebar">
+    <header class="dashboard-topbar">
+        <div class="dashboard-topbar-left">
+            <button class="dashboard-icon-btn" id="dashboardSidebarToggle" type="button" aria-label="Toggle sidebar">
                 <i class="bi bi-list"></i>
             </button>
 
-            <a class="admin-brand" asp-controller="Admin" asp-action="Index">
-                <img src="~/img/hcc_logo(1).png" alt="HCC Logo" class="admin-logo" />
-                <span class="admin-brand-text">Admin</span>
+            <a class="dashboard-brand" asp-controller="admin" asp-action="Index">
+                <img src="~/img/hcc_logo(1).png" alt="HCC Logo" class="dashboard-logo" />
             </a>
         </div>
 
-        <div class="admin-topbar-center">
-            <div class="admin-search">
+        <div class="dashboard-topbar-center">
+            <div class="dashboard-search">
                 <i class="bi bi-search"></i>
                 <input type="text" placeholder="Search users, courses, enrollments..." />
             </div>
         </div>
 
-        <div class="admin-topbar-right">
-            <button class="admin-icon-btn" type="button" aria-label="Notifications">
-                <i class="bi bi-bell"></i>
-                <span class="admin-dot"></span>
-            </button>
+        <div class="dashboard-topbar-right">
+            <div class="dashboard-notification">
+                <button class="dashboard-icon-btn"
+                        id="notificationToggle"
+                        type="button"
+                        aria-label="Notifications">
+                    <i class="bi bi-bell"></i>
+                    <span class="dashboard-dot"></span>
+                </button>
 
-            <div class="admin-userchip">
-                <div class="admin-avatar">@name.Substring(0, 1).ToUpper()</div>
-                <div class="admin-usertext">
-                    <div class="admin-username">@name</div>
-                    <div class="admin-role">Administrator</div>
+                <div class="dashboard-notification-dropdown" id="notificationDropdown">
+                    <div class="dashboard-notification-header">Notifications</div>
+
+                    <div class="dashboard-notification-item">
+                        New trainer added successfully
+                    </div>
+
+                    <div class="dashboard-notification-item">
+                        New course created in system
+                    </div>
+
+                    <div class="dashboard-notification-item">
+                        Admin profile updated successfully
+                    </div>
+
+                    <div class="dashboard-notification-footer">
+                        View all
+                    </div>
                 </div>
             </div>
 
-            <form asp-controller="Account" asp-action="Logout" method="post" class="admin-logout">
+            <div class="dashboard-userchip">
+                <div class="dashboard-avatar">@name.Substring(0, 1).ToUpper()</div>
+                <div class="dashboard-usertext">
+                    <div class="dashboard-username">@name</div>
+                    <div class="dashboard-role">Admin</div>
+                </div>
+            </div>
+
+            <form asp-area=""
+                  asp-controller="Account"
+                  asp-action="Logout"
+                  method="post"
+                  class="dashboard-logout">
+
                 @Html.AntiForgeryToken()
-                <button type="submit" class="admin-btn admin-btn-outline">
+
+                <button type="submit" class="dashboard-btn dashboard-btn-outline">
                     <i class="bi bi-box-arrow-right"></i>
                     Logout
                 </button>
+
             </form>
         </div>
     </header>
 
 
-    <div class="admin-shell" id="adminShell">
+    <div class="dashboard-shell" id="dashboardShell">
 
         <!-- Sidebar -->
-        <aside class="admin-sidebar" id="adminSidebar">
-            <nav class="admin-nav">
-                <a class="admin-nav-item @(ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "active" : "")"
-                   asp-controller="Admin" asp-action="Index">
+        <aside class="dashboard-sidebar" id="dashboardSidebar">
+            <nav class="dashboard-nav">
+
+                <a asp-area="Admin" asp-controller="Admin" asp-action="Index"
+                   class="dashboard-nav-item @(ViewContext.RouteData.Values["controller"]?.ToString() == "Admin"
+                    && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "active" : "")">
                     <i class="bi bi-grid-1x2"></i>
                     Dashboard
                 </a>
 
-                <div class="admin-nav-section">Management</div>
+                <div class="dashboard-nav-divider"></div>
 
-                <a class="admin-nav-item" href="#">
+                <div class="dashboard-nav-section">Management</div>
+
+                <a asp-area="Admin" asp-controller="Courses" asp-action="Index"
+                   class="dashboard-nav-item @(ViewContext.RouteData.Values["controller"]?.ToString() == "Courses" ? "active" : "")">
                     <i class="bi bi-journal-bookmark"></i>
-                    Courses
+                    <span>Courses</span>
                 </a>
 
-                <a class="admin-nav-item" href="#">
-                    <i class="bi bi-collection-play"></i>
-                    Modules & Lessons
+                <a asp-area="Admin" asp-controller="ModulesLessons" asp-action="Index" asp-route-id="1"
+                   class="dashboard-nav-item @(ViewContext.RouteData.Values["controller"]?.ToString() == "ModulesLessons" ? "active" : "")">
+                    <i class="bi bi-collection"></i>
+                    <span>Modules & Lessons</span>
                 </a>
 
-                <a class="admin-nav-item" href="#">
+                <a class="dashboard-nav-item @((controller == "Students" && action == "Index") ? "active" : "")"
+                   asp-controller="Students" asp-action="Index">
                     <i class="bi bi-people"></i>
-                    Users
+                    Students
                 </a>
 
-                <a class="admin-nav-item" href="#">
+                <a class="dashboard-nav-item @(controller == "ManageTrainers" ? "active" : "")"
+                   asp-area="Admin"
+                   asp-controller="ManageTrainers"
+                   asp-action="Trainers">
                     <i class="bi bi-person-badge"></i>
-                    Trainers
+                    <span>Trainers</span>
                 </a>
 
-                <a class="admin-nav-item" href="#">
-                    <i class="bi bi-person-check"></i>
-                    Enrollments
-                </a>
+                <div class="dashboard-nav-divider"></div>
 
-                <a class="admin-nav-item" href="#">
+                <div class="dashboard-nav-section">Grading</div>
+
+                <a asp-area="Admin" asp-controller="Gradebook" asp-action="Index"
+                   class="dashboard-nav-item @(ViewContext.RouteData.Values["controller"]?.ToString() == "Gradebook" ? "active" : "")">
                     <i class="bi bi-award"></i>
-                    Grades
+                    <span>Gradebook</span>
                 </a>
 
-                <div class="admin-nav-section">Settings</div>
+                <div class="dashboard-nav-divider"></div>
 
-                <a class="admin-nav-item" href="#">
+                <div class="dashboard-nav-section">Settings</div>
+
+                <a class="dashboard-nav-item"
+                   href="#">
                     <i class="bi bi-gear"></i>
-                    System Settings
+                    <span>System Settings</span>
                 </a>
 
-                <a class="admin-nav-item" href="#">
+                <a class="dashboard-nav-item"
+                   href="#">
                     <i class="bi bi-shield-check"></i>
-                    Roles & Permissions
+                    <span>Roles & Permissions</span>
                 </a>
             </nav>
-
-            <div class="admin-sidebar-footer">
-                <div class="admin-mini">
-                    <div class="admin-mini-title">Quick actions</div>
-                    <div class="admin-mini-actions">
-                        <a class="admin-mini-btn" href="#"><i class="bi bi-plus-circle"></i> New Course</a>
-                        <a class="admin-mini-btn" href="#"><i class="bi bi-person-plus"></i> New User</a>
-                    </div>
-                </div>
-            </div>
         </aside>
-
         <!-- Main content -->
-        <main class="admin-content">
+        <main class="dashboard-content">
             @RenderBody()
 
             @await Html.PartialAsync("_SuccessPopup")
 
-            <footer class="admin-footer">
+            <footer class="dashboard-footer">
                 <div>© @DateTime.Now.Year HTF LMS</div>
-                <div class="admin-footer-links">
+                <div class="dashboard-footer-links">
                     <a href="#">Support</a>
                     <a href="#">Docs</a>
                     <a href="#">Privacy</a>
@@ -153,13 +190,32 @@
 
     <script>
         (function () {
-            const toggle = document.getElementById('adminSidebarToggle');
-            const shell = document.getElementById('adminShell');
-            if (!toggle || !shell) return;
+            const toggle = document.getElementById('dashboardSidebarToggle');
+            const shell = document.getElementById('dashboardShell');
 
-            toggle.addEventListener('click', () => {
-                shell.classList.toggle('collapsed');
-            });
+            if (toggle && shell) {
+                toggle.addEventListener('click', () => {
+                    shell.classList.toggle('collapsed');
+                });
+            }
+
+            const notificationBtn = document.getElementById('notificationToggle');
+            const notificationDropdown = document.getElementById('notificationDropdown');
+
+            if (notificationBtn && notificationDropdown) {
+                notificationBtn.addEventListener('click', function (e) {
+                    e.stopPropagation();
+                    notificationDropdown.classList.toggle('show');
+                });
+
+                notificationDropdown.addEventListener('click', function (e) {
+                    e.stopPropagation();
+                });
+
+                document.addEventListener('click', function () {
+                    notificationDropdown.classList.remove('show');
+                });
+            }
         })();
     </script>
     @RenderSection("Scripts", required: false)

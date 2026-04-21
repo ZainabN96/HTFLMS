@@ -1,0 +1,220 @@
+﻿@model HTFLMS.Models.Auth.AddTrainerViewModel
+@{
+    ViewData["Title"] = "Edit Trainer";
+    Layout = "_AdminLayout";
+}
+
+<div class="dashboard-page trainer-form-page manage-trainer-form-page">
+    <div class="dashboard-page-head trainer-courses-page-head">
+        <div>
+            <h1 class="dashboard-h1">Edit Trainer</h1>
+            <p class="dashboard-sub">Update trainer details and save changes.</p>
+        </div>
+
+        <div class="dashboard-head-actions">
+            <a asp-area="Admin"
+               asp-controller="ManageTrainers"
+               asp-action="Trainers"
+               class="dashboard-btn dashboard-btn-outline">
+                <i class="bi bi-arrow-left"></i>
+                Back to Trainers
+            </a>
+        </div>
+    </div>
+
+    <div class="dashboard-panel manage-trainer-form-panel">
+        <form asp-action="EditTrainer"
+              asp-controller="ManageTrainers"
+              asp-area="Admin"
+              method="post"
+              enctype="multipart/form-data"
+              class="manage-trainer-form">
+            @Html.AntiForgeryToken()
+
+            <input type="hidden" name="Id" value="@ViewBag.TrainerId" />
+
+            <div class="manage-trainer-form-grid">
+                <div class="trainer-form-layout">
+
+                    <!-- Left side: trainer picture -->
+                    <div class="trainer-upload">
+                        <label for="Picture" class="trainer-upload-box">
+                            <div class="trainer-upload-inner" id="trainerPicturePlaceholder">
+                                <div class="trainer-upload-icon">
+                                    <i class="bi bi-image"></i>
+                                </div>
+                                <div class="trainer-upload-title">Upload Profile Picture</div>
+                                <div class="trainer-upload-sub">
+                                    PNG/JPG supported. Recommended square image for trainer profile page.
+                                </div>
+                            </div>
+
+                            <img id="trainerPicturePreview"
+                                 class="trainer-preview"
+                                 alt="Trainer picture preview" />
+
+                            <input id="Picture"
+                                   name="Picture"
+                                   type="file"
+                                   class="trainer-file-hidden"
+                                   accept="image/*" />
+                        </label>
+                    </div>
+
+                    <!-- Right side: trainer fields -->
+                    <div class="trainer-fields">
+
+                        <div class="trainer-row-2">
+                            <div>
+                                <label class="trainer-label">Name</label>
+                                <input asp-for="Name" class="course-input" placeholder="Enter trainer name" />
+                                <span asp-validation-for="Name" class="text-danger small"></span>
+                            </div>
+
+                            <div>
+                                <label class="trainer-label">Email Address</label>
+                                <input asp-for="Email" class="course-input" placeholder="Enter email address" />
+                                <span asp-validation-for="Email" class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                        <div class="trainer-row-2">
+                            <div>
+                                <label class="trainer-label">Password</label>
+                                <input asp-for="Password" type="password" class="course-input" placeholder="Enter password" />
+                                <span asp-validation-for="Password" class="text-danger small"></span>
+                            </div>
+
+                            <div>
+                                <label class="trainer-label">Confirm Password</label>
+                                <input asp-for="ConfirmPassword" type="password" class="course-input" placeholder="Confirm password" />
+                                <span asp-validation-for="ConfirmPassword" class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                        <div class="trainer-row-2">
+                            <div>
+                                <label class="trainer-label">Designation</label>
+                                <input asp-for="Designation" class="course-input" placeholder="Enter designation" />
+                                <span asp-validation-for="Designation" class="text-danger small"></span>
+                            </div>
+
+                            <div>
+                                <label class="trainer-label">CNIC</label>
+                                <input asp-for="CNIC" class="course-input" placeholder="Enter CNIC" />
+                                <span asp-validation-for="CNIC" class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                        <div class="trainer-row-2">
+                            <div>
+                                <label class="trainer-label">Mobile Number</label>
+                                <input asp-for="MobileNumber" class="course-input" placeholder="Enter mobile number" />
+                                <span asp-validation-for="MobileNumber" class="text-danger small"></span>
+                            </div>
+
+                            <div>
+                                <label class="trainer-label">Status</label>
+                                <select asp-for="IsActive" class="course-input">
+                                    <option value="">Select status</option>
+                                    <option value="true">Active</option>
+                                    <option value="false">Inactive</option>
+                                </select>
+                                <span asp-validation-for="IsActive" class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                        <div class="trainer-row-2">
+                            <div>
+                                <label class="trainer-label">Gender</label>
+                                <select asp-for="Gender" class="course-input">
+                                    <option value="">Select gender</option>
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                                <span asp-validation-for="Gender" class="text-danger small"></span>
+                            </div>
+
+                            <div>
+                                <label class="trainer-label">Qualification</label>
+                                <select asp-for="Qualification" class="course-input">
+                                    <option value="">Select qualification</option>
+                                    <option>Matric</option>
+                                    <option>Intermediate</option>
+                                    <option>Bachelors</option>
+                                    <option>Masters</option>
+                                </select>
+                                <span asp-validation-for="Qualification" class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                        <div class="trainer-row-2">
+                            <div>
+                                <label class="trainer-label">Address</label>
+                                <input asp-for="Address" class="course-input" placeholder="Enter address" />
+                                <span asp-validation-for="Address" class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-danger small manage-trainer-validation-summary">
+                @foreach (var err in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                {
+                    <div>@err.ErrorMessage</div>
+                }
+            </div>
+
+            <div class="manage-trainer-form-actions">
+                <a asp-area="Admin"
+                   asp-controller="ManageTrainers"
+                   asp-action="Trainers"
+                   class="dashboard-btn dashboard-btn-outline">
+                    Cancel
+                </a>
+
+                <button type="submit" class="dashboard-btn add-course-btn trainer-add-course-btn">
+                    Update Trainer
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        (function () {
+            const input = document.getElementById("Picture");
+            const preview = document.getElementById("trainerPicturePreview");
+            const placeholder = document.getElementById("trainerPicturePlaceholder");
+
+            if (!input || !preview || !placeholder) return;
+
+            input.addEventListener("change", function () {
+                const file = this.files && this.files[0];
+
+                if (!file) {
+                    preview.style.display = "none";
+                    preview.src = "";
+                    placeholder.style.display = "grid";
+                    return;
+                }
+
+                const reader = new FileReader();
+
+                reader.onload = function (e) {
+                    preview.src = e.target.result;
+                    preview.style.display = "block";
+                    placeholder.style.display = "none";
+                };
+
+                reader.readAsDataURL(file);
+            });
+        })();
+    </script>
+}

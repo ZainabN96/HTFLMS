@@ -1,0 +1,95 @@
+﻿@{
+    ViewData["Title"] = "Edit Lesson";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    var courseId = ViewBag.CourseId ?? 0;
+    var moduleId = ViewBag.ModuleId ?? 0;
+    var lessonId = ViewBag.LessonId ?? 0;
+}
+
+<div class="dashboard-page admin-content-page">
+    <div class="dashboard-page-head admin-content-head">
+        <div>
+            <h1 class="dashboard-h1">Edit Lesson</h1>
+            <p class="dashboard-sub">Update the lesson and keep it assigned to the correct module.</p>
+        </div>
+
+        <div class="admin-content-head-actions">
+            <a asp-area="Admin"
+               asp-controller="ModulesLessons"
+               asp-action="Index"
+               asp-route-id="@courseId"
+               class="dashboard-btn dashboard-btn-outline">
+                <i class="bi bi-arrow-left"></i>
+                Back to Modules & Lessons
+            </a>
+        </div>
+    </div>
+
+    <div class="dashboard-panel admin-form-panel">
+        <div class="dashboard-panel-head">
+            <div>
+                <div class="dashboard-panel-title">Lesson Details</div>
+                <div class="dashboard-muted-small">Update lesson content for the selected course and module.</div>
+            </div>
+        </div>
+
+        <form asp-area="Admin"
+              asp-controller="ModulesLessons"
+              asp-action="EditLesson"
+              method="post"
+              class="admin-form-grid">
+
+            <input type="hidden" name="courseId" value="@courseId" />
+            <input type="hidden" name="lessonId" value="@lessonId" />
+
+            <div class="admin-form-group">
+                <label class="admin-form-label">Module</label>
+                <select name="moduleId" class="course-input">
+                    <option value="">Select module</option>
+                    <option value="1" selected>Module 1: Introduction to Web Development</option>
+                    <option value="2">Module 2: JavaScript Fundamentals</option>
+                    <option value="3">Module 3: React Basics</option>
+                    <option value="4">Module 4: Advanced React Patterns</option>
+                </select>
+            </div>
+
+            <div class="admin-form-group">
+                <label class="admin-form-label">Display Order</label>
+                <input type="number"
+                       name="displayOrder"
+                       class="course-input"
+                       value="1"
+                       min="1" />
+            </div>
+
+            <div class="admin-form-group admin-form-group-full">
+                <label class="admin-form-label">Lesson Title</label>
+                <input type="text"
+                       name="title"
+                       class="course-input"
+                       value="What is Web Development?" />
+            </div>
+
+            <div class="admin-form-group admin-form-group-full">
+                <label class="admin-form-label">Lesson Content</label>
+                <textarea name="content"
+                          class="course-input admin-textarea admin-content-textarea">This lesson introduces web development, explains what websites are, and gives students a beginner-friendly overview of HTML, CSS, and JavaScript.</textarea>
+            </div>
+
+            <div class="admin-form-actions admin-form-group-full">
+                <a asp-area="Admin"
+                   asp-controller="ModulesLessons"
+                   asp-action="Index"
+                   asp-route-id="@courseId"
+                   class="dashboard-btn dashboard-btn-outline">
+                    Cancel
+                </a>
+
+                <button type="submit" class="dashboard-btn add-course-btn">
+                    <i class="bi bi-check2-circle"></i>
+                    Update Lesson
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,215 @@
+﻿@{
+    ViewData["Title"] = "Manage Courses";
+    Layout = "_AdminLayout";
+}
+
+<div class="dashboard-page admin-courses-page">
+    <div class="dashboard-page-head admin-courses-page-head">
+        <div>
+            <h1 class="dashboard-h1">Manage Courses</h1>
+            <p class="dashboard-sub">Manage all courses, modules, and lessons.</p>
+        </div>
+
+        <div class="admin-courses-head-actions">
+            <div class="courses-head-search">
+                <i class="bi bi-search"></i>
+                <input type="text" placeholder="Search courses..." />
+            </div>
+
+            <a asp-area="Admin"
+               asp-controller="Courses"
+               asp-action="Create"
+               class="dashboard-btn add-course-btn admin-add-course-btn">
+                <i class="bi bi-plus-circle"></i> Add Course
+            </a>
+        </div>
+    </div>
+
+    <div class="dashboard-stats">
+        <div class="dashboard-stat-card">
+            <div class="dashboard-stat-top">
+                <div class="dashboard-stat-title">Total Courses</div>
+                <i class="bi bi-journal-bookmark"></i>
+            </div>
+            <div class="dashboard-stat-value">4</div>
+            <div class="dashboard-stat-meta">Available in system</div>
+        </div>
+
+        <div class="dashboard-stat-card">
+            <div class="dashboard-stat-top">
+                <div class="dashboard-stat-title">Active Courses</div>
+                <i class="bi bi-check2-circle"></i>
+            </div>
+            <div class="dashboard-stat-value">3</div>
+            <div class="dashboard-stat-meta">Currently published</div>
+        </div>
+
+        <div class="dashboard-stat-card">
+            <div class="dashboard-stat-top">
+                <div class="dashboard-stat-title">Draft Courses</div>
+                <i class="bi bi-pencil-square"></i>
+            </div>
+            <div class="dashboard-stat-value">1</div>
+            <div class="dashboard-stat-meta">Pending completion</div>
+        </div>
+
+        <div class="dashboard-stat-card">
+            <div class="dashboard-stat-top">
+                <div class="dashboard-stat-title">Total Students</div>
+                <i class="bi bi-people"></i>
+            </div>
+            <div class="dashboard-stat-value">128</div>
+            <div class="dashboard-stat-meta">Across all courses</div>
+        </div>
+    </div>
+
+    <div class="dashboard-panel admin-courses-table-panel">
+        <div class="dashboard-panel-head">
+            <div class="dashboard-panel-title">All Courses</div>
+            <div class="dashboard-muted-small">4 course(s)</div>
+        </div>
+
+        <div class="dashboard-table-wrap">
+            <div class="dashboard-table-row dashboard-table-head courses-table-row admin-courses-table-head">
+                <div>Title</div>
+                <div>Category</div>
+                <div>Students</div>
+                <div>Status</div>
+                <div>Created</div>
+                <div>Actions</div>
+            </div>
+
+            <div class="dashboard-table-row courses-table-row admin-courses-table-row">
+                <div class="courses-coursecell dashboard-table-cell-ellipsis" title="React Advanced Patterns">
+                    <div class="courses-title-wrap">
+                        <div class="course-thumb">
+                            <img src="~/img/course/course-1.webp" alt="React Advanced Patterns" />
+                        </div>
+                        <div class="courses-title-block">
+                            <div class="courses-title" title="React Advanced Patterns">React Advanced Patterns</div>
+                            <div class="courses-sub-text dashboard-table-cell-ellipsis" title="Frontend">Frontend</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="dashboard-table-cell-ellipsis" title="Frontend">
+                    <span class="admin-course-chip">Frontend</span>
+                </div>
+                <div class="dashboard-table-cell-ellipsis" title="34">34</div>
+                <div title="Active"><span class="pill pill-green">Active</span></div>
+                <div class="dashboard-table-cell-ellipsis" title="Feb 25, 2026">Feb 25, 2026</div>
+                <div class="admin-courses-actions">
+                    <a asp-area="Admin"
+                       asp-controller="Courses"
+                       asp-action="Edit"
+                       asp-route-id="1"
+                       class="dashboard-btn dashboard-btn-outline admin-course-action-btn">
+                        Edit
+                    </a>
+
+                    <button type="button" class="dashboard-btn admin-delete-soft-btn admin-course-action-btn">
+                        Delete
+                    </button>
+                </div>
+            </div>
+
+            <div class="dashboard-table-row courses-table-row admin-courses-table-row">
+                <div class="courses-coursecell dashboard-table-cell-ellipsis" title="Node.js Backend Development">
+                    <div class="courses-title-wrap">
+                        <div class="course-thumb">
+                            <img src="~/img/course/course-1.webp" alt="Node.js Backend Development" />
+                        </div>
+                        <div class="courses-title-block">
+                            <div class="courses-title" title="Node.js Backend asndlk lk kjdaskdn askd asdkln asdnasod als">Node.js Backend asndlk lk kjdaskdn askd asdkln asdnasod als</div>
+                            <div class="courses-sub-text dashboard-table-cell-ellipsis" title="Backend">Backend</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="dashboard-table-cell-ellipsis" title="Backend">
+                    <span class="admin-course-chip">Backend</span>
+                </div>
+                <div class="dashboard-table-cell-ellipsis" title="29">29</div>
+                <div title="Active"><span class="pill pill-green">Active</span></div>
+                <div class="dashboard-table-cell-ellipsis" title="Feb 20, 2026">Feb 20, 2026</div>
+                <div class="admin-courses-actions">
+                    <a asp-area="Admin"
+                       asp-controller="Courses"
+                       asp-action="Edit"
+                       asp-route-id="2"
+                       class="dashboard-btn dashboard-btn-outline admin-course-action-btn">
+                        Edit
+                    </a>
+
+                    <button type="button" class="dashboard-btn admin-delete-soft-btn admin-course-action-btn">
+                        Delete
+                    </button>
+                </div>
+            </div>
+
+            <div class="dashboard-table-row courses-table-row admin-courses-table-row">
+                <div class="courses-coursecell dashboard-table-cell-ellipsis" title="Python for Data Science">
+                    <div class="courses-title-wrap">
+                        <div class="course-thumb">
+                            <img src="~/img/course/course-1.webp" alt="Python for Data Science" />
+                        </div>
+                        <div class="courses-title-block">
+                            <div class="courses-title" title="Python for Data Science">Python for Data Science</div>
+                            <div class="courses-sub-text dashboard-table-cell-ellipsis" title="Data Science">Data Science</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="dashboard-table-cell-ellipsis" title="Data Science">
+                    <span class="admin-course-chip">Data Science</span>
+                </div>
+                <div class="dashboard-table-cell-ellipsis" title="41">41</div>
+                <div title="Active"><span class="pill pill-green">Active</span></div>
+                <div class="dashboard-table-cell-ellipsis" title="Mar 01, 2026">Mar 01, 2026</div>
+                <div class="admin-courses-actions">
+                    <a asp-area="Admin"
+                       asp-controller="Courses"
+                       asp-action="Edit"
+                       asp-route-id="3"
+                       class="dashboard-btn dashboard-btn-outline admin-course-action-btn">
+                        Edit
+                    </a>
+
+                    <button type="button" class="dashboard-btn admin-delete-soft-btn admin-course-action-btn">
+                        Delete
+                    </button>
+                </div>
+            </div>
+
+            <div class="dashboard-table-row courses-table-row admin-courses-table-row">
+                <div class="courses-coursecell dashboard-table-cell-ellipsis" title="Full Stack Web Development">
+                    <div class="courses-title-wrap">
+                        <div class="course-thumb">
+                            <img src="~/img/course/course-1.webp" alt="Full Stack Web Development" />
+                        </div>
+                        <div class="courses-title-block">
+                            <div class="courses-title" title="Full Stack Web Development">Full Stack Web Development</div>
+                            <div class="courses-sub-text dashboard-table-cell-ellipsis" title="Development">Development</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="dashboard-table-cell-ellipsis" title="Development">
+                    <span class="admin-course-chip">Development</span>
+                </div>
+                <div class="dashboard-table-cell-ellipsis" title="24">24</div>
+                <div title="Draft"><span class="pill pill-yellow">Draft</span></div>
+                <div class="dashboard-table-cell-ellipsis" title="Mar 03, 2026">Mar 03, 2026</div>
+                <div class="admin-courses-actions">
+                    <a asp-area="Admin"
+                       asp-controller="Courses"
+                       asp-action="Edit"
+                       asp-route-id="4"
+                       class="dashboard-btn dashboard-btn-outline admin-course-action-btn">
+                        Edit
+                    </a>
+
+                    <button type="button" class="dashboard-btn admin-delete-soft-btn admin-course-action-btn">
+                        Delete
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

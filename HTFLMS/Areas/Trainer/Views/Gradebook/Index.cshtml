@@ -1,0 +1,179 @@
+﻿@{
+    ViewData["Title"] = "Gradebook";
+    Layout = "_TrainerLayout";
+}
+
+<div class="dashboard-page trainer-content-page trainer-gradebook-page">
+    <div class="dashboard-page-head trainer-content-head">
+        <div>
+            <h1 class="dashboard-h1">Gradebook</h1>
+            <p class="dashboard-sub">Track student grades across your assigned courses and assessments.</p>
+        </div>
+    </div>
+
+    <!-- STATS -->
+    <div class="dashboard-stats trainer-content-stats">
+        <div class="dashboard-stat-card">
+            <div class="dashboard-stat-top">
+                <div class="dashboard-stat-title">Overall Class Avg</div>
+                <i class="bi bi-bar-chart-line"></i>
+            </div>
+            <div class="dashboard-stat-value trainer-grade-good">84.2%</div>
+            <div class="dashboard-stat-meta">Across selected course</div>
+        </div>
+
+        <div class="dashboard-stat-card">
+            <div class="dashboard-stat-top">
+                <div class="dashboard-stat-title">Highest Score</div>
+                <i class="bi bi-trophy"></i>
+            </div>
+            <div class="dashboard-stat-value">96%</div>
+            <div class="dashboard-stat-meta">Top student overall</div>
+        </div>
+
+        <div class="dashboard-stat-card">
+            <div class="dashboard-stat-top">
+                <div class="dashboard-stat-title">Lowest Score</div>
+                <i class="bi bi-graph-down-arrow"></i>
+            </div>
+            <div class="dashboard-stat-value trainer-grade-danger">61%</div>
+            <div class="dashboard-stat-meta">Needs improvement</div>
+        </div>
+
+        <div class="dashboard-stat-card">
+            <div class="dashboard-stat-top">
+                <div class="dashboard-stat-title">At Risk Students</div>
+                <i class="bi bi-exclamation-triangle"></i>
+            </div>
+            <div class="dashboard-stat-value trainer-grade-warn">2</div>
+            <div class="dashboard-stat-meta">Need attention soon</div>
+        </div>
+    </div>
+
+    <!-- COURSE OVERVIEW -->
+    <div class="dashboard-panel trainer-content-panel trainer-gradebook-filter-panel">
+
+        <div class="dashboard-panel-head trainer-content-panel-head trainer-gradebook-filter-head">
+            <div class="dashboard-panel-title">
+                Course Overview
+            </div>
+
+            <div class="courses-head-search trainer-gradebook-search">
+                <i class="bi bi-search"></i>
+                <input type="text" placeholder="Search student..." />
+            </div>
+        </div>
+
+        <div class="trainer-gradebook-filter-row">
+            <select class="course-input trainer-inline-select trainer-gradebook-select">
+                <option selected>Full Stack Web Development</option>
+                <option>React Advanced Patterns</option>
+                <option>Python for Data Science</option>
+                <option>Node.js Backend Development</option>
+            </select>
+
+            <select class="course-input trainer-inline-select trainer-gradebook-select">
+                <option selected>All statuses</option>
+                <option>Excellent</option>
+                <option>Good</option>
+                <option>At risk</option>
+                <option>Pending</option>
+                <option>Missing</option>
+                <option>Completed</option>
+            </select>
+
+            <a href="#" class="dashboard-btn dashboard-btn-outline trainer-gradebook-export-btn">
+                <i class="bi bi-download"></i>
+                Export CSV/PDF
+            </a>
+        </div>
+    </div>
+
+    <!-- TABLE -->
+    <div class="dashboard-panel trainer-content-panel trainer-gradebook-panel">
+        <div class="dashboard-panel-head trainer-content-panel-head">
+            <div>
+                <div class="dashboard-panel-title">Gradebook Records</div>
+            </div>
+
+            <div class="dashboard-muted-small">5 student(s)</div>
+        </div>
+
+        <div class="dashboard-table-wrap trainer-gradebook-table-wrap">
+            <div class="dashboard-table-row dashboard-table-head trainer-gradebook-table-row trainer-gradebook-table-head">
+                <div title="Student">Student</div>
+                <div title="Assignment 1 Abstract out of 20">A1: Abstract<br /><span class="trainer-gradebook-sub">/20</span></div>
+                <div title="Module 1 Assessment out of 30">M1 Assessment<br /><span class="trainer-gradebook-sub">/30</span></div>
+                <div title="Assignment 2 Reading out of 15">A2: Reading<br /><span class="trainer-gradebook-sub">/15</span></div>
+                <div title="Module 2 Assessment out of 25">M2 Assessment<br /><span class="trainer-gradebook-sub">/25</span></div>
+                <div title="Overall Percentage">Overall %</div>
+                <div title="Student Standing">Standing</div>
+                <div title="Certificate Status">Certificate</div>
+            </div>
+
+            <div class="dashboard-table-row trainer-gradebook-table-row">
+                <div class="dashboard-cell-strong" title="daudrana400">daudrana400</div>
+                <div class="trainer-grade-good" title="18">18</div>
+                <div class="trainer-grade-good" title="23">23</div>
+                <div title="Pending"><span class="pill trainer-grade-pill-warn">Pending</span></div>
+                <div title="Missing"><span class="pill trainer-grade-pill-danger">Missing</span></div>
+                <div class="dashboard-cell-strong" title="84%">84%</div>
+                <div title="Good"><span class="pill trainer-grade-pill-good">Good</span></div>
+                <div title="Approved"><span class="pill trainer-grade-pill-good">Approved</span></div>
+            </div>
+
+            <div class="dashboard-table-row trainer-gradebook-table-row">
+                <div class="dashboard-cell-strong" title="Ali Hassan">Ali Hassan</div>
+                <div class="trainer-grade-good" title="20">20</div>
+                <div class="trainer-grade-good" title="28">28</div>
+                <div class="trainer-grade-good" title="14">14</div>
+                <div class="trainer-grade-good" title="24">24</div>
+                <div class="dashboard-cell-strong" title="93%">93%</div>
+                <div title="Completed"><span class="pill trainer-grade-pill-good">Completed</span></div>
+                <div class="trainer-gradebook-certificate-actions">
+                    <a href="#" class="dashboard-btn dashboard-btn-sm trainer-certificate-approve-btn" title="Approve certificate">
+                        <i class="bi bi-check-circle"></i>
+                        Approve
+                    </a>
+                    <a href="#" class="dashboard-btn dashboard-btn-sm dashboard-btn-outline trainer-certificate-reject-btn" title="Reject certificate">
+                        <i class="bi bi-x-circle"></i>
+                        Reject
+                    </a>
+                </div>
+            </div>
+
+            <div class="dashboard-table-row trainer-gradebook-table-row">
+                <div class="dashboard-cell-strong" title="Sara Malik">Sara Malik</div>
+                <div class="trainer-grade-warn" title="14">14</div>
+                <div class="trainer-grade-warn" title="19">19</div>
+                <div title="Pending"><span class="pill trainer-grade-pill-warn">Pending</span></div>
+                <div title="Missing"><span class="pill trainer-grade-pill-danger">Missing</span></div>
+                <div class="dashboard-cell-strong trainer-grade-danger" title="74%">74%</div>
+                <div title="At risk"><span class="pill trainer-grade-pill-risk">At risk</span></div>
+                <div title="Rejected"><span class="pill trainer-grade-pill-danger">Rejected</span></div>
+            </div>
+
+            <div class="dashboard-table-row trainer-gradebook-table-row">
+                <div class="dashboard-cell-strong" title="Omar Sheikh">Omar Sheikh</div>
+                <div class="trainer-grade-good" title="19">19</div>
+                <div class="trainer-grade-good" title="27">27</div>
+                <div class="trainer-grade-good" title="13">13</div>
+                <div class="trainer-grade-good" title="22">22</div>
+                <div class="dashboard-cell-strong" title="90%">90%</div>
+                <div title="Completed"><span class="pill trainer-grade-pill-good">Completed</span></div>
+                <div title="Approved"><span class="pill trainer-grade-pill-good">Approved</span></div>
+            </div>
+
+            <div class="dashboard-table-row trainer-gradebook-table-row">
+                <div class="dashboard-cell-strong" title="Hina Rao">Hina Rao</div>
+                <div class="trainer-grade-danger" title="10">10</div>
+                <div class="trainer-grade-danger" title="15">15</div>
+                <div title="Missing"><span class="pill trainer-grade-pill-danger">Missing</span></div>
+                <div title="Missing"><span class="pill trainer-grade-pill-danger">Missing</span></div>
+                <div class="dashboard-cell-strong trainer-grade-danger" title="61%">61%</div>
+                <div title="At risk"><span class="pill trainer-grade-pill-risk">At risk</span></div>
+                <div title="Rejected"><span class="pill trainer-grade-pill-danger">Rejected</span></div>
+            </div>
+        </div>
+    </div>
+</div>

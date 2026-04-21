@@ -3,9 +3,9 @@
 }
 @if (!string.IsNullOrWhiteSpace(msg))
 {
-    <div id="loginSuccessPopup" class="login-success-popup" role="status" aria-live="polite">
-        <span class="popup-icon">✓</span>
-        <span class="popup-text">@msg</span>
+    <div id="appToast" class="app-toast" role="status" aria-live="polite">
+        <span class="app-toast-icon">✓</span>
+        <span class="app-toast-text">@msg</span>
     </div>
 
     <script>
@@ -17,19 +17,19 @@
 
                 setTimeout(() => {
                     loader.remove();
-                    showLoginSuccessPopup();
+                    showSuccessPopup();
                 }, 400);
             } else {
-                showLoginSuccessPopup();
+                showSuccessPopup();
             }
 
-            function showLoginSuccessPopup() {
-                const popup = document.getElementById("loginSuccessPopup");
+            function showSuccessPopup() {
+                const popup = document.getElementById("appToast");
                 if (!popup) return;
 
                 popup.classList.add("show");
                 setTimeout(() => popup.classList.remove("show"), 3500);
             }
         });
-    </script>
-}
+        </script>
+} 

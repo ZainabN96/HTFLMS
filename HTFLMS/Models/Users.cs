@@ -50,5 +50,7 @@ namespace HTFLMS.Models
 
         public bool IsActive { get; set; } = true;
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        [Required]
+        public string Designation { get; set; } = "";
     }
 }

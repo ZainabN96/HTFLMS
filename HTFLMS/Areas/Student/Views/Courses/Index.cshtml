@@ -1,0 +1,163 @@
+﻿@{
+    ViewData["Title"] = "My Courses";
+    Layout = "_StudentLayout";
+}
+
+<div class="dashboard-page course-page-wrap">
+
+    <div class="dashboard-page-head course-page-header-simple">
+        <div>
+            <h1 class="dashboard-h1">My Courses</h1>
+            <p class="dashboard-sub">Continue your learning journey</p>
+        </div>
+    </div>
+
+    <div class="student-course-grid">
+
+        <a asp-area="Student"
+           asp-controller="Courses"
+           asp-action="Details"
+           asp-route-id="1"
+           class="student-course-card">
+            <div class="student-course-image-wrap">
+                <img src="~/img/course/course-1.webp" alt="Full Stack Web Development" class="student-course-image" />
+                <span class="student-course-tag">Development</span>
+            </div>
+
+            <div class="student-course-body">
+                <h3 class="student-course-title">Full Stack Web Development</h3>
+                <p class="student-course-author">by John Doe</p>
+
+                <div class="student-course-progress-top">
+                    <span>Progress</span>
+                    <span>65%</span>
+                </div>
+
+                <div class="student-course-progress">
+                    <div class="student-course-progress-fill" style="width: 65%;"></div>
+                </div>
+
+                <div class="student-course-meta">
+                    <div class="student-course-meta-item">
+                        <i class="bi bi-book"></i>
+                        <span>8/12 Modules</span>
+                    </div>
+                    <div class="student-course-meta-item">
+                        <i class="bi bi-clock"></i>
+                        <span>Jan 15, 2026</span>
+                    </div>
+                </div>
+            </div>
+        </a>
+
+        <a asp-area="Student"
+           asp-controller="Courses"
+           asp-action="Details"
+           asp-route-id="2"
+           class="student-course-card">
+            <div class="student-course-image-wrap">
+                <img src="~/img/course/course-1.webp" alt="React Advanced Patterns" class="student-course-image" />
+                <span class="student-course-tag">Frontend</span>
+            </div>
+
+            <div class="student-course-body">
+                <h3 class="student-course-title">React Advanced Patterns</h3>
+                <p class="student-course-author">by Jane Smith</p>
+
+                <div class="student-course-progress-top">
+                    <span>Progress</span>
+                    <span>30%</span>
+                </div>
+
+                <div class="student-course-progress">
+                    <div class="student-course-progress-fill" style="width: 30%;"></div>
+                </div>
+
+                <div class="student-course-meta">
+                    <div class="student-course-meta-item">
+                        <i class="bi bi-book"></i>
+                        <span>2/8 Modules</span>
+                    </div>
+                    <div class="student-course-meta-item">
+                        <i class="bi bi-clock"></i>
+                        <span>Feb 1, 2026</span>
+                    </div>
+                </div>
+            </div>
+        </a>
+
+        <a asp-area="Student"
+           asp-controller="Courses"
+           asp-action="Details"
+           asp-route-id="3"
+           class="student-course-card">
+            <div class="student-course-image-wrap">
+                <img src="~/img/course/course-1.webp" alt="Node.js Backend Development" class="student-course-image" />
+                <span class="student-course-tag">Backend</span>
+            </div>
+
+            <div class="student-course-body">
+                <h3 class="student-course-title">Node.js Backend Development</h3>
+                <p class="student-course-author">by Mike Johnson</p>
+
+                <div class="student-course-progress-top">
+                    <span>Progress</span>
+                    <span>45%</span>
+                </div>
+
+                <div class="student-course-progress">
+                    <div class="student-course-progress-fill" style="width: 45%;"></div>
+                </div>
+
+                <div class="student-course-meta">
+                    <div class="student-course-meta-item">
+                        <i class="bi bi-book"></i>
+                        <span>4/10 Modules</span>
+                    </div>
+                    <div class="student-course-meta-item">
+                        <i class="bi bi-clock"></i>
+                        <span>Jan 20, 2026</span>
+                    </div>
+                </div>
+            </div>
+        </a>
+
+        <a asp-area="Student"
+           asp-controller="Courses"
+           asp-action="Details"
+           asp-route-id="4"
+           class="student-course-card">
+            <div class="student-course-image-wrap">
+                <img src="~/img/course/course-1.webp" alt="Python for Data Science" class="student-course-image" />
+                <span class="student-course-tag">Data Science</span>
+            </div>
+
+            <div class="student-course-body">
+                <h3 class="student-course-title">Python for Data Science</h3>
+                <p class="student-course-author">by Sarah Lee</p>
+
+                <div class="student-course-progress-top">
+                    <span>Progress</span>
+                    <span>80%</span>
+                </div>
+
+                <div class="student-course-progress">
+                    <div class="student-course-progress-fill" style="width: 80%;"></div>
+                </div>
+
+                <div class="student-course-meta">
+                    <div class="student-course-meta-item">
+                        <i class="bi bi-book"></i>
+                        <span>10/12 Modules</span>
+                    </div>
+                    <div class="student-course-meta-item">
+                        <i class="bi bi-clock"></i>
+                        <span>Mar 10, 2026</span>
+                    </div>
+                </div>
+            </div>
+        </a>
+
+    </div>
+
+</div>

@@ -1,12 +1,15 @@
 ﻿@{
     ViewData["Title"] = "My Course";
-    Layout = "_Layout";
+    Layout = "_StudentLayout";
 }
 
-<main class="main">
+<main class="main"> 
+    <section class="course-shell section"> 
+        <div class="container course-container">
 
-    <section class="course-shell section">
-        <div class="container">
+            <div>
+                <h1 class="admin-h1 course-page-title">My Course</h1>
+            </div>
 
             <div class="course-grid">
 
@@ -43,7 +46,6 @@
                         </button>
                     </nav>
 
-                    <!-- Bottom links (no Discussion / Messages) -->
                     <div class="course-nav-bottom" id="courseBottomNav">
                         <button type="button" class="course-nav-link-item" data-view="grades">
                             Grades
@@ -192,7 +194,7 @@
                         </div>
 
                         <div class="info-section taught-by">
-                            <div class="teacher-pic"></div>
+                            <img class="teacher-pic" src="~/img/person/person-f-9.webp" alt="Trainer" />
                             <div>
                                 <div class="info-h">Taught by:</div>
                                 <div class="teacher-name">Dr. Kristin Sainani</div>
@@ -226,8 +228,8 @@
 
                 </section>
 
-                <!-- RIGHT PANEL (keep as-is for module view; you can also show it on other views if you want) -->
-                <aside class="course-right">
+                <!-- RIGHT PANEL -->
+                <aside class="course-right" id="courseRight">
                     <div class="side-card">
                         <div class="side-title">Learning plan</div>
                         <p class="side-text">
@@ -266,15 +268,14 @@
                 </aside>
 
             </div>
-        </div>
-    </section>
 
+        </div>
+    </section> 
 </main>
 
 @section Scripts {
     <script>
         (function () {
-            // Module data (same idea as before)
             const data = {
                 1: {
                     title: "Module 1",
@@ -325,7 +326,6 @@
             const courseNav = document.getElementById("courseNav");
             const bottomNav = document.getElementById("courseBottomNav");
 
-            // Module DOM
             const moduleHeader = document.getElementById("moduleHeader");
             const moduleCard = document.getElementById("moduleCard");
             const moduleNum = document.getElementById("moduleNum");
@@ -334,10 +334,11 @@
             const moduleSummary = document.getElementById("moduleSummary");
             const lessonList = document.getElementById("lessonList");
 
-            // Views
             const gradesView = document.getElementById("gradesView");
             const notesView = document.getElementById("notesView");
             const infoView = document.getElementById("infoView");
+
+            const courseRight = document.getElementById("courseRight");
 
             function renderLessons(lessons) {
                 lessonList.innerHTML = lessons.map(l => {
@@ -368,24 +369,22 @@
             }
 
             function showOnly(view) {
-                // module elements
                 const isModule = view === "module";
                 moduleHeader.style.display = isModule ? "" : "none";
                 moduleSummary.style.display = isModule ? "" : "none";
                 moduleCard.style.display = isModule ? "" : "none";
 
-                // other views
                 gradesView.style.display = view === "grades" ? "" : "none";
                 notesView.style.display = view === "notes" ? "" : "none";
                 infoView.style.display = view === "info" ? "" : "none";
+
+                // CHANGE REQUESTED: keep right panel visible for Grades/Notes/Course Info too
+                if (courseRight) courseRight.style.display = "";
             }
 
             function setActiveSidebar(btn) {
-                // active in modules
                 [...courseNav.querySelectorAll(".course-nav-item")].forEach(b => b.classList.remove("active"));
-                // active in bottom
                 [...bottomNav.querySelectorAll(".course-nav-link-item")].forEach(b => b.classList.remove("active"));
-
                 btn.classList.add("active");
             }
 
@@ -402,7 +401,6 @@
                 showOnly("module");
             }
 
-            // Modules click
             courseNav.addEventListener("click", (e) => {
                 const btn = e.target.closest(".course-nav-item");
                 if (!btn) return;
@@ -411,7 +409,6 @@
                 setModule(btn.dataset.module);
             });
 
-            // Bottom links click
             bottomNav.addEventListener("click", (e) => {
                 const btn = e.target.closest(".course-nav-link-item");
                 if (!btn) return;
@@ -420,7 +417,6 @@
                 showOnly(btn.dataset.view);
             });
 
-            // Init default
             const first = courseNav.querySelector('[data-module="1"]');
             setActiveSidebar(first);
             setModule(1);

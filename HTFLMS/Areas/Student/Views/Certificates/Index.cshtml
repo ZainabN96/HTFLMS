@@ -1,0 +1,150 @@
+﻿@{
+    ViewData["Title"] = "Certificates";
+    Layout = "_StudentLayout";
+}
+
+<div class="dashboard-page course-page-wrap">
+
+    <div class="student-grades-head">
+        <div>
+            <h1 class="dashboard-h1">Certificates</h1>
+            <p class="dashboard-sub">Download certificates for courses you have completed</p>
+        </div>
+
+        <div class="student-grades-head-actions">
+            <div class="dashboard-search student-grades-search">
+                <i class="bi bi-search"></i>
+                <input type="text" id="certificateSearch" placeholder="Search certificates or courses..." />
+            </div>
+        </div>
+    </div>
+
+    <div class="certificate-summary-bar">
+        <div class="student-count-pill">
+            Total Certificates: 2
+        </div>
+    </div>
+
+    <div class="student-course-grid certificate-grid">
+
+        <div class="student-course-card certificate-card" data-title="Full Stack Web Development">
+            <div class="student-course-image-wrap certificate-image-wrap">
+                <img src="~/img/course/certificate.png" alt="Full Stack Web Development Certificate" class="student-course-image" />
+                <span class="student-course-tag">Completed</span>
+            </div>
+
+            <div class="student-course-body">
+                <h3 class="student-course-title">Full Stack Web Development</h3>
+                <p class="student-course-author">Issued to Daud Iqbal</p>
+
+                <div class="certificate-meta">
+                    <div class="student-course-meta-item">
+                        <i class="bi bi-award"></i>
+                        <span>Certificate Ready</span>
+                    </div>
+
+                    <div class="student-course-meta-item">
+                        <i class="bi bi-calendar-event"></i>
+                        <span>Issued: Jan 15, 2026</span>
+                    </div>
+                </div>
+
+                <div class="certificate-actions">
+                    <a asp-area="Student"
+                       asp-controller="Certificates"
+                       asp-action="ViewCertificate"
+                       asp-route-id="1"
+                       class="student-material-btn">
+                        <i class="bi bi-eye"></i>
+                        View Certificate
+                    </a>
+
+                    <a href="~/img/course/certificate.pdf"
+                       download
+                       class="student-material-btn download">
+                        <i class="bi bi-download"></i> Download PDF
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="student-course-card certificate-card" data-title="Python for Data Science">
+            <div class="student-course-image-wrap certificate-image-wrap">
+                <img src="~/img/course/certificate.png" alt="Python for Data Science Certificate" class="student-course-image" />
+                <span class="student-course-tag">Completed</span>
+            </div>
+
+            <div class="student-course-body">
+                <h3 class="student-course-title">Python for Data Science</h3>
+                <p class="student-course-author">Issued to Daud Iqbal</p>
+
+                <div class="certificate-meta">
+                    <div class="student-course-meta-item">
+                        <i class="bi bi-award"></i>
+                        <span>Certificate Ready</span>
+                    </div>
+
+                    <div class="student-course-meta-item">
+                        <i class="bi bi-calendar-event"></i>
+                        <span>Issued: Mar 10, 2026</span>
+                    </div>
+                </div>
+
+                <div class="certificate-actions">
+                    <a asp-area="Student"
+                       asp-controller="Certificates"
+                       asp-action="ViewCertificate"
+                       asp-route-id="1"
+                       class="student-material-btn">
+                        <i class="bi bi-eye"></i>
+                        View Certificate
+                    </a>
+
+                    <a href="~/uploads/certificates/python-data-science-certificate.pdf"
+                       download
+                       class="student-material-btn download">
+                        <i class="bi bi-download"></i> Download PDF
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="certificate-empty-state" style="display:none;">
+        <div class="dashboard-panel">
+            <div class="certificate-empty-inner">
+                <div class="certificate-empty-icon">
+                    <i class="bi bi-patch-check"></i>
+                </div>
+                <h3>No certificates yet</h3>
+                <p>Complete your courses to unlock downloadable certificates here.</p>
+            </div>
+        </div>
+    </div>
+
+</div>
+@section Scripts {
+    <script>
+        (function () {
+            const searchInput = document.getElementById('certificateSearch');
+            const cards = document.querySelectorAll('.certificate-card');
+
+            if (!searchInput) return;
+
+            searchInput.addEventListener('input', function () {
+                const term = this.value.toLowerCase().trim();
+
+                cards.forEach(card => {
+                    const title = (card.getAttribute('data-title') || '').toLowerCase();
+
+                    if (title.includes(term)) {
+                        card.style.display = '';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+        })();
+    </script>
+}

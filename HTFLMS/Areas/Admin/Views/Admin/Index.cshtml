@@ -1,0 +1,187 @@
+﻿@{
+    ViewData["Title"] = "Admin Dashboard";
+    Layout = "_AdminLayout";
+}
+
+<div class="dashboard-page">
+
+    <div class="dashboard-page-head">
+        <div>
+            <h1 class="dashboard-h1">Dashboard</h1>
+            <p class="dashboard-sub">Overview of activity, users, enrollments, and courses.</p>
+        </div>
+
+        @* Keep hidden for now, same idea as before
+        <div class="dashboard-head-actions">
+            <a class="dashboard-btn dashboard-btn-outline" href="#">
+                <i class="bi bi-plus-circle"></i> Add Course
+            </a>
+            <a class="dashboard-btn dashboard-btn-outline" href="#">
+                <i class="bi bi-person-plus"></i> Add User
+            </a>
+        </div>
+        *@
+    </div>
+
+    <div class="dashboard-stats">
+
+        <div class="dashboard-stat-card">
+            <div class="dashboard-stat-top">
+                <div class="dashboard-stat-title">Total Students</div>
+                <i class="bi bi-people"></i>
+            </div>
+            <div class="dashboard-stat-value">1,232</div>
+            <div class="dashboard-stat-meta">+32 this week</div>
+        </div>
+
+        <div class="dashboard-stat-card">
+            <div class="dashboard-stat-top">
+                <div class="dashboard-stat-title">Courses</div>
+                <i class="bi bi-journal-bookmark"></i>
+            </div>
+            <div class="dashboard-stat-value">64</div>
+            <div class="dashboard-stat-meta">+3 published</div>
+        </div>
+
+        <div class="dashboard-stat-card">
+            <div class="dashboard-stat-top">
+                <div class="dashboard-stat-title">Active Enrollments</div>
+                <i class="bi bi-person-check"></i>
+            </div>
+            <div class="dashboard-stat-value">2,915</div>
+            <div class="dashboard-stat-meta">78 pending approvals</div>
+        </div>
+
+        <div class="dashboard-stat-card">
+            <div class="dashboard-stat-top">
+                <div class="dashboard-stat-title">Trainers</div>
+                <i class="bi bi-person-badge"></i>
+            </div>
+            <div class="dashboard-stat-value">24</div>
+            <div class="dashboard-stat-meta">2 new this month</div>
+        </div>
+
+    </div>
+
+    <div class="dashboard-grid">
+
+        <div class="dashboard-panel">
+
+            <div class="dashboard-panel-head">
+                <div class="dashboard-panel-title">Recent Enrollments</div>
+                <a href="#" class="dashboard-panel-link">View all</a>
+            </div>
+
+            <div class="dashboard-table">
+
+                <div class="dashboard-table-row dashboard-table-head">
+                    <div>User</div>
+                    <div>Course</div>
+                    <div>Date</div>
+                    <div>Status</div>
+                </div>
+
+                <div class="dashboard-table-row">
+                    <div class="dashboard-cell-strong dashboard-table-cell-ellipsis" title="Sehrish">
+                        Sehrish
+                    </div>
+                    <div class="dashboard-table-cell-ellipsis" title="Website Design">
+                        Website Design
+                    </div>
+                    <div class="dashboard-table-cell-ellipsis" title="Feb 16">
+                        Feb 16
+                    </div>
+                    <div title="Active">
+                        <span class="pill pill-green">Active</span>
+                    </div>
+                </div>
+
+                <div class="dashboard-table-row">
+                    <div class="dashboard-cell-strong dashboard-table-cell-ellipsis" title="Zainab">
+                        Zainab
+                    </div>
+                    <div class="dashboard-table-cell-ellipsis" title="SEO Basics">
+                        SEO Basics
+                    </div>
+                    <div class="dashboard-table-cell-ellipsis" title="Feb 17">
+                        Feb 17
+                    </div>
+                    <div title="Pending">
+                        <span class="pill pill-yellow">Pending</span>
+                    </div>
+                </div>
+
+                <div class="dashboard-table-row">
+                    <div class="dashboard-cell-strong dashboard-table-cell-ellipsis" title="Ariba Iqbal">
+                        Ariba Iqbal
+                    </div>
+                    <div class="dashboard-table-cell-ellipsis" title="Copywriting">
+                        Copywriting
+                    </div>
+                    <div class="dashboard-table-cell-ellipsis" title="Feb 17">
+                        Feb 17
+                    </div>
+                    <div title="Active">
+                        <span class="pill pill-green">Active</span>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="dashboard-panel">
+
+            <div class="dashboard-panel-head">
+                <div class="dashboard-panel-title">Quick Management</div>
+            </div>
+
+            <div class="dashboard-actions">
+
+                <a href="#" class="dashboard-action-card">
+                    <div class="dashboard-action-icon">
+                        <i class="bi bi-journal-plus"></i>
+                    </div>
+                    <div>
+                        <div class="dashboard-action-title">Create a Course</div>
+                        <div class="dashboard-action-sub">Add course info, modules, lessons</div>
+                    </div>
+                </a>
+
+                <a href="#" class="dashboard-action-card">
+                    <div class="dashboard-action-icon">
+                        <i class="bi bi-collection-play"></i>
+                    </div>
+                    <div>
+                        <div class="dashboard-action-title">Manage Modules</div>
+                        <div class="dashboard-action-sub">Organize lessons and content</div>
+                    </div>
+                </a>
+
+                <a href="#" class="dashboard-action-card">
+                    <div class="dashboard-action-icon">
+                        <i class="bi bi-people"></i>
+                    </div>
+                    <div>
+                        <div class="dashboard-action-title">Manage Users</div>
+                        <div class="dashboard-action-sub">Students, Trainers, Admins</div>
+                    </div>
+                </a>
+
+                <a href="#" class="dashboard-action-card">
+                    <div class="dashboard-action-icon">
+                        <i class="bi bi-award"></i>
+                    </div>
+                    <div>
+                        <div class="dashboard-action-title">Grades & Results</div>
+                        <div class="dashboard-action-sub">Review performance and reports</div>
+                    </div>
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
