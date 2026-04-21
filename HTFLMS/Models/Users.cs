@@ -17,8 +17,8 @@ namespace HTFLMS.Models
         public string PasswordHash { get; set; } = "";
 
         // Title -> Gender
-        [Required]
-        public string Gender { get; set; } = "";
+
+        public string? Gender { get; set; } = "";
 
         [Required]
         public string Name { get; set; } = "";
@@ -34,23 +34,34 @@ namespace HTFLMS.Models
         // Address optional, Country/City required
         public string? Address { get; set; }
 
-        [Required]
-        public string Country { get; set; } = "";
+       
+        public string? Country { get; set; } = "";
 
-        [Required]
-        public string City { get; set; } = "";
+      
+        public string? City { get; set; } = "";
 
         [Required]
         public string MobileNumber { get; set; } = "";
 
         public string? LinkedIn { get; set; }
 
-        [Required]
-        public string EmploymentStatus { get; set; } = "";
+        
+        public string? EmploymentStatus { get; set; } = "";
 
         public bool IsActive { get; set; } = true;
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-        [Required]
-        public string Designation { get; set; } = "";
+        
+        public string? Designation { get; set; } = "";
+        // Navigation Properties
+        public ICollection<Course>? TrainerCourses { get; set; }
+        public ICollection<CourseEnrollment>? Enrollments { get; set; }
+        public ICollection<AssignmentSubmission>? AssignmentSubmissions { get; set; }
+        public ICollection<LessonProgress>? LessonProgresses { get; set; }
+        public ICollection<ModuleProgress>? ModuleProgresses { get; set; }
+        public ICollection<StudentQuizAttempt>? StudentQuizAttempts { get; set; }
+        public ICollection<Notification>? Notifications { get; set; }
+        public ICollection<CertificateRequest>? RequestedCertificates { get; set; }
+        public ICollection<CertificateRequest>? ApprovedCertificates { get; set; }
     }
 }
+   

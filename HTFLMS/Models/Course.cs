@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace HTFLMS.Models
@@ -7,46 +8,44 @@ namespace HTFLMS.Models
     {
         public int Id { get; set; }
 
-        [Required, MaxLength(160)]
+        [Required]
+        [StringLength(200)]
         public string Title { get; set; } = "";
 
-        [Required, MaxLength(80)]
+        [Required]
+        [StringLength(100)]
         public string Category { get; set; } = "";
 
-        [Required, MaxLength(120)]
-        public string InstructorName { get; set; } = "";
-
-        [MaxLength(80)]
-        public string? Level { get; set; }
-
-        [MaxLength(500)]
-        public string? ShortDescription { get; set; }
-
-        public string? Content { get; set; }
-
-        public string? ImageUrl { get; set; }
-
-        [MaxLength(50)]
-        public string? CourseCode { get; set; }
-
-        [MaxLength(80)]
-        public string? Duration { get; set; }
-
-        [MaxLength(80)]
-        public string? Language { get; set; }
-
-        public int? TotalModules { get; set; }
-
-        [MaxLength(50)]
-        public string? Certificate { get; set; }
-
-        /* REQUIRED STATUS */
         [Required]
-        public string Status { get; set; } = "";
+        public string Description { get; set; } = "";
 
-        public DateTime CreatedAtUtc { get; set; } = DateTime.UtcNow;
+        [StringLength(255)]
+        public string? HandbookFilePath { get; set; }
+
+        [StringLength(255)]
+        public string? CourseImagePath { get; set; }
 
         [Required]
-        public string TrainerId { get; set; } = "";
+        public int TrainerId { get; set; }
+
+        public bool IsPublished { get; set; } = false;
+        public bool IsActive { get; set; } = true;
+
+        [Required]
+        public DateTime BatchStartDate { get; set; }
+
+        public DateTime? BatchEndDate { get; set; }
+
+        public bool CertificateIncluded { get; set; } = false;
+
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+        // Navigation
+        public User? Trainer { get; set; }
+        public ICollection<Module>? Modules { get; set; }
+        public ICollection<Material>? Materials { get; set; }
+        public ICollection<Assignment>? Assignments { get; set; }
+        public ICollection<CourseEnrollment>? Enrollments { get; set; }
+        public ICollection<CertificateRequest>? CertificateRequests { get; set; }
     }
 }

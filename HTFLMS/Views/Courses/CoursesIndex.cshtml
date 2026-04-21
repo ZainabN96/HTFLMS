@@ -40,9 +40,9 @@
                              data-aos="zoom-in" data-aos-delay="100">
                             <div class="course-item">
 
-                                <img src="@(string.IsNullOrWhiteSpace(c.ImageUrl)
+                                <img src="@(string.IsNullOrWhiteSpace(c.CourseImagePath)
                                                                              ? Url.Content("~/img/course/course-2.webp")
-                                                                             : c.ImageUrl)"
+                                                                             : c.CourseImagePath)"
                                                                                           class="img-fluid course-cover" alt="">
 
                                 <div class="course-content">
@@ -54,9 +54,9 @@
                                     <h3><a href="#">@c.Title</a></h3>
 
                                     <p class="description">
-                                        @(string.IsNullOrWhiteSpace(c.ShortDescription)
+                                        @(string.IsNullOrWhiteSpace(c.Description)
                                                                         ? "Course description coming soon."
-                                                                        : c.ShortDescription)
+                                                                        : c.Description)
                             </p>
 
                                     <div class="text-center mt-3 mb-3">
@@ -70,7 +70,7 @@
                                     <div class="trainer d-flex justify-content-between align-items-center">
                                         <div class="trainer-profile d-flex align-items-center">
                                             <img src="~/img/trainers/trainer-2.jpg" class="img-fluid" alt="">
-                                            <a href="#" class="trainer-link">@c.InstructorName</a>
+                                            <a href="#" class="trainer-link">@c.Trainer</a>
                                         </div>
                                         <div class="trainer-rank d-flex align-items-center">
                                             <i class="bi bi-person user-icon"></i>&nbsp;35
