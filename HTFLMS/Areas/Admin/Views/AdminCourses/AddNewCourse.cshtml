@@ -1,0 +1,191 @@
+﻿@{
+    ViewData["Title"] = "Add New Course";
+    Layout = "_AdminLayout";
+}
+
+<div class="dashboard-page trainer-form-page">
+    <div class="dashboard-page-head trainer-courses-page-head">
+        <div>
+            <h1 class="dashboard-h1">Add New Course</h1>
+            <p class="dashboard-sub">Create a course with all the details needed for the student pages.</p>
+        </div>
+
+        <div class="dashboard-head-actions">
+            <a asp-area="Admin"
+               asp-controller="AdminCourses"
+               asp-action="AdminMyCourses"
+               class="dashboard-btn dashboard-btn-outline">
+                <i class="bi bi-arrow-left"></i>
+                Back to Courses
+            </a>
+        </div>
+    </div>
+
+    <div class="dashboard-panel course-form-panel trainer-form-panel trainer-form-panel-wide">
+        <form method="post"
+              asp-action="Create"
+              enctype="multipart/form-data"
+              class="course-form-grid trainer-form-layout-split">
+
+            <!-- LEFT SIDE IMAGE -->
+            <div class="trainer-form-media">
+                <label for="imageFile" class="trainer-form-media-box trainer-upload-box">
+                    <div class="trainer-form-media-inner" id="uploadInner">
+                        <div class="trainer-form-media-content trainer-upload-content" id="uploadPlaceholder">
+                            <div class="trainer-form-media-icon">
+                                <i class="bi bi-image"></i>
+                            </div>
+                            <div class="trainer-form-media-title">Upload Course Image</div>
+                            <div class="trainer-form-media-sub">
+                                PNG/JPG supported. Recommended wide cover image for cards and detail page.
+                            </div>
+                        </div>
+
+                        <img id="imagePreview"
+                             class="trainer-upload-preview"
+                             alt="Course preview"
+                             style="display:none;" />
+                    </div>
+                </label>
+
+                <input type="file"
+                       id="imageFile"
+                       name="imageFile"
+                       accept=".png,.jpg,.jpeg"
+                       class="trainer-hidden-file"
+                       onchange="previewTrainerImage(event)" />
+            </div>
+
+            <!-- RIGHT SIDE FIELDS -->
+            <div class="course-fields">
+                <div>
+                    <label class="course-label">Course Title</label>
+                    <input type="text" name="title" class="course-input" placeholder="Enter course title" />
+                </div>
+
+                <div class="course-row-2">
+                    <div>
+                        <label class="course-label">Course Category</label>
+                        <select name="category" class="course-input">
+                            <option value="">Select category</option>
+                            <option>Marketing</option>
+                            <option>Design</option>
+                            <option>Development</option>
+                            <option>Business</option>
+                            <option>IT & Security</option>
+                            <option>Frontend</option>
+                            <option>Backend</option>
+                            <option>Data Science</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="course-label">Level</label>
+                        <select name="level" class="course-input">
+                            <option value="">Select level</option>
+                            <option>Beginner</option>
+                            <option>Intermediate</option>
+                            <option>Advanced</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="course-row-2">
+                    <div>
+                        <label class="course-label">Instructor</label>
+                        <input type="text" name="instructor" class="course-input" placeholder="Enter instructor name" />
+                    </div>
+
+                    <div>
+                        <label class="course-label">Course Code</label>
+                        <input type="text" name="courseCode" class="course-input" placeholder="Optional (e.g. CS101)" />
+                    </div>
+                </div>
+
+                <div class="course-row-2">
+                    <div>
+                        <label class="course-label">Duration</label>
+                        <input type="text" name="durationText" class="course-input" placeholder="e.g. 3 Months" />
+                    </div>
+
+                    <div>
+                        <label class="course-label">Language</label>
+                        <input type="text" name="language" class="course-input" placeholder="e.g. English" />
+                    </div>
+                </div>
+
+                <div class="course-row-2">
+                    <div>
+                        <label class="course-label">Total Modules</label>
+                        <input type="number" min="0" name="totalModules" class="course-input" placeholder="e.g. 4" />
+                    </div>
+
+                    <div>
+                        <label class="course-label">Certificate</label>
+                        <select name="certificateIncluded" class="course-input">
+                            <option value="">Select option</option>
+                            <option value="true">Included</option>
+                            <option value="false">Not Included</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="course-label">Status</label>
+                        <select name="status" class="course-input">
+                            <option value="">Select status</option>
+                            <option value="Active">Active</option>
+                            <option value="Draft">Draft</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="course-label">Course Description</label>
+                    <textarea name="description"
+                              class="course-input"
+                              placeholder="Short summary shown in cards and overview"></textarea>
+                </div>
+
+                <div>
+                    <label class="course-label">Course Content</label>
+                    <textarea name="content"
+                              class="course-input trainer-editor"
+                              placeholder="Write the full course content / outline / what students will learn"></textarea>
+                </div>
+
+                <div class="course-actions">
+                    <a asp-area="Trainer"
+                       asp-controller="Courses"
+                       asp-action="Index"
+                       class="dashboard-btn dashboard-btn-outline">
+                        Cancel
+                    </a>
+
+                    <button type="submit" class="dashboard-btn add-course-btn">
+                        Save Course
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function previewTrainerImage(event) {
+            const input = event.target;
+            const preview = document.getElementById('imagePreview');
+            const placeholder = document.getElementById('uploadPlaceholder');
+
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                    if (placeholder) placeholder.style.display = 'none';
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+    </script>
+}
