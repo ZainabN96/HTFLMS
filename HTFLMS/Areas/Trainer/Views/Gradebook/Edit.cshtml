@@ -1,0 +1,145 @@
+﻿@{
+    ViewData["Title"] = "Edit Submission";
+    Layout = "_TrainerLayout";
+}
+
+<div class="dashboard-page trainer-form-page">
+    <div class="dashboard-page-head trainer-content-head">
+        <div>
+            <h1 class="dashboard-h1">Edit Submission</h1>
+            <p class="dashboard-sub">Review student work, update marks, and manage grading details.</p>
+        </div>
+
+        <div class="trainer-content-head-actions">
+            <a asp-area="Trainer"
+               asp-controller="Submissions"
+               asp-action="Index"
+               class="dashboard-btn dashboard-btn-outline">
+                <i class="bi bi-arrow-left"></i>
+                Back to All Submissions
+            </a>
+        </div>
+    </div>
+
+    <div class="dashboard-panel trainer-submission-topbar">
+        <div class="trainer-submission-topbar-main">
+            <div class="trainer-submission-title-row">
+                <h2 class="dashboard-panel-title trainer-submission-title">Assignment 1: Rewrite the Abstract</h2>
+                <span class="pill pill-green">Graded</span>
+            </div>
+
+            <div class="trainer-submission-meta">
+                <span><strong>Student:</strong> daudrana400</span>
+                <span><strong>Course:</strong> Full Stack Web Dev</span>
+                <span><strong>Module:</strong> Module 1</span>
+                <span><strong>Submitted:</strong> 10 Mar, 08:30 PM</span>
+            </div>
+        </div>
+
+        <div class="dashboard-stat-card trainer-submission-score-card">
+            <div class="dashboard-stat-title">Current Score</div>
+            <div class="dashboard-stat-value">18/20</div>
+            <div class="dashboard-stat-meta">Excellent Work</div>
+        </div>
+    </div>
+
+    <div class="dashboard-panel trainer-form-panel trainer-form-panel-wide">
+        <form method="post" class="trainer-assignment-form">
+            <div class="trainer-form-grid">
+
+                <div class="trainer-form-group">
+                    <label class="trainer-form-label">Student Name</label>
+                    <input type="text" class="course-input" value="daudrana400" readonly />
+                </div>
+
+                <div class="trainer-form-group">
+                    <label class="trainer-form-label">Assignment Title</label>
+                    <input type="text" class="course-input" value="Assignment 1: Rewrite the Abstract" readonly />
+                </div>
+
+                <div class="trainer-form-group">
+                    <label class="trainer-form-label">Course</label>
+                    <input type="text" class="course-input" value="Full Stack Web Dev" readonly />
+                </div>
+
+                <div class="trainer-form-group">
+                    <label class="trainer-form-label">Module</label>
+                    <input type="text" class="course-input" value="Module 1" readonly />
+                </div>
+
+                <div class="trainer-form-group">
+                    <label class="trainer-form-label">Submitted On</label>
+                    <input type="text" class="course-input" value="10 Mar, 08:30 PM" readonly />
+                </div>
+
+                <div class="trainer-form-group">
+                    <label class="trainer-form-label">Awarded Marks</label>
+                    <input type="number" class="course-input" value="18" />
+                </div>
+
+                <div class="trainer-form-group">
+                    <label class="trainer-form-label">Total Marks</label>
+                    <input type="number" class="course-input" value="20" readonly />
+                </div>
+
+                <div class="trainer-form-group">
+                    <label class="trainer-form-label">Result Label</label>
+                    <select class="course-input">
+                        <option selected>Excellent Work</option>
+                        <option>Good Attempt</option>
+                        <option>Needs Improvement</option>
+                    </select>
+                </div>
+
+                <div class="trainer-form-group">
+                    <label class="trainer-form-label">Status</label>
+                    <select class="course-input">
+                        <option selected>Graded</option>
+                        <option>Pending Review</option>
+                    </select>
+                </div>
+
+                <div class="trainer-form-group trainer-form-group-full">
+                    <label class="trainer-form-label">Student File</label>
+
+                    <div class="trainer-submission-file-card">
+                        <div class="trainer-submission-file-main">
+                            <div class="trainer-sa-file-icon trainer-sa-file-pdf">
+                                <i class="bi bi-file-earmark-text"></i>
+                            </div>
+
+                            <div class="trainer-sa-file-text">
+                                <div class="trainer-sa-file-title">rewrite-abstract-daudrana400.docx</div>
+                                <div class="trainer-sa-meta-text">Uploaded submission file</div>
+                            </div>
+                        </div>
+
+                        <div class="trainer-courses-actions">
+                            <a href="javascript:void(0)" class="dashboard-btn dashboard-btn-outline trainer-course-action-btn">
+                                Open File
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="trainer-form-group trainer-form-group-full">
+                    <label class="trainer-form-label">Trainer Feedback</label>
+                    <textarea class="course-input trainer-textarea">Strong rewrite overall. The abstract is much clearer and easier to follow. Try to tighten the second sentence and make the conclusion slightly more specific.</textarea>
+                </div>
+            </div>
+
+            <div class="trainer-form-actions">
+                <a asp-area="Trainer"
+                   asp-controller="Submissions"
+                   asp-action="Index"
+                   class="dashboard-btn dashboard-btn-outline">
+                    Cancel
+                </a>
+
+                <button type="submit" class="dashboard-btn add-course-btn">
+                    Save Changes
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

@@ -100,7 +100,7 @@
             <nav class="dashboard-nav">
                 <a asp-area="Trainer" asp-controller="Trainer" asp-action="Index"
                    class="dashboard-nav-item @(ViewContext.RouteData.Values["controller"]?.ToString() == "Trainer"
-                      && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "active" : "")">
+                                         && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "active" : "")">
                     <i class="bi bi-grid-1x2"></i>
                     Dashboard
                 </a>
@@ -131,6 +131,22 @@
                    asp-controller="Students" asp-action="Index">
                     <i class="bi bi-people"></i>
                     Students
+                </a>
+
+                <div class="dashboard-nav-divider"></div>
+
+                <div class="dashboard-nav-section">Grading</div>
+
+                <a asp-area="Trainer" asp-controller="Submissions" asp-action="Index"
+                   class="dashboard-nav-item @(ViewContext.RouteData.Values["controller"]?.ToString() == "Submissions" ? "active" : "")">
+                    <i class="bi bi-journal-check"></i>
+                    <span>All Submissions</span>
+                </a>
+
+                <a asp-area="Trainer" asp-controller="Gradebook" asp-action="Index"
+                   class="dashboard-nav-item @(ViewContext.RouteData.Values["controller"]?.ToString() == "Gradebook" ? "active" : "")">
+                    <i class="bi bi-award"></i>
+                    <span>Gradebook</span>
                 </a>
 
                 <div class="dashboard-nav-divider"></div>

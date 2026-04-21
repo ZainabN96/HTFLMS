@@ -1,0 +1,68 @@
+﻿@{
+    ViewData["Title"] = "View Certificate";
+    Layout = "_StudentLayout";
+}
+
+<div class="dashboard-page certificate-view-page">
+
+    <div class="dashboard-page-head">
+        <div>
+            <h1 class="dashboard-h1">Certificate</h1>
+            <p class="dashboard-sub">Verify and download your achievement</p>
+        </div>
+
+        <a asp-area="Student"
+           asp-controller="Certificates"
+           asp-action="Index"
+           class="dashboard-btn dashboard-btn-outline">
+            <i class="bi bi-arrow-left"></i>
+            Back
+        </a>
+    </div>
+
+    <div class="certificate-view-wrap">
+
+        <div class="certificate-preview-card">
+            <img src="~/img/course/certificate.png"
+                 class="certificate-preview-img"
+                 alt="certificate" />
+        </div>
+
+        <div class="certificate-info-card">
+
+            <div class="certificate-info-row">
+                <div class="certificate-info-item">
+                    <label>Student</label>
+                    <div>Daud Iqbal</div>
+                </div>
+
+                <div class="certificate-info-item">
+                    <label>Course</label>
+                    <div>Full Stack Web Development</div>
+                </div>
+
+                <div class="certificate-info-item">
+                    <label>Issue Date</label>
+                    <div>Jan 15, 2026</div>
+                </div>
+
+                <div class="certificate-info-item">
+                    <label>Certificate ID</label>
+                    <div>HCC-2026-001</div>
+                </div>
+            </div>
+
+            <div class="certificate-actions">
+                <a href="~/img/course/certificate.pdf"
+                   download
+                   class="student-material-btn download">
+                    <i class="bi bi-download"></i>
+                    Download PDF
+                </a>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

@@ -1,0 +1,101 @@
+﻿@{
+    ViewData["Title"] = "Edit Module";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    var courseId = ViewBag.CourseId ?? 0;
+    var moduleId = ViewBag.ModuleId ?? 0;
+}
+
+<div class="dashboard-page admin-content-page">
+    <div class="dashboard-page-head admin-content-head">
+        <div>
+            <h1 class="dashboard-h1">Edit Module</h1>
+            <p class="dashboard-sub">Update the module details for the selected course.</p>
+        </div>
+
+        <div class="admin-content-head-actions">
+            <a asp-area="Admin"
+               asp-controller="ModulesLessons"
+               asp-action="Index"
+               asp-route-id="@courseId"
+               class="dashboard-btn dashboard-btn-outline">
+                <i class="bi bi-arrow-left"></i>
+                Back to Modules & Lessons
+            </a>
+        </div>
+    </div>
+
+    <div class="dashboard-panel admin-form-panel">
+        <div class="dashboard-panel-head">
+            <div>
+                <div class="dashboard-panel-title">Module Details</div>
+                <div class="dashboard-muted-small">Update the basic information for this module.</div>
+            </div>
+        </div>
+
+        <form asp-area="Admin"
+              asp-controller="ModulesLessons"
+              asp-action="EditModule"
+              method="post"
+              class="admin-form-grid">
+
+            <input type="hidden" name="courseId" value="@courseId" />
+            <input type="hidden" name="moduleId" value="@moduleId" />
+
+            <div class="admin-form-group admin-form-group-full">
+                <label class="admin-form-label">Module Title</label>
+                <input type="text"
+                       name="title"
+                       class="course-input"
+                       value="Module 1: Introduction to Web Development" />
+            </div>
+
+            <div class="admin-form-group admin-form-group-full">
+                <label class="admin-form-label">Description</label>
+                <textarea name="description"
+                          class="course-input admin-textarea">Learn the fundamentals of web development</textarea>
+            </div>
+
+            <div class="admin-form-group">
+                <label class="admin-form-label">Display Order</label>
+                <input type="number"
+                       name="displayOrder"
+                       class="course-input"
+                       value="1"
+                       min="1" />
+            </div>
+
+            <div class="admin-form-group">
+                <label class="admin-form-label">Status</label>
+                <select name="status" class="course-input">
+                    <option value="Draft">Draft</option>
+                    <option value="Published" selected>Published</option>
+                </select>
+            </div>
+
+            <div class="admin-form-group">
+                <label class="admin-form-label">Module Access</label>
+                <div class="admin-checkbox-wrap">
+                    <label>
+                        <input type="checkbox" name="isOpenAtStart" value="true" />
+                        Open this module at the start
+                    </label>
+                </div>
+            </div>
+
+            <div class="admin-form-actions admin-form-group-full">
+                <a asp-area="Admin"
+                   asp-controller="ModulesLessons"
+                   asp-action="Index"
+                   asp-route-id="@courseId"
+                   class="dashboard-btn dashboard-btn-outline">
+                    Cancel
+                </a>
+
+                <button type="submit" class="dashboard-btn add-course-btn">
+                    <i class="bi bi-check2-circle"></i>
+                    Update Module
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

@@ -111,6 +111,8 @@
                     Dashboard
                 </a>
 
+                <div class="dashboard-nav-divider"></div>
+
                 <div class="dashboard-nav-section">Learning</div>
 
                 <a class="dashboard-nav-item @((area == "Student" && controller == "Courses" && action == "Index") ? "active" : "")"
@@ -129,6 +131,12 @@
                    asp-area="Student" asp-controller="Notes" asp-action="Index">
                     <i class="bi bi-stickies"></i>
                     Notes
+                </a>
+
+                <a class="dashboard-nav-item @((area == "Student" && controller == "Certificates" && action == "Index") ? "active" : "")"
+                   asp-area="Student" asp-controller="Certificates" asp-action="Index">
+                    <i class="bi bi-patch-check"></i>
+                    Certificate
                 </a>
 
                 <div class="dashboard-nav-divider"></div>

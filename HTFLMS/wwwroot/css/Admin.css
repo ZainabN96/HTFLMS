@@ -1,11 +1,10 @@
-﻿/* =========================
-   HTF LMS Admin (admin.css)
-   Uses theme vars from main.css:
-   --accent-color, --heading-color, --default-color,
-   --background-color, --surface-color,
-   --default-font, --heading-font
-   ========================= */
-
+﻿* =========================
+HTF LMS Admin (admin.css)
+Uses theme vars from main.css:
+--accent-color, --heading-color, --default-color,
+--background-color, --surface-color,
+--default-font, --heading-font
+========================= */
 /* Basic reset-ish */
 .admin-body {
     margin: 0;
@@ -14,11 +13,11 @@
     font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif !important;
 }
 
-    /* Links */
-    .admin-body a {
-        color: inherit;
-        text-decoration: none;
-    }
+/* Links */
+.admin-body a {
+    color: inherit;
+    text-decoration: none;
+}
 
 /* Helpers */
 :root {
@@ -1242,10 +1241,11 @@
     border-top: 1px solid var(--admin-border-2, rgba(0,0,0,.06));
     align-items: center;
 }
+
 canvas d
-    .grade-row:first-child {
-        border-top: 0;
-    }
+.grade-row:first-child {
+    border-top: 0;
+}
 
 .grade-head {
     background: rgba(0,0,0,0.03);

@@ -1,0 +1,239 @@
+﻿@{
+    ViewData["Title"] = "Students";
+    Layout = "_AdminLayout";
+}
+
+<div class="dashboard-page admin-students-page">
+    <div class="dashboard-page-head admin-courses-page-head">
+        <div>
+            <h1 class="dashboard-h1">Students</h1>
+            <p class="dashboard-sub">Manage all registered students and their course enrollments.</p>
+        </div>
+
+        <div class="admin-courses-head-actions">
+            <div class="courses-head-search">
+                <i class="bi bi-search"></i>
+                <input type="text" placeholder="Search students..." />
+            </div>
+
+            <a asp-area="Admin"
+               asp-controller="Students"
+               asp-action="Create"
+               class="dashboard-btn add-course-btn admin-add-course-btn">
+                <i class="bi bi-plus-circle"></i>
+                Add Student
+            </a>
+        </div>
+    </div>
+
+    <div class="dashboard-stats">
+        <div class="dashboard-stat-card">
+            <div class="dashboard-stat-top">
+                <div class="dashboard-stat-title">Total Students</div>
+                <i class="bi bi-people"></i>
+            </div>
+            <div class="dashboard-stat-value">128</div>
+            <div class="dashboard-stat-meta">Registered students</div>
+        </div>
+
+        <div class="dashboard-stat-card">
+            <div class="dashboard-stat-top">
+                <div class="dashboard-stat-title">Active Students</div>
+                <i class="bi bi-person-check"></i>
+            </div>
+            <div class="dashboard-stat-value">96</div>
+            <div class="dashboard-stat-meta">Currently active</div>
+        </div>
+
+        <div class="dashboard-stat-card">
+            <div class="dashboard-stat-top">
+                <div class="dashboard-stat-title">At Risk</div>
+                <i class="bi bi-exclamation-circle"></i>
+            </div>
+            <div class="dashboard-stat-value">18</div>
+            <div class="dashboard-stat-meta">Need attention</div>
+        </div>
+
+        <div class="dashboard-stat-card">
+            <div class="dashboard-stat-top">
+                <div class="dashboard-stat-title">Inactive Students</div>
+                <i class="bi bi-person-x"></i>
+            </div>
+            <div class="dashboard-stat-value">14</div>
+            <div class="dashboard-stat-meta">Not currently active</div>
+        </div>
+    </div>
+
+    <div class="dashboard-panel admin-students-filter-panel">
+        <div class="dashboard-panel-head admin-content-panel-head">
+            <div class="dashboard-panel-title">
+                Select Filter
+            </div> 
+        </div>
+        <div class="admin-students-filter-row">
+            <select class="course-input admin-students-select">
+                <option>All courses</option>
+                <option>Web Development</option>
+                <option>Digital Marketing</option>
+                <option>Graphic Design</option>
+            </select>
+
+            <select class="course-input admin-students-select">
+                <option>All statuses</option>
+                <option>Active</option>
+                <option>At Risk</option>
+                <option>Inactive</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="dashboard-panel admin-students-table-panel">
+        <div class="dashboard-panel-head">
+            <div class="dashboard-panel-title">All Students</div>
+            <div class="dashboard-muted-small">5 student(s)</div>
+        </div>
+
+        <div class="dashboard-table-wrap">
+            <div class="dashboard-table-row dashboard-table-head admin-students-table-row admin-students-table-head">
+                <div>Student</div>
+                <div>Email</div>
+                <div title="Enrolled courses">Enrolled courses</div>
+                <div>Avg grade</div>
+                <div>Joined</div>
+                <div>Status</div>
+                <div>Actions</div>
+            </div>
+
+            <div class="dashboard-table-row admin-students-table-row">
+                <div class="admin-student-main" title="daudrana400">
+                    <div class="admin-student-avatar admin-avatar-pink">D</div>
+                    <div class="admin-student-name-wrap">
+                        <div class="admin-student-name">daudrana400</div>
+                    </div>
+                </div>
+                <div title="daudrana400@gmail.com">daudrana400@gmail.com</div>
+                <div title="3 courses">3 courses</div>
+                <div class="admin-grade-good" title="93.7%">93.7%</div>
+                <div title="Jan 10, 2026">Jan 10, 2026</div>
+                <div title="Active"><span class="dashboard-status status-active">Active</span></div>
+                <div class="admin-courses-actions">
+                    <a asp-area="Admin"
+                       asp-controller="Students"
+                       asp-action="Edit"
+                       asp-route-id="1"
+                       class="dashboard-btn dashboard-btn-outline admin-course-action-btn">
+                        Edit
+                    </a>
+                    <button type="button" class="dashboard-btn admin-delete-soft-btn admin-course-action-btn">
+                        Delete
+                    </button>
+                </div>
+            </div>
+
+            <div class="dashboard-table-row admin-students-table-row">
+                <div class="admin-student-main" title="Ali Hassan">
+                    <div class="admin-student-avatar admin-avatar-blue">A</div>
+                    <div class="admin-student-name-wrap">
+                        <div class="admin-student-name">Ali Hassan</div>
+                    </div>
+                </div>
+                <div title="ali.hassan@gmail.com">ali.hassan@gmail.com</div>
+                <div title="2 courses">2 courses</div>
+                <div class="admin-grade-good" title="87.2%">87.2%</div>
+                <div title="Jan 15, 2026">Jan 15, 2026</div>
+                <div title="Active"><span class="dashboard-status status-active">Active</span></div>
+                <div class="admin-courses-actions">
+                    <a asp-area="Admin"
+                       asp-controller="Students"
+                       asp-action="Edit"
+                       asp-route-id="2"
+                       class="dashboard-btn dashboard-btn-outline admin-course-action-btn">
+                        Edit
+                    </a>
+                    <button type="button" class="dashboard-btn admin-delete-soft-btn admin-course-action-btn">
+                        Delete
+                    </button>
+                </div>
+            </div>
+
+            <div class="dashboard-table-row admin-students-table-row">
+                <div class="admin-student-main" title="Sara Malik">
+                    <div class="admin-student-avatar admin-avatar-purple">S</div>
+                    <div class="admin-student-name-wrap">
+                        <div class="admin-student-name">Sara Malik</div>
+                    </div>
+                </div>
+                <div title="sara.malik@gmail.com">sara.malik@gmail.com</div>
+                <div title="1 course">1 course</div>
+                <div class="admin-grade-warn" title="74.5%">74.5%</div>
+                <div title="Feb 2, 2026">Feb 2, 2026</div>
+                <div title="At Risk"><span class="dashboard-status status-warning">At Risk</span></div>
+                <div class="admin-courses-actions">
+                    <a asp-area="Admin"
+                       asp-controller="Students"
+                       asp-action="Edit"
+                       asp-route-id="3"
+                       class="dashboard-btn dashboard-btn-outline admin-course-action-btn">
+                        Edit
+                    </a>
+                    <button type="button" class="dashboard-btn admin-delete-soft-btn admin-course-action-btn">
+                        Delete
+                    </button>
+                </div>
+            </div>
+
+            <div class="dashboard-table-row admin-students-table-row">
+                <div class="admin-student-main" title="Omar Sheikh">
+                    <div class="admin-student-avatar admin-avatar-green">O</div>
+                    <div class="admin-student-name-wrap">
+                        <div class="admin-student-name">Omar Sheikh</div>
+                    </div>
+                </div>
+                <div title="omar.sheikh@gmail.com">omar.sheikh@gmail.com</div>
+                <div title="2 courses">2 courses</div>
+                <div class="admin-grade-good" title="91.0%">91.0%</div>
+                <div title="Feb 8, 2026">Feb 8, 2026</div>
+                <div title="Active"><span class="dashboard-status status-active">Active</span></div>
+                <div class="admin-courses-actions">
+                    <a asp-area="Admin"
+                       asp-controller="Students"
+                       asp-action="Edit"
+                       asp-route-id="4"
+                       class="dashboard-btn dashboard-btn-outline admin-course-action-btn">
+                        Edit
+                    </a>
+                    <button type="button" class="dashboard-btn admin-delete-soft-btn admin-course-action-btn">
+                        Delete
+                    </button>
+                </div>
+            </div>
+
+            <div class="dashboard-table-row admin-students-table-row">
+                <div class="admin-student-main" title="Hina Rao">
+                    <div class="admin-student-avatar admin-avatar-rose">H</div>
+                    <div class="admin-student-name-wrap">
+                        <div class="admin-student-name">Hina Rao</div>
+                    </div>
+                </div>
+                <div title="hina.rao@gmail.com">hina.rao@gmail.com</div>
+                <div title="3 courses">3 courses</div>
+                <div class="admin-grade-danger" title="61.3%">61.3%</div>
+                <div title="Mar 1, 2026">Mar 1, 2026</div>
+                <div title="Inactive"><span class="dashboard-status status-inactive">Inactive</span></div>
+                <div class="admin-courses-actions">
+                    <a asp-area="Admin"
+                       asp-controller="Students"
+                       asp-action="Edit"
+                       asp-route-id="5"
+                       class="dashboard-btn dashboard-btn-outline admin-course-action-btn">
+                        Edit
+                    </a>
+                    <button type="button" class="dashboard-btn admin-delete-soft-btn admin-course-action-btn">
+                        Delete
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

@@ -53,6 +53,15 @@
             <div class="dashboard-stat-value">@Model.Count(t => !t.IsActive)</div>
             <div class="dashboard-stat-meta">Currently inactive trainers</div>
         </div>
+
+        <div class="dashboard-stat-card">
+            <div class="dashboard-stat-top">
+                <div class="dashboard-stat-title">Assigned Courses</div>
+                <i class="bi bi-journal-check"></i>
+            </div>
+            <div class="dashboard-stat-value">12</div>
+            <div class="dashboard-stat-meta">Across all trainers</div>
+        </div>
     </div>
 
     <div class="dashboard-panel trainer-courses-table-panel">
@@ -66,7 +75,6 @@
                 <div>Name</div>
                 <div>Email</div>
                 <div>Designation</div>
-                <div>Qualification</div>
                 <div>Assigned Course</div>
                 <div>Status</div>
                 <div>Created At</div>
@@ -91,17 +99,11 @@
                             @trainer.Designation
                         </div>
 
-                        <div class="manage-trainer-cell-ellipsis" title="@trainer.Qualification">
-                            @trainer.Qualification
+                        <div class="manage-trainer-cell-ellipsis" title="No Course Assigned">
+                            <span class="manage-trainer-assigned-text">No Course Assigned</span>
                         </div>
 
-                        <div>
-                            <span class="manage-trainer-assigned-text" title="No Course Assigned">
-                                No Course Assigned
-                            </span>
-                        </div>
-
-                        <div>
+                        <div title="@(trainer.IsActive ? "Active" : "Inactive")">
                             @if (trainer.IsActive)
                             {
                                 <span class="pill pill-green">Active</span>
@@ -144,5 +146,6 @@
                     </div>
                 </div>
             }
-
+        </div>
+    </div>
 </div>

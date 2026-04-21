@@ -44,6 +44,12 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(
+    name: "admin-root",
+    pattern: "Admin",
+    defaults: new { area = "Admin", controller = "Admin", action = "Index" }
+);
+
+app.MapControllerRoute(
     name: "trainer-root",
     pattern: "Trainer",
     defaults: new { area = "Trainer", controller = "Trainer", action = "Index" }

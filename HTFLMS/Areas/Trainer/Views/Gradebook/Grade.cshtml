@@ -1,0 +1,146 @@
+﻿@{
+    ViewData["Title"] = "Grade Submission";
+    Layout = "_TrainerLayout";
+}
+
+<div class="dashboard-page trainer-form-page">
+    <div class="dashboard-page-head trainer-content-head">
+        <div>
+            <h1 class="dashboard-h1">Grade Submission</h1>
+            <p class="dashboard-sub">Review the submitted work and assign marks with feedback.</p>
+        </div>
+
+        <div class="trainer-content-head-actions">
+            <a asp-area="Trainer"
+               asp-controller="Submissions"
+               asp-action="Index"
+               class="dashboard-btn dashboard-btn-outline">
+                <i class="bi bi-arrow-left"></i>
+                Back to All Submissions
+            </a>
+        </div>
+    </div>
+
+    <div class="dashboard-panel trainer-submission-topbar">
+        <div class="trainer-submission-topbar-main">
+            <div class="trainer-submission-title-row">
+                <h2 class="dashboard-panel-title trainer-submission-title">Assignment 2: Analyze the Reading Passage</h2>
+                <span class="pill pill-yellow">Pending Review</span>
+            </div>
+
+            <div class="trainer-submission-meta">
+                <span><strong>Student:</strong> Sara Malik</span>
+                <span><strong>Course:</strong> Full Stack Web Dev</span>
+                <span><strong>Module:</strong> Module 2</span>
+                <span><strong>Submitted:</strong> 18 Mar, 10:42 PM</span>
+            </div>
+        </div>
+
+        <div class="dashboard-stat-card trainer-submission-score-card">
+            <div class="dashboard-stat-title">Current Score</div>
+            <div class="dashboard-stat-value">--/15</div>
+            <div class="dashboard-stat-meta">Pending</div>
+        </div>
+    </div>
+
+    <div class="dashboard-panel trainer-form-panel trainer-form-panel-wide">
+        <form method="post" class="trainer-assignment-form">
+            <div class="trainer-form-grid">
+
+                <div class="trainer-form-group">
+                    <label class="trainer-form-label">Student Name</label>
+                    <input type="text" class="course-input" value="Sara Malik" readonly />
+                </div>
+
+                <div class="trainer-form-group">
+                    <label class="trainer-form-label">Assignment Title</label>
+                    <input type="text" class="course-input" value="Assignment 2: Analyze the Reading Passage" readonly />
+                </div>
+
+                <div class="trainer-form-group">
+                    <label class="trainer-form-label">Course</label>
+                    <input type="text" class="course-input" value="Full Stack Web Dev" readonly />
+                </div>
+
+                <div class="trainer-form-group">
+                    <label class="trainer-form-label">Module</label>
+                    <input type="text" class="course-input" value="Module 2" readonly />
+                </div>
+
+                <div class="trainer-form-group">
+                    <label class="trainer-form-label">Submitted On</label>
+                    <input type="text" class="course-input" value="18 Mar, 10:42 PM" readonly />
+                </div>
+
+                <div class="trainer-form-group">
+                    <label class="trainer-form-label">Total Marks</label>
+                    <input type="number" class="course-input" value="15" readonly />
+                </div>
+
+                <div class="trainer-form-group">
+                    <label class="trainer-form-label">Awarded Marks</label>
+                    <input type="number" class="course-input" placeholder="Enter marks" />
+                </div>
+
+                <div class="trainer-form-group">
+                    <label class="trainer-form-label">Result Label</label>
+                    <select class="course-input">
+                        <option selected disabled>Select result</option>
+                        <option>Excellent Work</option>
+                        <option>Good Attempt</option>
+                        <option>Needs Improvement</option>
+                    </select>
+                </div>
+
+                <div class="trainer-form-group">
+                    <label class="trainer-form-label">Status</label>
+                    <select class="course-input">
+                        <option selected>Pending Review</option>
+                        <option>Graded</option>
+                    </select>
+                </div>
+
+                <div class="trainer-form-group trainer-form-group-full">
+                    <label class="trainer-form-label">Student File</label>
+
+                    <div class="trainer-submission-file-card">
+                        <div class="trainer-submission-file-main">
+                            <div class="trainer-sa-file-icon trainer-sa-file-pdf">
+                                <i class="bi bi-file-earmark-text"></i>
+                            </div>
+
+                            <div class="trainer-sa-file-text">
+                                <div class="trainer-sa-file-title">analysis-reading-sara.docx</div>
+                                <div class="trainer-sa-meta-text">Uploaded submission file</div>
+                            </div>
+                        </div>
+
+                        <div class="trainer-courses-actions">
+                            <a href="javascript:void(0)" class="dashboard-btn dashboard-btn-outline trainer-course-action-btn">
+                                Open File
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="trainer-form-group trainer-form-group-full">
+                    <label class="trainer-form-label">Trainer Feedback</label>
+                    <textarea class="course-input trainer-textarea" placeholder="Write feedback for the student"></textarea>
+                </div>
+            </div>
+
+            <div class="trainer-form-actions">
+                <a asp-area="Trainer"
+                   asp-controller="Submissions"
+                   asp-action="Index"
+                   class="dashboard-btn dashboard-btn-outline">
+                    Cancel
+                </a>
+
+                <button type="submit" class="dashboard-btn add-course-btn">
+                    Submit Grade
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

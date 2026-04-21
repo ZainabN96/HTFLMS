@@ -29,7 +29,7 @@ namespace HTFLMS.Areas.Admin.Controllers
             return View(trainers);
         }
 
-        // GET: Open form
+        // GET: Add page
         [HttpGet]
         public IActionResult AddTrainer()
         {
@@ -44,7 +44,6 @@ namespace HTFLMS.Areas.Admin.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
-            // Email check
             var emailExists = await _db.Users.AnyAsync(u => u.Email == model.Email);
             if (emailExists)
             {
@@ -52,7 +51,6 @@ namespace HTFLMS.Areas.Admin.Controllers
                 return View(model);
             }
 
-            // CNIC check
             var cnicExists = await _db.Users.AnyAsync(u => u.CNIC == model.CNIC);
             if (cnicExists)
             {
@@ -60,14 +58,12 @@ namespace HTFLMS.Areas.Admin.Controllers
                 return View(model);
             }
 
-            // Generate UserId
             string userId = GenerateUserId();
             while (await _db.Users.AnyAsync(u => u.UserId == userId))
             {
                 userId = GenerateUserId();
             }
 
-            // Create trainer
             var trainer = new User
             {
                 UserId = userId,
@@ -84,10 +80,8 @@ namespace HTFLMS.Areas.Admin.Controllers
                 CreatedAt = DateTime.UtcNow
             };
 
-            // Hash password
             trainer.PasswordHash = _hasher.HashPassword(trainer, model.Password);
 
-            // Save to DB
             _db.Users.Add(trainer);
             await _db.SaveChangesAsync();
 
@@ -95,6 +89,22 @@ namespace HTFLMS.Areas.Admin.Controllers
 
             return RedirectToAction("Trainers");
         }
+
+
+        // ========================
+        // EDIT PAGE (ONLY OPEN PAGE)
+        // ========================
+
+        [HttpGet]
+        public IActionResult EditTrainer(int id)
+        {
+            ViewBag.TrainerId = id;
+
+            // no database logic (as requested)
+            return View("EditTrainer");
+        }
+
+
 
         private string GenerateUserId()
         {
