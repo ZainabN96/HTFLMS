@@ -1,4 +1,4 @@
-﻿namespace HTFLMS.Services
+﻿namespace HTFLMS.Data.Services
 {
     public class MailSettings
     {

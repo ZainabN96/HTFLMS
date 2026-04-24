@@ -3,6 +3,10 @@ using HTFLMS.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using HTFLMS.Data.Services;
+using HTFLMS.Data.IServices;
+using HTFLMS.Helper;
+using HTFLMS.Middlewares;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -22,12 +26,27 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.AccessDeniedPath = "/Account/AccessDenied";
     });
 
-builder.Services.Configure<HTFLMS.Services.MailSettings>(
+builder.Services.Configure<MailSettings>(
     builder.Configuration.GetSection("MailSettings"));
 
-builder.Services.AddScoped<HTFLMS.Services.IMailService, HTFLMS.Services.MailService>();
+builder.Services.AddScoped<IMailService, MailService>();
+// Program.cs
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
+AutoMapperConfig.RegisterMappings(builder.Services);
 
 var app = builder.Build();
+
+app.MapControllerRoute(
+    name: "areas",
+    pattern: "{area:exists}/{controller=Dashboard}/{action=Index}/{id?}"
+);
+
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}"
+);
+
 
 if (!app.Environment.IsDevelopment())
 {
@@ -42,6 +61,13 @@ app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.MapControllers();
+
+app.MapControllerRoute(
+    name: "areas",
+    pattern: "{area:exists}/{controller=Dashboard}/{action=Index}/{id?}"
+);
 
 app.MapControllerRoute(
     name: "admin-root",
@@ -62,6 +88,7 @@ app.MapControllerRoute(
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Home}/{action=Index}/{id?}"
+);
 
 app.Run();

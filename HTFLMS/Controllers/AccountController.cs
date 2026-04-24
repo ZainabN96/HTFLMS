@@ -1,4 +1,5 @@
 ﻿using HTFLMS.Data;
+using HTFLMS.Data.IServices;
 using HTFLMS.Models;
 using HTFLMS.Models.Auth;
 using Microsoft.AspNetCore.Authentication;
@@ -9,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using HTFLMS.Helper;
 
 namespace HTFLMS.Controllers
 {
@@ -18,7 +20,7 @@ namespace HTFLMS.Controllers
         private readonly IPasswordHasher<User> _hasher;
         private readonly IWebHostEnvironment _env;
 
-        public AccountController(ApplicationDbContext db, IPasswordHasher<User> hasher, IWebHostEnvironment env, HTFLMS.Services.IMailService mail)
+        public AccountController(ApplicationDbContext db, IPasswordHasher<User> hasher, IWebHostEnvironment env, IMailService mail)
         {
             _db = db;
             _hasher = hasher;
@@ -102,63 +104,59 @@ namespace HTFLMS.Controllers
             return View(new RegisterViewModel());
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Register(RegisterViewModel model, string? returnUrl = null)
-        {
-            ViewBag.ReturnUrl = returnUrl;
-            if (!ModelState.IsValid) return View(model);
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> Register(RegisterViewModel model, string? returnUrl = null)
+        //{
+        //    ViewBag.ReturnUrl = returnUrl;
+        //    if (!ModelState.IsValid) return View(model);
 
-            // Email must be unique
-            var emailExists = await _db.Users.AnyAsync(u => u.Email == model.Email);
-            if (emailExists)
-            {
-                ModelState.AddModelError("Email", "Email already exists.");
-                return View(model);
-            }
+        //    // Email must be unique
+        //    var emailExists = await _db.Users.AnyAsync(u => u.Email == model.Email);
+        //    if (emailExists)
+        //    {
+        //        ModelState.AddModelError("Email", "Email already exists.");
+        //        return View(model);
+        //    }
 
-            // Generate only UserId automatically
-            string generatedUserId = GenerateUserId();
-            while (await _db.Users.AnyAsync(u => u.UserId == generatedUserId))
-                generatedUserId = GenerateUserId();
+        //    // Generate only UserId automatically
+        //    string generatedUserId = UHelper.GenerateUserId();
+        //    while (await _db.Users.AnyAsync(u => u.UserId == generatedUserId))
+        //        generatedUserId = UHelper.GenerateUserId();
 
-            var user = new User
-            {
-                UserId = generatedUserId,
-                Email = model.Email,
+        //    var user = new User
+        //    {
+        //        UserId = generatedUserId,
+        //        Email = model.Email,
 
-                Gender = model.Gender,
-                Name = model.Name,
-                MemberType = "Student",
-                Qualification = model.Qualification,
-                CNIC = model.CNIC,
+        //        Gender = model.Gender,
+        //        Name = model.Name,
+        //        MemberType = "Student",
+        //        Qualification = model.Qualification,
+        //        CNIC = model.CNIC,
 
-                Address = model.Address,
-                Country = model.Country,
-                City = model.City,
+        //        Address = model.Address,
+        //        Country = model.Country,
+        //        City = model.City,
 
-                MobileNumber = model.MobileNumber,
-                LinkedIn = model.LinkedIn,
-                EmploymentStatus = model.EmploymentStatus
-            };
+        //        MobileNumber = model.MobileNumber,
+        //        LinkedIn = model.LinkedIn,
+        //        EmploymentStatus = model.EmploymentStatus
+        //    };
 
-            user.PasswordHash = _hasher.HashPassword(user, model.Password);
+        //    user.PasswordHash = _hasher.HashPassword(user, model.Password);
 
-            _db.Users.Add(user);
-            await _db.SaveChangesAsync();
+        //    _db.Users.Add(user);
+        //    await _db.SaveChangesAsync();
 
-            // changed: prefill email on login page after registration
-            TempData["PrefillEmail"] = model.Email;
+        //    // changed: prefill email on login page after registration
+        //    TempData["PrefillEmail"] = model.Email;
 
-            TempData["SuccessMessage"] = "Registered successfully! Please login.";
-            return RedirectToAction("Login", "Account", new { returnUrl });
-        }
+        //    TempData["SuccessMessage"] = "Registered successfully! Please login.";
+        //    return RedirectToAction("Login", "Account", new { returnUrl });
+        //}
 
-        private static string GenerateUserId()
-        {
-            return $"HCC-{DateTime.UtcNow:yyyy}-{Random.Shared.Next(10000, 99999)}";
-        }
-
+       
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Logout()
@@ -172,7 +170,7 @@ namespace HTFLMS.Controllers
 
         public IActionResult AccessDenied() => View();
 
-        private readonly HTFLMS.Services.IMailService _mail;
+        private readonly IMailService _mail;
 
     [HttpGet]
     public IActionResult ForgotPassword()

@@ -1,8 +1,10 @@
-﻿using MailKit.Net.Smtp;
+﻿using HTFLMS.Data.IServices;
+using HTFLMS.Helper;
+using MailKit.Net.Smtp;
 using MailKit.Security;
 using Microsoft.Extensions.Options;
 using MimeKit;
-namespace HTFLMS.Services
+namespace HTFLMS.Data.Services
 {
     public class MailService : IMailService
     {
@@ -37,6 +39,12 @@ namespace HTFLMS.Services
             await smtp.AuthenticateAsync(_s.Username, _s.Password);
             await smtp.SendAsync(email);
             await smtp.DisconnectAsync(true);
+        }
+        public async Task SendRegistrationEmailAsync(
+            string toEmail, string name, string userId, string password)
+        {
+            var (subject, body) = EmailTemplates.RegistrationEmail(name, userId, password);
+            await SendAsync(toEmail, subject, body);
         }
     }
 }
