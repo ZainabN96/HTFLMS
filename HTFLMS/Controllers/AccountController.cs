@@ -165,7 +165,7 @@ namespace HTFLMS.Controllers
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
-            TempData["SuccessMessage"] = "Logged out successfully.";
+            TempData["SuccessMessage"] = "Logged out successfully!";
 
             return RedirectToAction("Login", "Account");
         }
