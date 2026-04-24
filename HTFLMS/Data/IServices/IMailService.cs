@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace HTFLMS.Services
+namespace HTFLMS.Data.IServices
 {
     public interface IMailService
     {
