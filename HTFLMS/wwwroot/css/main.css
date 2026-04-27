@@ -2582,6 +2582,53 @@ main.auth {
         letter-spacing: .2px;
     }
 
+/* ===== Global Success Message ===== */
+.app-toast {
+    position: fixed;
+    top: 28px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-10px);
+    z-index: 99999;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 280px;
+    max-width: 90vw;
+    padding: 14px 18px;
+    border-radius: 14px;
+    background: rgba(34, 197, 94, 0.95);
+    color: #fff;
+    box-shadow: 0 18px 45px rgba(0,0,0,.18);
+    backdrop-filter: blur(6px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .25s ease, transform .25s ease;
+}
+
+    .app-toast.show {
+        opacity: 1;
+        pointer-events: auto;
+        transform: translateX(-50%) translateY(0);
+    }
+
+.app-toast-icon {
+    width: 34px;
+    height: 34px;
+    border-radius: 999px;
+    background: rgba(255,255,255,.18);
+    display: grid;
+    place-items: center;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.app-toast-text {
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: .2px;
+    line-height: 1.3;
+}
+
 /* ===== Registration page (clean like your screenshot) ===== */
 .reg-wrap {
     padding: 35px 5px;

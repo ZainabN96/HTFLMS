@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HTFLMS.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260421074429_LMSAllTables")]
-    partial class LMSAllTables
+    [Migration("20260427090432_InitialClean")]
+    partial class InitialClean
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

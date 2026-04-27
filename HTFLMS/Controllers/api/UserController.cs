@@ -50,8 +50,7 @@ namespace HTFLMS.Controllers.api
             user.UserId = await GenerateUniqueUserIdAsync();
 
             // 5. Hash password
-            user.PasswordHash = PasswordHelper.Hash(dto.Password);
-
+            user.PasswordHash = hasher.HashPassword(user, dto.Password);
             // 6. Save
             uow.UserService.Register(user);
             await uow.SaveAsync();
