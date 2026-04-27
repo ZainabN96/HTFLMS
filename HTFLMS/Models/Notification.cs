@@ -22,6 +22,7 @@ namespace HTFLMS.Models
         public string Type { get; set; } = "";
 
         public bool IsRead { get; set; } = false;
+        public string? RedirectUrl { get; set; }
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 

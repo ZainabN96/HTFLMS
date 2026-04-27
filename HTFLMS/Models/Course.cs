@@ -33,6 +33,7 @@ namespace HTFLMS.Models
 
         [Required]
         public DateTime BatchStartDate { get; set; }
+        public string? BatchNumber { get; set; }
 
         public DateTime? BatchEndDate { get; set; }
 
