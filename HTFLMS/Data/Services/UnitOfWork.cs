@@ -4,25 +4,22 @@ namespace HTFLMS.Data.Services
 {
     public class UnitOfWork : IUnitOfWork
     {
-        private readonly ApplicationDbContext dc;
+        private readonly ApplicationDbContext context;
 
-        public UnitOfWork(ApplicationDbContext dc)
+        public IUserService UserService { get; private set; }
+        public ICourseService CourseService { get; private set; }
+
+        public UnitOfWork(ApplicationDbContext context)
         {
-            this.dc = dc;
+            this.context = context;
+
+            UserService = new UserService(context);
+            CourseService = new CourseService(context);
         }
-        IUserService IUnitOfWork.UserService => new UserService(dc);
-        //public IMailService MailService => new MailService(dc);
+
         public async Task<bool> SaveAsync()
         {
-            try
-            {
-                return await dc.SaveChangesAsync() > 0;
-            }
-            catch (Exception ex)
-            {
-                var message = ex.InnerException?.Message ?? ex.Message;
-                throw new Exception(message, ex);
-            }
+            return await context.SaveChangesAsync() > 0;
         }
     }
 }

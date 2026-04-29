@@ -1,35 +1,48 @@
 ﻿@{
-    var msg = TempData["SuccessMessage"] as string;   // <-- NOT Peek
+    var msg = TempData["SuccessMessage"] as string ?? "";
 }
-@if (!string.IsNullOrWhiteSpace(msg))
-{
-    <div id="appToast" class="app-toast" role="status" aria-live="polite">
-        <span class="app-toast-icon">✓</span>
-        <span class="app-toast-text">@msg</span>
-    </div>
 
-    <script>
-        window.addEventListener("load", function () {
-            const loader = document.getElementById("loader-wrapper");
+<div id="appToast" class="app-toast" role="status" aria-live="polite">
+    <span class="app-toast-icon">✓</span>
+    <span class="app-toast-text" id="appToastText">@msg</span>
+</div>
 
-            if (loader) {
-                loader.classList.add("is-hidden");
+<script>
+    function showSuccessPopup(message) {
+        const popup = document.getElementById("appToast");
+        const text = document.getElementById("appToastText");
 
-                setTimeout(() => {
-                    loader.remove();
-                    showSuccessPopup();
-                }, 400);
-            } else {
+        if (!popup) return;
+
+        if (message && text) {
+            text.innerText = message;
+        }
+
+        if (!text || !text.innerText.trim()) return;
+
+        popup.classList.add("show");
+
+        setTimeout(() => {
+            popup.classList.remove("show");
+        }, 3500);
+    }
+
+    window.addEventListener("load", function () {
+        const hasTempDataMessage = "@(!string.IsNullOrWhiteSpace(msg))".toLowerCase() === "true";
+
+        if (!hasTempDataMessage) return;
+
+        const loader = document.getElementById("loader-wrapper");
+
+        if (loader) {
+            loader.classList.add("is-hidden");
+
+            setTimeout(() => {
+                loader.remove();
                 showSuccessPopup();
-            }
-
-            function showSuccessPopup() {
-                const popup = document.getElementById("appToast");
-                if (!popup) return;
-
-                popup.classList.add("show");
-                setTimeout(() => popup.classList.remove("show"), 3500);
-            }
-        });
-        </script>
-} 
+            }, 400);
+        } else {
+            showSuccessPopup();
+        }
+    });
+</script>

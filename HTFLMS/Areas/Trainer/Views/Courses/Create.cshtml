@@ -1,6 +1,8 @@
-﻿@{
+﻿@using System.Security.Claims
+@{
     ViewData["Title"] = "Add New Course";
     Layout = "_TrainerLayout";
+    var trainerId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 }
 
 <div class="dashboard-page trainer-form-page">
@@ -22,12 +24,10 @@
     </div>
 
     <div class="dashboard-panel course-form-panel trainer-form-panel trainer-form-panel-wide">
-        <form method="post"
-              asp-action="Create"
+        <form id="courseCreateForm"
               enctype="multipart/form-data"
               class="course-form-grid trainer-form-layout-split">
-
-            <!-- LEFT SIDE IMAGE -->
+            <input type="hidden" id="trainerId" value="@trainerId" />
             <div class="trainer-form-media">
                 <label for="imageFile" class="trainer-form-media-box trainer-upload-box">
                     <div class="trainer-form-media-inner" id="uploadInner">
@@ -56,16 +56,16 @@
                        onchange="previewTrainerImage(event)" />
             </div>
 
-            <!-- RIGHT SIDE FIELDS -->
             <div class="course-fields">
                 <div class="course-row-2">
                     <div>
                         <label class="course-label">Course Title</label>
-                        <input type="text" name="title" class="course-input" placeholder="Enter course title" />
+                        <input type="text" id="title" name="title" class="course-input" placeholder="Enter course title" required />
                     </div>
+
                     <div>
                         <label class="course-label">Course Category</label>
-                        <select name="category" class="course-input">
+                        <select id="category" name="category" class="course-input" required>
                             <option value="">Select category</option>
                             <option>Marketing</option>
                             <option>Design</option>
@@ -82,56 +82,57 @@
                 <div class="course-row-2">
                     <div>
                         <label class="course-label">Batch Number</label>
-                        <input type="text" name="courseCode" class="course-input" placeholder="Optional (e.g. CS101)" />
+                        <input type="text" id="batchNumber" name="batchNumber" class="course-input" placeholder="Optional (e.g. CS101)" />
                     </div>
+
                     <div>
                         <label class="course-label">Duration</label>
-                        <input type="text" name="durationText" class="course-input" placeholder="e.g. 3 Months" />
+                        <input type="text" id="durationText" name="durationText" class="course-input" placeholder="e.g. 3 Months" />
                     </div>
                 </div>
 
                 <div class="course-row-2">
                     <div>
                         <label class="course-label">Batch Start Date</label>
-                        <input type="date" name="batchStartDate" class="course-input" />
+                        <input type="date" id="batchStartDate" name="batchStartDate" class="course-input" required />
                     </div>
 
                     <div>
                         <label class="course-label">Batch End Date</label>
-                        <input type="date" name="batchEndDate" class="course-input" />
+                        <input type="date" id="batchEndDate" name="batchEndDate" class="course-input" />
                     </div>
                 </div>
 
                 <div class="course-row-2">
                     <div>
                         <label class="course-label">Total Modules</label>
-                        <input type="number" min="0" name="totalModules" class="course-input" placeholder="e.g. 4" />
+                        <input type="number" min="0" id="totalModules" name="totalModules" class="course-input" placeholder="e.g. 4" />
                     </div>
 
                     <div>
                         <label class="course-label">Certificate</label>
-                        <select name="certificateIncluded" class="course-input">
-                            <option value="">Select option</option>
-                            <option value="true">Included</option>
+                        <select id="certificateIncluded" name="certificateIncluded" class="course-input">
                             <option value="false">Not Included</option>
+                            <option value="true">Included</option>
                         </select>
                     </div>
 
                     <div>
                         <label class="course-label">Status</label>
-                        <select name="status" class="course-input">
-                            <option value="">Select status</option>
-                            <option value="Active">Active</option>
+                        <select id="status" name="status" class="course-input">
                             <option value="Draft">Draft</option>
+                            <option value="Active">Active</option>
                         </select>
                     </div>
                 </div>
 
                 <div>
                     <label class="course-label">Course Description</label>
-                    <textarea name="description"
+                    <textarea id="description"
+                              name="description"
                               class="course-input"
-                              placeholder="Short summary shown in cards and overview"></textarea>
+                              placeholder="Short summary shown in cards and overview"
+                              required></textarea>
                 </div>
 
                 <div>
@@ -149,6 +150,8 @@
                     </label>
                 </div>
 
+                <div class="text-danger small mb-2 error-box"></div>
+
                 <div class="course-actions">
                     <a asp-area="Trainer"
                        asp-controller="Courses"
@@ -157,7 +160,7 @@
                         Cancel
                     </a>
 
-                    <button type="submit" class="dashboard-btn add-course-btn">
+                    <button type="submit" id="saveCourseBtn" class="dashboard-btn add-course-btn">
                         Save Course
                     </button>
                 </div>
@@ -167,32 +170,5 @@
 </div>
 
 @section Scripts {
-    <script>
-        function previewTrainerImage(event) {
-            const input = event.target;
-            const preview = document.getElementById('imagePreview');
-            const placeholder = document.getElementById('uploadPlaceholder');
-
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function (e) {
-                    preview.src = e.target.result;
-                    preview.style.display = 'block';
-                    if (placeholder) placeholder.style.display = 'none';
-                };
-                reader.readAsDataURL(input.files[0]);
-            }
-        }
-
-        function showHandbookFileName(event) {
-            const input = event.target;
-            const fileNameText = document.getElementById('handbookFileName');
-
-            if (input.files && input.files[0]) {
-                fileNameText.textContent = input.files[0].name;
-            } else {
-                fileNameText.textContent = 'Choose PDF / document file';
-            }
-        }
-    </script>
+    <script src="~/js/ajax/Course/create.js"></script>
 }

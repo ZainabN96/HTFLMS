@@ -3,7 +3,8 @@
     public interface IUnitOfWork
     {
         IUserService UserService { get; }
-        // IMailService MailService { get; }
+        ICourseService CourseService { get; }
+
         Task<bool> SaveAsync();
     }
 }
