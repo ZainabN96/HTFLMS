@@ -58,12 +58,12 @@
 
             <!-- RIGHT SIDE FIELDS -->
             <div class="course-fields">
-                <div>
-                    <label class="course-label">Course Title</label>
-                    <input type="text" name="title" class="course-input" placeholder="Enter course title" />
-                </div>
-
+                
                 <div class="course-row-2">
+                    <div>
+                        <label class="course-label">Course Title</label>
+                        <input type="text" name="title" class="course-input" placeholder="Enter course title" />
+                    </div>
                     <div>
                         <label class="course-label">Course Category</label>
                         <select name="category" class="course-input">
@@ -78,39 +78,16 @@
                             <option>Data Science</option>
                         </select>
                     </div>
-
-                    <div>
-                        <label class="course-label">Level</label>
-                        <select name="level" class="course-input">
-                            <option value="">Select level</option>
-                            <option>Beginner</option>
-                            <option>Intermediate</option>
-                            <option>Advanced</option>
-                        </select>
-                    </div>
                 </div>
 
                 <div class="course-row-2">
                     <div>
-                        <label class="course-label">Instructor</label>
-                        <input type="text" name="instructor" class="course-input" placeholder="Enter instructor name" />
-                    </div>
-
-                    <div>
-                        <label class="course-label">Course Code</label>
+                        <label class="course-label">Batch Number</label>
                         <input type="text" name="courseCode" class="course-input" placeholder="Optional (e.g. CS101)" />
                     </div>
-                </div>
-
-                <div class="course-row-2">
                     <div>
                         <label class="course-label">Duration</label>
                         <input type="text" name="durationText" class="course-input" placeholder="e.g. 3 Months" />
-                    </div>
-
-                    <div>
-                        <label class="course-label">Language</label>
-                        <input type="text" name="language" class="course-input" placeholder="e.g. English" />
                     </div>
                 </div>
 
@@ -147,10 +124,18 @@
                 </div>
 
                 <div>
-                    <label class="course-label">Course Content</label>
-                    <textarea name="content"
-                              class="course-input trainer-editor"
-                              placeholder="Write the full course content / outline / what students will learn"></textarea>
+                    <label class="course-label">Course Handbook</label>
+
+                    <label for="handbookFile" class="student-upload-box course-handbook-upload">
+                        <i class="bi bi-file-earmark-pdf"></i>
+                        <span id="handbookFileName">Choose PDF / document file</span>
+
+                        <input type="file"
+                               id="handbookFile"
+                               name="handbookFile"
+                               accept=".pdf,.doc,.docx,.ppt,.pptx"
+                               onchange="showHandbookFileName(event)" />
+                    </label>
                 </div>
 
                 <div class="course-actions">
@@ -185,6 +170,17 @@
                     if (placeholder) placeholder.style.display = 'none';
                 };
                 reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function showHandbookFileName(event) {
+            const input = event.target;
+            const fileNameText = document.getElementById('handbookFileName');
+
+            if (input.files && input.files[0]) {
+                fileNameText.textContent = input.files[0].name;
+            } else {
+                fileNameText.textContent = 'Choose PDF / document file';
             }
         }
     </script>

@@ -5026,6 +5026,13 @@
     min-width: 0;
 }
 
+.course-handbook-upload {
+    width: 100%;
+    box-sizing: border-box;
+    min-width: 0;
+    margin-top: 0;
+}
+
 .admin-course-chip,
 .trainer-course-chip {
     max-width: 100%;
