@@ -34,5 +34,13 @@ namespace HTFLMS.Data.Services
                 .OrderByDescending(x => x.CreatedAt)
                 .ToListAsync();
         }
+
+        public async Task<List<Course>> GetByTrainerIdAsync(int trainerId)
+        {
+            return await context.Courses
+                .Where(x => x.TrainerId == trainerId)
+                .OrderByDescending(x => x.CreatedAt)
+                .ToListAsync();
+        }
     }
 }

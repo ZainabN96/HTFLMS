@@ -8,5 +8,6 @@ namespace HTFLMS.Data.IServices
         void Add(Course course);
         void Update(Course course);
         Task<List<Course>> GetAllAsync();
+        Task<List<Course>> GetByTrainerIdAsync(int trainerId);
     }
 }

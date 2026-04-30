@@ -68,8 +68,38 @@ namespace HTFLMS.Controllers.api
         [HttpGet]
         public async Task<IActionResult> GetCourses()
         {
-            var courses = await uow.CourseService.GetAllAsync();
-            return Ok(courses);
+            var email = User.Identity?.Name;
+
+            if (string.IsNullOrWhiteSpace(email))
+                return Unauthorized(new APIError(401, "User is not logged in."));
+
+            var trainer = await uow.UserService.GetUserByEmailAsync(email);
+
+            if (trainer == null)
+                return NotFound(new APIError(404, "Logged-in trainer was not found."));
+
+            var courses = await uow.CourseService.GetByTrainerIdAsync(trainer.Id);
+
+            var result = courses.Select(c => new
+            {
+                c.Id,
+                c.Title,
+                c.Category,
+                c.Description,
+                c.HandbookFilePath,
+                c.CourseImagePath,
+                c.TrainerId,
+                c.IsPublished,
+                c.IsActive,
+                c.BatchStartDate,
+                c.BatchNumber,
+                c.BatchEndDate,
+                c.CertificateIncluded,
+                c.CreatedAt,
+                TotalStudents = c.Enrollments == null ? 0 : c.Enrollments.Count
+            });
+
+            return Ok(result);
         }
 
         [HttpGet("{id}")]

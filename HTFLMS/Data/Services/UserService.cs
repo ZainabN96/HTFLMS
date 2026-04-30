@@ -23,5 +23,9 @@ namespace HTFLMS.Data.Services
         {
             dc.Users.Add(user);
         }
+        public async Task<User?> GetUserByEmailAsync(string email)
+        {
+            return await dc.Users.FirstOrDefaultAsync(x => x.Email == email);
+        }
     }
 }
