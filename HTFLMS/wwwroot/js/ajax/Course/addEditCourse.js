@@ -1,5 +1,16 @@
 ﻿$(document).ready(function () {
 
+    var courseId = $('#courseId').val();
+    var isEdit = courseId && courseId !== '';
+
+    if (isEdit) {
+        $('#pageTitle').text('Edit Course');
+        $('#pageSub').text('Update the course details.');
+        $('#saveCourseBtn').text('Update Course');
+
+        loadCourse(courseId);
+    }
+
     $('#courseCreateForm').on('submit', function (e) {
         e.preventDefault();
 
@@ -13,8 +24,6 @@
         formData.append('batchEndDate', $('#batchEndDate').val());
         formData.append('certificateIncluded', $('#certificateIncluded').val());
         formData.append('status', $('#status').val());
-
-        // temporary trainer id
         formData.append('trainerId', $('#trainerId').val());
 
         var imageFile = $('#imageFile')[0].files[0];
@@ -28,32 +37,78 @@
         }
 
         var btn = $('#saveCourseBtn');
-        btn.prop('disabled', true).text('Saving...');
+        btn.prop('disabled', true).text(isEdit ? 'Updating...' : 'Saving...');
 
         $.ajax({
-            url: '/api/Course/create',
-            type: 'POST',
+            url: isEdit ? '/api/Course/edit/' + courseId : '/api/Course/create',
+            type: isEdit ? 'PUT' : 'POST',
             data: formData,
             processData: false,
             contentType: false,
 
-            success: function (res) {
-                sessionStorage.setItem("successMessage", "Course created successfully!");
+            success: function () {
+                sessionStorage.setItem(
+                    "successMessage",
+                    isEdit ? "Course updated successfully!" : "Course created successfully!"
+                );
+
                 window.location.href = "/Trainer/Courses/Index";
             },
 
             error: function (xhr) {
                 var err = xhr.responseJSON;
-                var msg = err?.errorMessage || err?.title || 'Course creation failed. Please try again.';
+                var msg = err?.errorMessage || err?.title || 'Something went wrong. Please try again.';
                 $('.error-box').html('<div>' + msg + '</div>');
             },
 
             complete: function () {
-                btn.prop('disabled', false).text('Save Course');
+                btn.prop('disabled', false).text(isEdit ? 'Update Course' : 'Save Course');
             }
         });
     });
 });
+
+function loadCourse(courseId) {
+    $.ajax({
+        url: '/api/Course/' + courseId,
+        type: 'GET',
+
+        success: function (course) {
+            $('#title').val(course.title);
+            $('#category').val(course.category);
+            $('#description').val(course.description);
+            $('#batchNumber').val(course.batchNumber);
+            $('#batchStartDate').val(formatDate(course.batchStartDate));
+            $('#batchEndDate').val(formatDate(course.batchEndDate));
+            $('#certificateIncluded').val(course.certificateIncluded ? 'true' : 'false');
+            $('#status').val(course.isPublished ? 'Active' : 'Draft');
+
+            if (course.courseImagePath) {
+                $('#imagePreview')
+                    .attr('src', course.courseImagePath)
+                    .show();
+
+                $('#uploadPlaceholder').hide();
+            }
+
+            if (course.handbookFilePath) {
+                var fileName = course.handbookFilePath.split('/').pop();
+                $('#handbookFileName').text(fileName);
+            }
+        },
+
+        error: function () {
+            $('.error-box').html('<div>Course could not be loaded.</div>');
+        }
+    });
+}
+
+function formatDate(dateValue) {
+    if (!dateValue) return '';
+
+    var date = new Date(dateValue);
+    return date.toISOString().split('T')[0];
+}
 
 function previewTrainerImage(event) {
     const input = event.target;
@@ -86,4 +141,3 @@ function showHandbookFileName(event) {
         fileNameText.textContent = 'Choose PDF / document file';
     }
 }
-

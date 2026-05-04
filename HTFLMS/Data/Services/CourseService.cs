@@ -42,5 +42,10 @@ namespace HTFLMS.Data.Services
                 .OrderByDescending(x => x.CreatedAt)
                 .ToListAsync();
         }
+
+        public void Delete(Course course)
+        {
+            context.Courses.Remove(course);
+        }
     }
 }

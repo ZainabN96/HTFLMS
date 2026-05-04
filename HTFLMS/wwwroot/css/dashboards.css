@@ -7322,3 +7322,46 @@
         grid-template-columns: 1fr;
     }
 }
+
+.custom-modal {
+    position: fixed;
+    inset: 0;
+    display: none;
+    z-index: 9999;
+}
+
+    .custom-modal.show {
+        display: block;
+    }
+
+.custom-modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.4);
+}
+
+.custom-modal-box {
+    position: relative;
+    width: 360px;
+    margin: 140px auto;
+    background: #fff;
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+    text-align: center;
+}
+
+    .custom-modal-box h3 {
+        margin-bottom: 8px;
+    }
+
+    .custom-modal-box p {
+        color: rgba(0,0,0,0.6);
+        margin-bottom: 18px;
+    }
+
+.custom-modal-actions {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}

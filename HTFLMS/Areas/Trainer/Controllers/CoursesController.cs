@@ -10,17 +10,16 @@ namespace HTFLMS.Areas.Trainer.Controllers
             return View();
         }
 
-        [HttpGet]
         public IActionResult Create()
         {
-            return View("Create");
+            ViewBag.CourseId = null;
+            return View("AddEditCourse");
         }
 
-        [HttpGet]
         public IActionResult Edit(int id)
         {
             ViewBag.CourseId = id;
-            return View("Edit");
+            return View("AddEditCourse");
         }
     }
 }

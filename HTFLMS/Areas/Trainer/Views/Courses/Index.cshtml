@@ -83,7 +83,24 @@
         </div>
     </div>
 </div>
+<div id="deleteConfirmModal" class="custom-modal">
+    <div class="custom-modal-backdrop"></div>
 
+    <div class="custom-modal-box">
+        <h3>Delete Course</h3>
+        <p>Are you sure you want to delete this course?</p>
+
+        <div class="custom-modal-actions">
+            <button id="cancelDeleteBtn" class="dashboard-btn dashboard-btn-outline">
+                Cancel
+            </button>
+
+            <button id="confirmDeleteBtn" class="dashboard-btn add-course-btn">
+                Delete
+            </button>
+        </div>
+    </div>
+</div>
 @section Scripts {
     <script src="~/js/ajax/Course/index.js"></script>
 }

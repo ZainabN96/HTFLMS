@@ -27,6 +27,7 @@
         <form id="courseCreateForm"
               enctype="multipart/form-data"
               class="course-form-grid trainer-form-layout-split">
+            <input type="hidden" id="courseId" value="@ViewBag.CourseId" />
             <input type="hidden" id="trainerId" value="@trainerId" />
             <div class="trainer-form-media">
                 <label for="imageFile" class="trainer-form-media-box trainer-upload-box">
@@ -105,11 +106,6 @@
 
                 <div class="course-row-2">
                     <div>
-                        <label class="course-label">Total Modules</label>
-                        <input type="number" min="0" id="totalModules" name="totalModules" class="course-input" placeholder="e.g. 4" />
-                    </div>
-
-                    <div>
                         <label class="course-label">Certificate</label>
                         <select id="certificateIncluded" name="certificateIncluded" class="course-input">
                             <option value="false">Not Included</option>
@@ -127,15 +123,6 @@
                 </div>
 
                 <div>
-                    <label class="course-label">Course Description</label>
-                    <textarea id="description"
-                              name="description"
-                              class="course-input"
-                              placeholder="Short summary shown in cards and overview"
-                              required></textarea>
-                </div>
-
-                <div>
                     <label class="course-label">Course Handbook</label>
 
                     <label for="handbookFile" class="student-upload-box course-handbook-upload">
@@ -149,6 +136,17 @@
                                onchange="showHandbookFileName(event)" />
                     </label>
                 </div>
+
+
+                <div>
+                    <label class="course-label">Course Description</label>
+                    <textarea id="description"
+                              name="description"
+                              class="course-input"
+                              placeholder="Short summary shown in cards and overview"
+                              required></textarea>
+                </div>
+
 
                 <div class="text-danger small mb-2 error-box"></div>
 
@@ -170,5 +168,5 @@
 </div>
 
 @section Scripts {
-    <script src="~/js/ajax/Course/create.js"></script>
+    <script src="~/js/ajax/Course/addEditCourse.js"></script>
 }

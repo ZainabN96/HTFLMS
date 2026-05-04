@@ -19,19 +19,6 @@
     });
 });
 
-$(document).ready(function () {
-    loadCourses();
-
-    $('#courseSearchInput').on('keyup', function () {
-        var searchText = $(this).val().toLowerCase();
-
-        $('.trainer-courses-table-row').each(function () {
-            var rowText = $(this).text().toLowerCase();
-            $(this).toggle(rowText.includes(searchText));
-        });
-    });
-});
-
 function loadCourses() {
     $.ajax({
         url: '/api/Course',
@@ -72,6 +59,7 @@ function renderCourses(courses) {
     $.each(courses, function (index, course) {
         var title = course.title || 'Untitled Course';
         var category = course.category || 'N/A';
+        var description = course.description || '';
         var students = course.totalStudents || 0;
 
         var imagePath = course.courseImagePath || '/img/course/course-1.webp';
@@ -96,7 +84,10 @@ function renderCourses(courses) {
                         </div>
                         <div class="courses-title-block">
                             <div class="courses-title" title="${title}">${title}</div>
-                            <div class="courses-sub-text dashboard-table-cell-ellipsis" title="${category}">${category}</div>
+
+                            <div class="courses-sub-text dashboard-table-cell-ellipsis" title="${category}">
+                                ${category}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -118,13 +109,12 @@ function renderCourses(courses) {
                 </div>
 
                 <div class="trainer-courses-actions">
-                    <a href="/Trainer/Courses/Edit/${course.id}"
-                       class="dashboard-btn dashboard-btn-outline trainer-course-action-btn">
+                    <a href="/Trainer/Courses/Edit/${course.id}" class="dashboard-btn dashboard-btn-outline">
                         Edit
                     </a>
 
-                    <button type="button"
-                            class="dashboard-btn trainer-delete-soft-btn trainer-course-action-btn">
+                    <button  class="dashboard-btn trainer-delete-soft-btn trainer-course-action-btn"
+                            onclick="deleteCourse(${course.id})">
                         Delete
                     </button>
                 </div>
@@ -149,3 +139,40 @@ function updateCourseStats(courses) {
     $('#draftCoursesCount').text(draft);
     $('#totalStudentsCount').text(students);
 }
+
+let deleteCourseId = null;
+
+function deleteCourse(courseId) {
+    deleteCourseId = courseId;
+    $('#deleteConfirmModal').addClass('show');
+}
+
+$('#cancelDeleteBtn').on('click', function () {
+    $('#deleteConfirmModal').removeClass('show');
+    deleteCourseId = null;
+});
+
+$('#confirmDeleteBtn').on('click', function () {
+
+    if (!deleteCourseId) return;
+
+    $.ajax({
+        url: '/api/Course/delete/' + deleteCourseId,
+        type: 'DELETE',
+
+        success: function () {
+            $('#deleteConfirmModal').removeClass('show');
+
+            sessionStorage.setItem("successMessage", "Course deleted successfully!");
+            location.reload();
+        },
+
+        error: function (xhr) {
+            $('#deleteConfirmModal').removeClass('show');
+
+            var err = xhr.responseJSON;
+            var msg = err?.errorMessage || err?.title || 'Course delete failed.';
+            alert(msg);
+        }
+    });
+});

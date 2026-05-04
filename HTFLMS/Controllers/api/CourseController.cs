@@ -204,5 +204,38 @@ namespace HTFLMS.Controllers.api
             if (System.IO.File.Exists(fullPath))
                 System.IO.File.Delete(fullPath);
         }
+
+        [HttpDelete("delete/{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var email = User.Identity?.Name;
+
+            if (string.IsNullOrWhiteSpace(email))
+                return Unauthorized(new APIError(401, "User is not logged in."));
+
+            var trainer = await uow.UserService.GetUserByEmailAsync(email);
+
+            if (trainer == null)
+                return NotFound(new APIError(404, "Logged-in trainer was not found."));
+
+            var course = await uow.CourseService.GetByIdAsync(id);
+
+            if (course == null)
+                return NotFound(new APIError(404, "Course not found."));
+
+            if (course.TrainerId != trainer.Id)
+                return Unauthorized(new APIError(401, "You are not allowed to delete this course."));
+
+            DeleteOldFile(course.CourseImagePath);
+            DeleteOldFile(course.HandbookFilePath);
+
+            uow.CourseService.Delete(course);
+            await uow.SaveAsync();
+
+            return Ok(new
+            {
+                message = "Course deleted successfully."
+            });
+        }
     }
 }
