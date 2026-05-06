@@ -8,5 +8,8 @@ namespace HTFLMS.Data.IServices
         Task<bool> UserIdExists(string userId);
         void Register(Models.User user);
         Task<User?> GetUserByEmailAsync(string email);
+
+        //trainer list for dropdown by sb
+        Task<List<User>> GetAllAsync();
     }
 }

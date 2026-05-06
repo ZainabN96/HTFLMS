@@ -27,5 +27,12 @@ namespace HTFLMS.Data.Services
         {
             return await dc.Users.FirstOrDefaultAsync(x => x.Email == email);
         }
+        //trainer dropdownlist by sb
+        public async Task<List<User>> GetAllAsync()
+        {
+            return await dc.Users
+                .OrderBy(x => x.Name)
+                .ToListAsync();
+        }
     }
 }

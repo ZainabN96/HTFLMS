@@ -58,6 +58,25 @@ namespace HTFLMS.Controllers.api
             return Ok(new { message = "User registered successfully.", userId = user.UserId });
         }
 
+        //trainer dropdown list by sb 
+        [HttpGet("trainers")]
+        public async Task<IActionResult> GetActiveTrainers()
+        {
+            var users = await uow.UserService.GetAllAsync();
+
+            var trainers = users
+                .Where(x => x.MemberType == "Trainer" && x.IsActive == true)
+                .Select(x => new
+                {
+                    x.Id,
+                    x.Name
+                })
+                .OrderBy(x => x.Name)
+                .ToList();
+
+            return Ok(trainers);
+        }
+
         // ── private helper ────────────────────────────────────────────
         private async Task<string> GenerateUniqueUserIdAsync()
         {

@@ -237,5 +237,59 @@ namespace HTFLMS.Controllers.api
                 message = "Course deleted successfully."
             });
         }
+        //Admin All courses List
+
+        [HttpGet("admin/all")]
+        public async Task<IActionResult> GetAllCoursesForAdmin()
+        {
+            var courses = await uow.CourseService.GetAllAsync();
+
+            var result = courses.Select(c => new
+            {
+                c.Id,
+                c.Title,
+                c.Category,
+                c.Description,
+                c.HandbookFilePath,
+                c.CourseImagePath,
+                c.TrainerId,
+                TrainerName = c.Trainer != null ? c.Trainer.Name : "No Trainer",
+                c.IsPublished,
+                c.IsActive,
+                c.BatchStartDate,
+                c.BatchNumber,
+                c.BatchEndDate,
+                c.CertificateIncluded,
+                c.CreatedAt,
+                TotalStudents = c.Enrollments == null ? 0 : c.Enrollments.Count
+            });
+
+            return Ok(result);
+        }
+
+        [HttpPut("admin/toggle-active/{id}")]
+        public async Task<IActionResult> ToggleCourseActiveStatus(int id)
+        {
+            var course = await uow.CourseService.GetByIdAsync(id);
+
+            if (course == null)
+            {
+                return NotFound(new APIError(404, "Course not found."));
+            }
+
+            course.IsActive = !course.IsActive;
+
+            uow.CourseService.Update(course);
+            await uow.SaveAsync();
+
+            return Ok(new
+            {
+                message = course.IsActive
+                    ? "Course activated successfully."
+                    : "Course deactivated successfully.",
+                isActive = course.IsActive
+            });
+        }
+
     }
 }

@@ -2,6 +2,12 @@
 
     var courseId = $('#courseId').val();
     var isEdit = courseId && courseId !== '';
+    var redirectUrl = $('#redirectUrl').val() || '/Trainer/Courses/Index';
+    var isAdminPage = $('#isAdminPage').val() === 'true';
+
+    if (isAdminPage) {
+        loadTrainers();
+    }
 
     if (isEdit) {
         $('#pageTitle').text('Edit Course');
@@ -13,6 +19,8 @@
 
     $('#courseCreateForm').on('submit', function (e) {
         e.preventDefault();
+
+        $('.error-box').html('');
 
         var formData = new FormData();
 
@@ -52,12 +60,12 @@
                     isEdit ? "Course updated successfully!" : "Course created successfully!"
                 );
 
-                window.location.href = "/Trainer/Courses/Index";
+                window.location.href = redirectUrl;
             },
 
             error: function (xhr) {
                 var err = xhr.responseJSON;
-                var msg = err?.errorMessage || err?.title || 'Something went wrong. Please try again.';
+                var msg = err?.errorMessage || err?.message || err?.title || 'Something went wrong. Please try again.';
                 $('.error-box').html('<div>' + msg + '</div>');
             },
 
@@ -67,6 +75,35 @@
         });
     });
 });
+
+function loadTrainers() {
+    $.ajax({
+        url: '/api/User/trainers',
+        type: 'GET',
+
+        success: function (trainers) {
+            var trainerDropdown = $('#trainerId');
+            trainerDropdown.empty();
+
+            trainerDropdown.append('<option value="">Select trainer</option>');
+
+            $.each(trainers, function (index, trainer) {
+                trainerDropdown.append(
+                    '<option value="' + trainer.id + '">' + trainer.name + '</option>'
+                );
+            });
+
+            var selectedTrainerId = $('#selectedTrainerId').val();
+            if (selectedTrainerId) {
+                trainerDropdown.val(selectedTrainerId);
+            }
+        },
+
+        error: function () {
+            $('.error-box').html('<div>Trainers could not be loaded.</div>');
+        }
+    });
+}
 
 function loadCourse(courseId) {
     $.ajax({
@@ -82,6 +119,12 @@ function loadCourse(courseId) {
             $('#batchEndDate').val(formatDate(course.batchEndDate));
             $('#certificateIncluded').val(course.certificateIncluded ? 'true' : 'false');
             $('#status').val(course.isPublished ? 'Active' : 'Draft');
+
+            $('#selectedTrainerId').val(course.trainerId);
+
+            if ($('#trainerId').is('select')) {
+                $('#trainerId').val(course.trainerId);
+            }
 
             if (course.courseImagePath) {
                 $('#imagePreview')

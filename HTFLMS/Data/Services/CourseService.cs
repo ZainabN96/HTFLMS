@@ -27,18 +27,34 @@ namespace HTFLMS.Data.Services
         {
             context.Courses.Update(course);
         }
-
+        //by ariba
+        //public async Task<List<Course>> GetAllAsync()
+        //{
+        //    return await context.Courses
+        //        .OrderByDescending(x => x.CreatedAt)
+        //        .ToListAsync();
+        //}
         public async Task<List<Course>> GetAllAsync()
         {
             return await context.Courses
+                .Include(x => x.Trainer)
+                .Include(x => x.Enrollments)
                 .OrderByDescending(x => x.CreatedAt)
                 .ToListAsync();
         }
 
+        //public async Task<List<Course>> GetByTrainerIdAsync(int trainerId)
+        //{
+        //    return await context.Courses
+        //        .Where(x => x.TrainerId == trainerId)
+        //        .OrderByDescending(x => x.CreatedAt)
+        //        .ToListAsync();
+        //}
         public async Task<List<Course>> GetByTrainerIdAsync(int trainerId)
         {
             return await context.Courses
-                .Where(x => x.TrainerId == trainerId)
+                .Include(x => x.Enrollments)
+                .Where(x => x.TrainerId == trainerId && x.IsActive == true)
                 .OrderByDescending(x => x.CreatedAt)
                 .ToListAsync();
         }
