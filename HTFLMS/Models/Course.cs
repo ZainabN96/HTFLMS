@@ -35,6 +35,8 @@ namespace HTFLMS.Models
         public DateTime BatchStartDate { get; set; }
         public string? BatchNumber { get; set; }
 
+        [StringLength(100)]
+        public string? DurationText { get; set; }
         public DateTime? BatchEndDate { get; set; }
 
         public bool CertificateIncluded { get; set; } = false;

@@ -28,6 +28,8 @@ namespace HTFLMS.Dtos
 
         public string? BatchNumber { get; set; }
 
+        [StringLength(100)]
+        public string? DurationText { get; set; }
         public bool CertificateIncluded { get; set; }
 
         public string? Status { get; set; }

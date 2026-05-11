@@ -22,7 +22,7 @@ namespace HTFLMS.Models
         public int DisplayOrder { get; set; }
 
         public bool IsActive { get; set; } = true;
-
+        public bool IsAccessible { get; set; } = true;
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         // Navigation

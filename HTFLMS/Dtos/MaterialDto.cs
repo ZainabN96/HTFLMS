@@ -1,9 +1,9 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Http;
 
-namespace HTFLMS.Models
+namespace HTFLMS.Dtos
 {
-    public class Material
+    public class MaterialDto
     {
         public int Id { get; set; }
 
@@ -21,10 +21,10 @@ namespace HTFLMS.Models
         [StringLength(50)]
         public string ContentType { get; set; } = "";
 
-        [StringLength(255)]
+        public IFormFile? File { get; set; }
+
         public string? FilePath { get; set; }
 
-        [StringLength(255)]
         public string? ExternalUrl { get; set; }
 
         public int? Pages { get; set; }
@@ -32,11 +32,5 @@ namespace HTFLMS.Models
         public int? Minutes { get; set; }
 
         public bool IsActive { get; set; } = true;
-
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-
-        public Course? Course { get; set; }
-        public Module? Module { get; set; }
-        public Lesson? Lesson { get; set; }
     }
 }
