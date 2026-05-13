@@ -4,6 +4,7 @@
     {
         IUserService UserService { get; }
         ICourseService CourseService { get; }
+        ICourseEnrollmentService CourseEnrollmentService { get; }
 
         Task<bool> SaveAsync();
     }
