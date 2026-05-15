@@ -10,42 +10,75 @@
     }
 
     if (isEdit) {
-        $('#pageTitle').text('Edit Course');
-        $('#pageSub').text('Update the course details.');
-        $('#saveCourseBtn').text('Update Course');
-
+        setupEditMode();
         loadCourse(courseId);
     }
 
     $('#courseCreateForm').on('submit', function (e) {
         e.preventDefault();
+        saveCourse(courseId, isEdit);
+    });
+});
+
+function setupEditMode() {
+    $('#pageTitle').text('Edit Course');
+    $('#pageSub').text('Update the course details.');
+    $('#saveCourseBtn').text('Update Course');
+}
+
+function saveCourse(courseId, isEdit) {
+    var btn = $('#saveCourseBtn');
+    var formData = buildCourseFormData();
+
+    setButtonLoading(btn, isEdit);
+
+    $.ajax({
+        url: isEdit ? '/api/Course/edit/' + courseId : '/api/Course/create',
+        type: isEdit ? 'PUT' : 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+
+        success: function (response) {
+            if (response && response.message) {
+                sessionStorage.setItem("successMessage", response.message);
+            }
+
+            window.location.href = "/Trainer/Courses/Index";
+        },
 
         $('.error-box').html('');
 
         var formData = new FormData();
 
-        formData.append('title', $('#title').val());
-        formData.append('category', $('#category').val());
-        formData.append('description', $('#description').val());
-        formData.append('batchNumber', $('#batchNumber').val());
-        formData.append('batchStartDate', $('#batchStartDate').val());
-        formData.append('batchEndDate', $('#batchEndDate').val());
-        formData.append('certificateIncluded', $('#certificateIncluded').val());
-        formData.append('status', $('#status').val());
-        formData.append('trainerId', $('#trainerId').val());
+    formData.append('title', $('#title').val());
+    formData.append('category', $('#category').val());
+    formData.append('description', $('#description').val());
+    formData.append('batchNumber', $('#batchNumber').val());
+    formData.append('durationText', $('#durationText').val());
+    formData.append('batchStartDate', $('#batchStartDate').val());
+    formData.append('batchEndDate', $('#batchEndDate').val());
+    formData.append('certificateIncluded', $('#certificateIncluded').val());
+    formData.append('status', $('#status').val());
+    formData.append('trainerId', $('#trainerId').val());
 
-        var imageFile = $('#imageFile')[0].files[0];
-        if (imageFile) {
-            formData.append('imageFile', imageFile);
-        }
+    appendFileIfSelected(formData, 'imageFile');
+    appendFileIfSelected(formData, 'handbookFile');
 
-        var handbookFile = $('#handbookFile')[0].files[0];
-        if (handbookFile) {
-            formData.append('handbookFile', handbookFile);
-        }
+    return formData;
+}
 
-        var btn = $('#saveCourseBtn');
-        btn.prop('disabled', true).text(isEdit ? 'Updating...' : 'Saving...');
+function appendFileIfSelected(formData, inputId) {
+    var file = $('#' + inputId)[0].files[0];
+
+    if (file) {
+        formData.append(inputId, file);
+    }
+}
+
+function setButtonLoading(btn, isEdit) {
+    btn.prop('disabled', true).text(isEdit ? 'Updating...' : 'Saving...');
+}
 
         $.ajax({
             url: isEdit ? '/api/Course/edit/' + courseId : '/api/Course/create',
@@ -111,14 +144,25 @@ function loadCourse(courseId) {
         type: 'GET',
 
         success: function (course) {
-            $('#title').val(course.title);
-            $('#category').val(course.category);
-            $('#description').val(course.description);
-            $('#batchNumber').val(course.batchNumber);
-            $('#batchStartDate').val(formatDate(course.batchStartDate));
-            $('#batchEndDate').val(formatDate(course.batchEndDate));
-            $('#certificateIncluded').val(course.certificateIncluded ? 'true' : 'false');
-            $('#status').val(course.isPublished ? 'Active' : 'Draft');
+            populateCourseForm(course);
+        },
+
+        error: function (xhr) {
+            showError(getErrorMessage(xhr));
+        }
+    });
+}
+
+function populateCourseForm(course) {
+    $('#title').val(course.title);
+    $('#category').val(course.category);
+    $('#description').val(course.description);
+    $('#batchNumber').val(course.batchNumber);
+    $('#durationText').val(course.durationText);
+    $('#batchStartDate').val(formatDate(course.batchStartDate));
+    $('#batchEndDate').val(formatDate(course.batchEndDate));
+    $('#certificateIncluded').val(course.certificateIncluded ? 'true' : 'false');
+    $('#status').val(course.isPublished ? 'Active' : 'Draft');
 
             $('#selectedTrainerId').val(course.trainerId);
 
@@ -131,26 +175,44 @@ function loadCourse(courseId) {
                     .attr('src', course.courseImagePath)
                     .show();
 
-                $('#uploadPlaceholder').hide();
-            }
+        $('#uploadPlaceholder').hide();
+    }
 
-            if (course.handbookFilePath) {
-                var fileName = course.handbookFilePath.split('/').pop();
-                $('#handbookFileName').text(fileName);
-            }
-        },
-
-        error: function () {
-            $('.error-box').html('<div>Course could not be loaded.</div>');
-        }
-    });
+    if (course.handbookFilePath) {
+        $('#handbookFileName').text(getFileNameFromPath(course.handbookFilePath));
+    }
 }
 
 function formatDate(dateValue) {
     if (!dateValue) return '';
 
-    var date = new Date(dateValue);
-    return date.toISOString().split('T')[0];
+    if (typeof dateValue === 'string') {
+        return dateValue.substring(0, 10);
+    }
+
+    var year = dateValue.getFullYear();
+    var month = String(dateValue.getMonth() + 1).padStart(2, '0');
+    var day = String(dateValue.getDate()).padStart(2, '0');
+
+    return year + '-' + month + '-' + day;
+}
+
+function getFileNameFromPath(filePath) {
+    return filePath.split('/').pop();
+}
+
+function getErrorMessage(xhr) {
+    var err = xhr.responseJSON;
+
+    if (!err) {
+        return 'Something went wrong. Please try again.';
+    }
+
+    return err.errorMessage || err.message || err.title || 'Something went wrong. Please try again.';
+}
+
+function showError(message) {
+    $('.error-box').html('<div>' + message + '</div>');
 }
 
 function previewTrainerImage(event) {

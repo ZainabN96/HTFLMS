@@ -18,16 +18,6 @@ namespace HTFLMS.Models
         [Required]
         public string Description { get; set; } = "";
 
-        [Required]
-        [StringLength(50)]
-        public string ContentType { get; set; } = "";
-
-        [StringLength(255)]
-        public string? VideoUrl { get; set; }
-
-        [StringLength(255)]
-        public string? FilePath { get; set; }
-
         public bool IsActive { get; set; } = true;
 
         [Required]

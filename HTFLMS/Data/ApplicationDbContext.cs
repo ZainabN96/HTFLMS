@@ -13,6 +13,7 @@ namespace HTFLMS.Data
 
         public DbSet<User> Users { get; set; }
         public DbSet<PasswordResetOtp> PasswordResetOtps { get; set; }
+
         public DbSet<Course> Courses => Set<Course>();
 
         public DbSet<Module> Modules => Set<Module>();

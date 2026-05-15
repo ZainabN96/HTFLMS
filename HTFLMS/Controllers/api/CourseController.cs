@@ -2,6 +2,7 @@
 using HTFLMS.Data.IServices;
 using HTFLMS.Dtos;
 using HTFLMS.Errors;
+using HTFLMS.Helpers;
 using HTFLMS.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -31,29 +32,27 @@ namespace HTFLMS.Controllers.api
             var course = mapper.Map<Course>(dto);
 
             course.BatchNumber = dto.BatchNumber;
+            course.DurationText = dto.DurationText;
             course.CertificateIncluded = dto.CertificateIncluded;
             course.CreatedAt = DateTime.UtcNow;
 
-            if (dto.Status == "Active")
-            {
-                course.IsActive = true;
-                course.IsPublished = true;
-            }
-            else
-            {
-                course.IsActive = true;
-                course.IsPublished = false;
-            }
+            FileUploadHelper.ApplyCourseStatus(course, dto.Status);
 
-            if (dto.ImageFile != null && dto.ImageFile.Length > 0)
-            {
-                course.CourseImagePath = await SaveFile(dto.ImageFile, "uploads/courses/images");
-            }
+            await FileUploadHelper.ReplaceFileIfUploadedAsync(
+                dto.ImageFile,
+                null,
+                "uploads/courses/images",
+                env,
+                path => course.CourseImagePath = path
+            );
 
-            if (dto.HandbookFile != null && dto.HandbookFile.Length > 0)
-            {
-                course.HandbookFilePath = await SaveFile(dto.HandbookFile, "uploads/courses/handbooks");
-            }
+            await FileUploadHelper.ReplaceFileIfUploadedAsync(
+                dto.HandbookFile,
+                null,
+                "uploads/courses/handbooks",
+                env,
+                path => course.HandbookFilePath = path
+            );
 
             uow.CourseService.Add(course);
             await uow.SaveAsync();
@@ -93,6 +92,7 @@ namespace HTFLMS.Controllers.api
                 c.IsActive,
                 c.BatchStartDate,
                 c.BatchNumber,
+                c.DurationText,
                 c.BatchEndDate,
                 c.CertificateIncluded,
                 c.CreatedAt,
@@ -108,12 +108,7 @@ namespace HTFLMS.Controllers.api
             var course = await uow.CourseService.GetByIdAsync(id);
 
             if (course == null)
-            {
-                return NotFound(new APIError(
-                    NotFound().StatusCode,
-                    "Course not found."
-                ));
-            }
+                return NotFound(new APIError(404, "Course not found."));
 
             return Ok(course);
         }
@@ -127,12 +122,7 @@ namespace HTFLMS.Controllers.api
             var course = await uow.CourseService.GetByIdAsync(id);
 
             if (course == null)
-            {
-                return NotFound(new APIError(
-                    NotFound().StatusCode,
-                    "Course not found."
-                ));
-            }
+                return NotFound(new APIError(404, "Course not found."));
 
             course.Title = dto.Title;
             course.Category = dto.Category;
@@ -141,30 +131,26 @@ namespace HTFLMS.Controllers.api
             course.BatchStartDate = dto.BatchStartDate;
             course.BatchEndDate = dto.BatchEndDate;
             course.BatchNumber = dto.BatchNumber;
+            course.DurationText = dto.DurationText;
             course.CertificateIncluded = dto.CertificateIncluded;
 
-            if (dto.Status == "Active")
-            {
-                course.IsActive = true;
-                course.IsPublished = true;
-            }
-            else
-            {
-                course.IsActive = true;
-                course.IsPublished = false;
-            }
+            FileUploadHelper.ApplyCourseStatus(course, dto.Status);
 
-            if (dto.ImageFile != null && dto.ImageFile.Length > 0)
-            {
-                DeleteOldFile(course.CourseImagePath);
-                course.CourseImagePath = await SaveFile(dto.ImageFile, "uploads/courses/images");
-            }
+            await FileUploadHelper.ReplaceFileIfUploadedAsync(
+                dto.ImageFile,
+                course.CourseImagePath,
+                "uploads/courses/images",
+                env,
+                path => course.CourseImagePath = path
+            );
 
-            if (dto.HandbookFile != null && dto.HandbookFile.Length > 0)
-            {
-                DeleteOldFile(course.HandbookFilePath);
-                course.HandbookFilePath = await SaveFile(dto.HandbookFile, "uploads/courses/handbooks");
-            }
+            await FileUploadHelper.ReplaceFileIfUploadedAsync(
+                dto.HandbookFile,
+                course.HandbookFilePath,
+                "uploads/courses/handbooks",
+                env,
+                path => course.HandbookFilePath = path
+            );
 
             uow.CourseService.Update(course);
             await uow.SaveAsync();
@@ -174,35 +160,6 @@ namespace HTFLMS.Controllers.api
                 message = "Course updated successfully.",
                 courseId = course.Id
             });
-        }
-
-        private async Task<string> SaveFile(IFormFile file, string folderPath)
-        {
-            var uploadsFolder = Path.Combine(env.WebRootPath, folderPath);
-
-            if (!Directory.Exists(uploadsFolder))
-                Directory.CreateDirectory(uploadsFolder);
-
-            var extension = Path.GetExtension(file.FileName);
-            var fileName = $"{Guid.NewGuid()}{extension}";
-            var fullPath = Path.Combine(uploadsFolder, fileName);
-
-            using var stream = new FileStream(fullPath, FileMode.Create);
-            await file.CopyToAsync(stream);
-
-            return "/" + folderPath.Replace("\\", "/") + "/" + fileName;
-        }
-
-        private void DeleteOldFile(string? filePath)
-        {
-            if (string.IsNullOrWhiteSpace(filePath))
-                return;
-
-            var cleanPath = filePath.TrimStart('/').Replace("/", Path.DirectorySeparatorChar.ToString());
-            var fullPath = Path.Combine(env.WebRootPath, cleanPath);
-
-            if (System.IO.File.Exists(fullPath))
-                System.IO.File.Delete(fullPath);
         }
 
         [HttpDelete("delete/{id}")]
@@ -226,8 +183,8 @@ namespace HTFLMS.Controllers.api
             if (course.TrainerId != trainer.Id)
                 return Unauthorized(new APIError(401, "You are not allowed to delete this course."));
 
-            DeleteOldFile(course.CourseImagePath);
-            DeleteOldFile(course.HandbookFilePath);
+            FileUploadHelper.DeleteOldFile(course.CourseImagePath, env);
+            FileUploadHelper.DeleteOldFile(course.HandbookFilePath, env);
 
             uow.CourseService.Delete(course);
             await uow.SaveAsync();

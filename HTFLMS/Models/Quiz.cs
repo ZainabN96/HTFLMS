@@ -22,6 +22,8 @@ namespace HTFLMS.Models
 
         public bool IsActive { get; set; } = true;
 
+        public bool IsAccessible { get; set; }
+
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         // Navigation

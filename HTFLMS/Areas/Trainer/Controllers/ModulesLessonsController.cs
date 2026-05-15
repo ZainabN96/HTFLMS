@@ -5,184 +5,68 @@ namespace HTFLMS.Areas.Trainer.Controllers
     [Area("Trainer")]
     public class ModulesLessonsController : Controller
     {
-        // =========================
-        // INDEX
-        // =========================
-        public IActionResult Index(int id)
+        public IActionResult Index()
         {
-            ViewBag.CourseId = id;
+            ViewBag.CourseId = 0;
             return View();
         }
 
-        // =========================
-        // CREATE MODULE
-        // =========================
         [HttpGet]
         public IActionResult CreateModule(int courseId)
         {
             ViewBag.CourseId = courseId;
-            return View("CreateModule");
+            ViewBag.ModuleId = 0;
+
+            return View("AddEditModule");
         }
 
-        [HttpPost]
-        public IActionResult CreateModule(int courseId, string title, string description, int displayOrder, string status)
-        {
-            // Save module here
-
-            return RedirectToAction("Index", new { id = courseId });
-        }
-
-        // =========================
-        // EDIT MODULE
-        // =========================
         [HttpGet]
         public IActionResult EditModule(int courseId, int moduleId)
         {
             ViewBag.CourseId = courseId;
             ViewBag.ModuleId = moduleId;
 
-            // Load module data here later if needed
-
-            return View("EditModule");
+            return View("AddEditModule");
         }
 
-        [HttpPost]
-        public IActionResult EditModule(int courseId, int moduleId, string title, string description, int displayOrder, string status)
+        [HttpGet]
+        public IActionResult CreateLesson(int courseId, int moduleId = 0)
         {
             ViewBag.CourseId = courseId;
             ViewBag.ModuleId = moduleId;
+            ViewBag.LessonId = 0;
 
-            // Update module here
-
-            return RedirectToAction("Index", new { id = courseId });
+            return View("AddEditLesson");
         }
 
-        // =========================
-        // CREATE LESSON
-        // =========================
         [HttpGet]
-        public IActionResult CreateLesson(int courseId, int? moduleId)
+        public IActionResult EditLesson(int courseId, int moduleId, int lessonId)
         {
             ViewBag.CourseId = courseId;
             ViewBag.ModuleId = moduleId;
-
-            return View("CreateLesson");
-        }
-
-        [HttpPost]
-        public IActionResult CreateLesson(
-            int courseId,
-            int moduleId,
-            string title,
-            string description,
-            int displayOrder,
-            string duration,
-            string access,
-            string content)
-        {
-            // Save lesson here
-
-            return RedirectToAction("Index", new { id = courseId });
-        }
-
-        // =========================
-        // EDIT LESSON
-        // =========================
-        [HttpGet]
-        public IActionResult EditLesson(int courseId, int lessonId, int? moduleId)
-        {
-            ViewBag.CourseId = courseId;
             ViewBag.LessonId = lessonId;
-            ViewBag.ModuleId = moduleId;
 
-            // Load lesson data here later if needed
-
-            return View("EditLesson");
+            return View("AddEditLesson");
         }
 
-        [HttpPost]
-        public IActionResult EditLesson(
-            int courseId,
-            int lessonId,
-            int moduleId,
-            string title,
-            string description,
-            int displayOrder,
-            string duration,
-            string access,
-            string content)
-        {
-            ViewBag.CourseId = courseId;
-            ViewBag.LessonId = lessonId;
-            ViewBag.ModuleId = moduleId;
-
-            // Update lesson here
-
-            return RedirectToAction("Index", new { id = courseId });
-        }
-
-        // =========================
-        // CREATE QUIZ
-        // =========================
         [HttpGet]
-        public IActionResult CreateQuiz(int courseId, int? moduleId)
+        public IActionResult CreateQuiz(int courseId, int moduleId = 0)
         {
             ViewBag.CourseId = courseId;
             ViewBag.ModuleId = moduleId;
+            ViewBag.QuizId = 0;
 
-            return View("CreateQuiz");
+            return View("AddEditQuiz");
         }
 
-        [HttpPost]
-        public IActionResult CreateQuiz(
-            int courseId,
-            int moduleId,
-            string title,
-            string description,
-            int displayOrder,
-            int attemptsAllowed,
-            int passingMarks,
-            string instructions)
-        {
-            // Save quiz here
-
-            return RedirectToAction("Index", new { id = courseId });
-        }
-
-        // =========================
-        // EDIT QUIZ
-        // =========================
         [HttpGet]
-        public IActionResult EditQuiz(int courseId, int quizId, int? moduleId)
+        public IActionResult EditQuiz(int courseId, int moduleId, int quizId)
         {
             ViewBag.CourseId = courseId;
-            ViewBag.QuizId = quizId;
             ViewBag.ModuleId = moduleId;
-
-            // Load quiz data here later if needed
-
-            return View("EditQuiz");
-        }
-
-        [HttpPost]
-        public IActionResult EditQuiz(
-            int courseId,
-            int quizId,
-            int moduleId,
-            string title,
-            string description,
-            int displayOrder,
-            int attemptsAllowed,
-            int passingMarks,
-            string instructions)
-        {
-            ViewBag.CourseId = courseId;
             ViewBag.QuizId = quizId;
-            ViewBag.ModuleId = moduleId;
 
-            // Update quiz here
-
-            return RedirectToAction("Index", new { id = courseId });
+            return View("AddEditQuiz");
         }
     }
 }

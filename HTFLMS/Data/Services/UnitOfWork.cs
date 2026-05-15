@@ -8,6 +8,11 @@ namespace HTFLMS.Data.Services
 
         public IUserService UserService { get; private set; }
         public ICourseService CourseService { get; private set; }
+        public IModuleService ModuleService { get; private set; }
+        public ILessonService LessonService { get; }
+        public IQuizService QuizService { get; }
+        public IMaterialService MaterialService { get; }
+        public IAssignmentService AssignmentService { get; }
 
         public UnitOfWork(ApplicationDbContext context)
         {
@@ -15,6 +20,11 @@ namespace HTFLMS.Data.Services
 
             UserService = new UserService(context);
             CourseService = new CourseService(context);
+            ModuleService = new ModuleService(context);
+            LessonService = new LessonService(context);
+            QuizService = new QuizService(context);
+            MaterialService = new MaterialService(context);
+            AssignmentService = new AssignmentService(context);
         }
 
         public async Task<bool> SaveAsync()

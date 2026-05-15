@@ -33,6 +33,7 @@ builder.Services.AddScoped<IMailService, MailService>();
 // Program.cs
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
+builder.Services.AddScoped<IModuleService, ModuleService>();
 AutoMapperConfig.RegisterMappings(builder.Services);
 
 var app = builder.Build();

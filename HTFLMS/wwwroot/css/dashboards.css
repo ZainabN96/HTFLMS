@@ -5084,6 +5084,32 @@
         justify-content: center;
     }
 }
+
+@media (max-width: 1400px) {
+    .trainer-form-layout-split,
+    .admin-form-layout-split {
+        grid-template-columns: minmax(320px, 0.9fr) minmax(420px, 1.1fr) !important;
+    }
+
+    .trainer-form-media-box,
+    .trainer-form-media-inner,
+    .trainer-upload-preview,
+    .admin-form-media-box,
+    .admin-form-media-inner,
+    .admin-upload-preview {
+        min-height: 185px !important;
+        max-height: 240px !important;
+    }
+}
+
+@media (max-width: 1100px) {
+    .trainer-form-layout-split,
+    .admin-form-layout-split {
+        grid-template-columns: 1fr !important;
+    }
+
+}
+
 /* =========================
    TRAINER / ADMIN MODULES / LESSONS
    ========================= */
@@ -5201,31 +5227,22 @@
     grid-template-columns: 2.2fr 1fr 0.7fr 0.8fr 0.9fr 0.6fr 0.6fr 1.2fr;
 }
 
-    /* truncate long titles with ... */
+    /* truncate long table text */
 
-    .admin-modules-table-row .courses-title,
-    .trainer-modules-table-row .courses-title,
-    .admin-lessons-table-row .courses-title,
-    .trainer-lessons-table-row .courses-title,
-    .admin-quiz-table-row .courses-title,
-    .trainer-quiz-table-row .courses-title {
-        display: block;
-        max-width: 100%;
-        overflow: hidden;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-    }
-
-    /* ensure container allows shrinking */
-
-    .admin-modules-table-row > div,
     .trainer-modules-table-row > div,
-    .admin-lessons-table-row > div,
     .trainer-lessons-table-row > div,
-    .admin-quiz-table-row > div,
     .trainer-quiz-table-row > div {
         min-width: 0;
     }
+
+        .courses-title,
+        .courses-sub-text,
+        .trainer-lessons-table-row > div:nth-child(2),
+        .trainer-quiz-table-row > div:nth-child(2) {
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
 
 /* =========================
    TRAINER / ADMIN CREATE FORMS
@@ -5677,6 +5694,86 @@
         font-weight: 600;
         white-space: nowrap;
     }
+
+.trainer-assignment-instructions {
+    margin-top: 20px;
+    padding: 18px 0 10px;
+    border-top: 1px solid #f0f0f0;
+    color: #4a4a4a;
+    font-size: 15px;
+    line-height: 1.6;
+}
+
+.trainer-assignment-card {
+    border: 1px solid #e7e7e7;
+    border-radius: 18px;
+    padding: 22px 24px;
+    margin-bottom: 16px;
+    background: #fff;
+}
+
+.trainer-assignment-card-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.trainer-assignment-info {
+    flex: 1;
+    min-width: 0;
+}
+
+    .trainer-assignment-info h3 {
+        margin: 0 0 10px;
+        font-size: 18px;
+        font-weight: 700;
+        color: #232323;
+    }
+
+.trainer-assignment-meta {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    color: #555;
+    font-size: 14px;
+    margin-bottom: 14px;
+}
+
+.trainer-assignment-badges {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.trainer-assignment-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-left: auto;
+}
+
+.trainer-assignment-instructions {
+    margin-top: 22px;
+    padding: 18px 0 4px;
+    border-top: 1px solid #f0f0f0;
+    color: #4a4a4a;
+    font-size: 15px;
+    line-height: 1.6;
+}
+
+@media (max-width: 900px) {
+    .trainer-assignment-card-top {
+        flex-direction: column;
+    }
+
+    .trainer-assignment-actions {
+        justify-content: flex-start;
+        margin-left: 0;
+    }
+}
 
 /* RESPONSIVE */
 @media (max-width: 1200px) {

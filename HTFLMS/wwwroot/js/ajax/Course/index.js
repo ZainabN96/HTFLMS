@@ -1,14 +1,23 @@
-﻿$(document).ready(function () {
+﻿let deleteCourseId = null;
 
+$(document).ready(function () {
+
+    showStoredSuccessMessage();
+    loadCourses();
+    bindCourseSearch();
+    bindDeleteModalActions();
+});
+
+function showStoredSuccessMessage() {
     var successMessage = sessionStorage.getItem("successMessage");
 
     if (successMessage) {
         showSuccessPopup(successMessage);
         sessionStorage.removeItem("successMessage");
     }
+}
 
-    loadCourses();
-
+function bindCourseSearch() {
     $('#courseSearchInput').on('keyup', function () {
         var searchText = $(this).val().toLowerCase();
 
@@ -17,7 +26,7 @@
             $(this).toggle(rowText.includes(searchText));
         });
     });
-});
+}
 
 function loadCourses() {
     $.ajax({
@@ -57,71 +66,75 @@ function renderCourses(courses) {
     $('#courseCountText').text(courses.length + ' course(s)');
 
     $.each(courses, function (index, course) {
-        var title = course.title || 'Untitled Course';
-        var category = course.category || 'N/A';
-        var description = course.description || '';
-        var students = course.totalStudents || 0;
+        body.append(buildCourseRow(course));
+    });
+}
 
-        var imagePath = course.courseImagePath || '/img/course/course-1.webp';
+function buildCourseRow(course) {
+    var title = course.title || 'Untitled Course';
+    var category = course.category || 'N/A';
+    var description = course.description || '';
+    var students = course.totalStudents || 0;
+    var imagePath = course.courseImagePath || '/img/course/course-1.webp';
+    var status = course.isPublished ? 'Active' : 'Draft';
+    var statusClass = course.isPublished ? 'pill-green' : 'pill-yellow';
+    var createdDate = formatDisplayDate(course.createdAt);
 
-        var status = course.isPublished ? 'Active' : 'Draft';
-        var statusClass = course.isPublished ? 'pill-green' : 'pill-yellow';
+    return `
+        <div class="dashboard-table-row courses-table-row trainer-courses-table-row">
+            <div class="courses-coursecell dashboard-table-cell-ellipsis" title="${title}">
+                <div class="courses-title-wrap">
+                    <div class="course-thumb">
+                        <img src="${imagePath}" alt="${title}" />
+                    </div>
 
-        var createdDate = course.createdAt
-            ? new Date(course.createdAt).toLocaleDateString('en-US', {
-                month: 'short',
-                day: '2-digit',
-                year: 'numeric'
-            })
-            : 'N/A';
+                    <div class="courses-title-block">
+                        <div class="courses-title" title="${title}">${title}</div>
 
-        var row = `
-            <div class="dashboard-table-row courses-table-row trainer-courses-table-row">
-                <div class="courses-coursecell dashboard-table-cell-ellipsis" title="${title}">
-                    <div class="courses-title-wrap">
-                        <div class="course-thumb">
-                            <img src="${imagePath}" alt="${title}" />
-                        </div>
-                        <div class="courses-title-block">
-                            <div class="courses-title" title="${title}">${title}</div>
-
-                            <div class="courses-sub-text dashboard-table-cell-ellipsis" title="${category}">
-                                ${category}
-                            </div>
+                        <div class="courses-sub-text dashboard-table-cell-ellipsis" title="${description}">
+                            ${description}
                         </div>
                     </div>
                 </div>
-
-                <div class="dashboard-table-cell-ellipsis" title="${category}">
-                    <span class="trainer-course-chip">${category}</span>
-                </div>
-
-                <div class="dashboard-table-cell-ellipsis" title="${students}">
-                    ${students}
-                </div>
-
-                <div title="${status}">
-                    <span class="pill ${statusClass}">${status}</span>
-                </div>
-
-                <div class="dashboard-table-cell-ellipsis" title="${createdDate}">
-                    ${createdDate}
-                </div>
-
-                <div class="trainer-courses-actions">
-                    <a href="/Trainer/Courses/Edit/${course.id}" class="dashboard-btn dashboard-btn-outline">
-                        Edit
-                    </a>
-
-                    <button  class="dashboard-btn trainer-delete-soft-btn trainer-course-action-btn"
-                            onclick="deleteCourse(${course.id})">
-                        Delete
-                    </button>
-                </div>
             </div>
-        `;
 
-        body.append(row);
+            <div class="dashboard-table-cell-ellipsis" title="${category}">
+                <span class="trainer-course-chip">${category}</span>
+            </div>
+
+            <div class="dashboard-table-cell-ellipsis" title="${students}">
+                ${students}
+            </div>
+
+            <div title="${status}">
+                <span class="pill ${statusClass}">${status}</span>
+            </div>
+
+            <div class="dashboard-table-cell-ellipsis" title="${createdDate}">
+                ${createdDate}
+            </div>
+
+            <div class="trainer-courses-actions">
+                <a href="/Trainer/Courses/Edit/${course.id}" class="dashboard-btn dashboard-btn-outline">
+                    Edit
+                </a>
+
+                <button class="dashboard-btn trainer-delete-soft-btn trainer-course-action-btn"
+                        onclick="deleteCourse(${course.id})">
+                    Delete
+                </button>
+            </div>
+        </div>
+    `;
+}
+
+function formatDisplayDate(dateValue) {
+    if (!dateValue) return 'N/A';
+
+    return new Date(dateValue).toLocaleDateString('en-US', {
+        month: 'short',
+        day: '2-digit',
+        year: 'numeric'
     });
 }
 
@@ -140,39 +153,52 @@ function updateCourseStats(courses) {
     $('#totalStudentsCount').text(students);
 }
 
-let deleteCourseId = null;
-
 function deleteCourse(courseId) {
     deleteCourseId = courseId;
     $('#deleteConfirmModal').addClass('show');
 }
 
-$('#cancelDeleteBtn').on('click', function () {
+function bindDeleteModalActions() {
+    $('#cancelDeleteBtn').on('click', closeDeleteModal);
+
+    $('#confirmDeleteBtn').on('click', function () {
+        if (!deleteCourseId) return;
+
+        $.ajax({
+            url: '/api/Course/delete/' + deleteCourseId,
+            type: 'DELETE',
+
+            success: function (response) {
+                closeDeleteModal();
+
+                if (response && response.message) {
+                    sessionStorage.setItem("successMessage", response.message);
+                }
+
+                location.reload();
+            },
+
+            error: function (xhr) {
+                closeDeleteModal();
+
+                var msg = getErrorMessage(xhr);
+                alert(msg);
+            }
+        });
+    });
+}
+
+function closeDeleteModal() {
     $('#deleteConfirmModal').removeClass('show');
     deleteCourseId = null;
-});
+}
 
-$('#confirmDeleteBtn').on('click', function () {
+function getErrorMessage(xhr) {
+    var err = xhr.responseJSON;
 
-    if (!deleteCourseId) return;
+    if (!err) {
+        return 'Something went wrong. Please try again.';
+    }
 
-    $.ajax({
-        url: '/api/Course/delete/' + deleteCourseId,
-        type: 'DELETE',
-
-        success: function () {
-            $('#deleteConfirmModal').removeClass('show');
-
-            sessionStorage.setItem("successMessage", "Course deleted successfully!");
-            location.reload();
-        },
-
-        error: function (xhr) {
-            $('#deleteConfirmModal').removeClass('show');
-
-            var err = xhr.responseJSON;
-            var msg = err?.errorMessage || err?.title || 'Course delete failed.';
-            alert(msg);
-        }
-    });
-});
+    return err.errorMessage || err.message || err.title || 'Something went wrong. Please try again.';
+}
