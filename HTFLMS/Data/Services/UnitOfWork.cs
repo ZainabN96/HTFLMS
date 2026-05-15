@@ -11,6 +11,7 @@ namespace HTFLMS.Data.Services
         public ICourseService CourseService { get; private set; }
 
         public ICourseEnrollmentService CourseEnrollmentService { get; private set; }
+        public IStudentDashboardService StudentDashboardService { get; private set; }
 
         public UnitOfWork(ApplicationDbContext context)
         {
@@ -19,6 +20,7 @@ namespace HTFLMS.Data.Services
             UserService = new UserService(context);
             CourseService = new CourseService(context);
             CourseEnrollmentService = new CourseEnrollmentService(context);
+            StudentDashboardService = new StudentDashboardService(context);
         }
 
         public async Task<bool> SaveAsync()
