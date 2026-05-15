@@ -2,12 +2,6 @@
 
     var courseId = $('#courseId').val();
     var isEdit = courseId && courseId !== '';
-    var redirectUrl = $('#redirectUrl').val() || '/Trainer/Courses/Index';
-    var isAdminPage = $('#isAdminPage').val() === 'true';
-
-    if (isAdminPage) {
-        loadTrainers();
-    }
 
     if (isEdit) {
         setupEditMode();
@@ -47,9 +41,18 @@ function saveCourse(courseId, isEdit) {
             window.location.href = "/Trainer/Courses/Index";
         },
 
-        $('.error-box').html('');
+        error: function (xhr) {
+            showError(getErrorMessage(xhr));
+        },
 
-        var formData = new FormData();
+        complete: function () {
+            resetButton(btn, isEdit);
+        }
+    });
+}
+
+function buildCourseFormData() {
+    var formData = new FormData();
 
     formData.append('title', $('#title').val());
     formData.append('category', $('#category').val());
@@ -80,62 +83,8 @@ function setButtonLoading(btn, isEdit) {
     btn.prop('disabled', true).text(isEdit ? 'Updating...' : 'Saving...');
 }
 
-        $.ajax({
-            url: isEdit ? '/api/Course/edit/' + courseId : '/api/Course/create',
-            type: isEdit ? 'PUT' : 'POST',
-            data: formData,
-            processData: false,
-            contentType: false,
-
-            success: function () {
-                sessionStorage.setItem(
-                    "successMessage",
-                    isEdit ? "Course updated successfully!" : "Course created successfully!"
-                );
-
-                window.location.href = redirectUrl;
-            },
-
-            error: function (xhr) {
-                var err = xhr.responseJSON;
-                var msg = err?.errorMessage || err?.message || err?.title || 'Something went wrong. Please try again.';
-                $('.error-box').html('<div>' + msg + '</div>');
-            },
-
-            complete: function () {
-                btn.prop('disabled', false).text(isEdit ? 'Update Course' : 'Save Course');
-            }
-        });
-    });
-});
-
-function loadTrainers() {
-    $.ajax({
-        url: '/api/User/trainers',
-        type: 'GET',
-
-        success: function (trainers) {
-            var trainerDropdown = $('#trainerId');
-            trainerDropdown.empty();
-
-            trainerDropdown.append('<option value="">Select trainer</option>');
-
-            $.each(trainers, function (index, trainer) {
-                trainerDropdown.append(
-                    '<option value="' + trainer.id + '">' + trainer.name + '</option>'
-                );
-            });
-
-            var selectedTrainerId = $('#selectedTrainerId').val();
-            if (selectedTrainerId) {
-                trainerDropdown.val(selectedTrainerId);
-            }
-        },
-
-        error: function () {
-            $('.error-box').html('<div>Trainers could not be loaded.</div>');
-        }
-    });
+function resetButton(btn, isEdit) {
+    btn.prop('disabled', false).text(isEdit ? 'Update Course' : 'Save Course');
 }
 
 function loadCourse(courseId) {
@@ -164,16 +113,10 @@ function populateCourseForm(course) {
     $('#certificateIncluded').val(course.certificateIncluded ? 'true' : 'false');
     $('#status').val(course.isPublished ? 'Active' : 'Draft');
 
-            $('#selectedTrainerId').val(course.trainerId);
-
-            if ($('#trainerId').is('select')) {
-                $('#trainerId').val(course.trainerId);
-            }
-
-            if (course.courseImagePath) {
-                $('#imagePreview')
-                    .attr('src', course.courseImagePath)
-                    .show();
+    if (course.courseImagePath) {
+        $('#imagePreview')
+            .attr('src', course.courseImagePath)
+            .show();
 
         $('#uploadPlaceholder').hide();
     }

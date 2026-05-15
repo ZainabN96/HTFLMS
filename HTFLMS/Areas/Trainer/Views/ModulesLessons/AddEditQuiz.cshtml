@@ -1,0 +1,119 @@
+﻿@{
+    ViewData["Title"] = "Add Quiz";
+    Layout = "~/Views/Shared/_TrainerLayout.cshtml";
+
+    var courseId = ViewBag.CourseId ?? 0;
+    var moduleId = ViewBag.ModuleId ?? 0;
+    var quizId = ViewBag.QuizId ?? 0;
+}
+
+<div class="dashboard-page trainer-content-page">
+    <div class="dashboard-page-head trainer-content-head">
+        <div>
+            <h1 class="dashboard-h1">Add Quiz</h1>
+            <p class="dashboard-sub">Create a quiz the way students will actually see and attempt it.</p>
+        </div>
+
+        <div class="trainer-content-head-actions">
+            <a asp-area="Trainer"
+               asp-controller="ModulesLessons"
+               asp-action="Index"
+               class="dashboard-btn dashboard-btn-outline">
+                <i class="bi bi-arrow-left"></i>
+                Back to Modules & Lessons
+            </a>
+        </div>
+    </div>
+
+    <div class="error-box"></div>
+
+    <form id="quizCreateForm" class="trainer-quiz-builder-form">
+
+        <input type="hidden" id="courseId" value="@courseId" />
+        <input type="hidden" id="moduleId" value="@moduleId" />
+        <input type="hidden" id="quizId" value="@quizId" />
+
+        <div class="dashboard-panel trainer-form-panel">
+            <div class="dashboard-panel-head">
+                <div>
+                    <div class="dashboard-panel-title">Quiz Details</div>
+                    <div class="dashboard-muted-small">Set up the main quiz information first.</div>
+                </div>
+            </div>
+
+            <div class="trainer-form-grid">
+                <div class="trainer-form-group">
+                    <label class="trainer-form-label">Module</label>
+                    <select id="moduleSelect" class="course-input">
+                        <option value="">Select module</option>
+                    </select>
+                </div>
+
+                <div class="trainer-form-group trainer-form-group">
+                    <label class="trainer-form-label">Quiz Title</label>
+                    <input type="text" id="title" class="course-input" placeholder="Enter quiz title" />
+                </div>
+
+                <div class="trainer-form-group">
+                    <label class="trainer-form-label">Attempts Allowed</label>
+                    <input type="number" id="attemptsAllowed" class="course-input" placeholder="3" min="1" value="3" />
+                </div>
+
+                <div class="trainer-form-group trainer-form-group-full">
+                    <label class="trainer-form-label">Instructions</label>
+                    <textarea id="instructions" class="course-input trainer-textarea" placeholder="Add instructions for the quiz"></textarea>
+                </div>
+
+                <input type="hidden" id="isActive" value="true" />
+
+                <div class="trainer-form-group">
+                    <label class="trainer-form-label">Quiz Access</label>
+                    <div style="padding-top:12px;">
+                        <label style="display:flex; align-items:center; gap:10px; font-weight:500;">
+                            <input type="checkbox" id="isAccessible" />
+                            Allow students to access this quiz
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="dashboard-panel trainer-form-panel">
+            <div class="dashboard-panel-head trainer-content-panel-head">
+                <div>
+                    <div class="dashboard-panel-title">Quiz Questions</div>
+                    <div class="dashboard-muted-small">Add the questions and answer options students will attempt.</div>
+                </div>
+
+                <div class="trainer-panel-actions">
+                    <button type="button" id="addQuestionBtn" class="dashboard-btn add-course-btn">
+                        <i class="bi bi-plus-circle"></i>
+                        Add Question
+                    </button>
+                </div>
+            </div>
+
+            <div id="questionsContainer" class="trainer-question-builder-list"></div>
+
+            <div class="trainer-form-actions trainer-form-actions-sticky">
+                <a asp-area="Trainer"
+                   asp-controller="ModulesLessons"
+                   asp-action="Index"
+                   asp-route-id="@courseId"
+                   class="dashboard-btn dashboard-btn-outline"
+                   onclick="sessionStorage.setItem('selectedCourseId', '@courseId'); sessionStorage.setItem('selectedModuleId', '@moduleId'); sessionStorage.setItem('restoreSelectionAfterCancel', 'true');">
+                    Cancel
+                </a>
+
+                <button type="submit" id="saveQuizBtn" class="dashboard-btn add-course-btn">
+                    <i class="bi bi-plus-circle"></i>
+                    Save Quiz
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <script src="~/js/ajax/ModuleLesson/addEditQuiz.js"></script>
+}

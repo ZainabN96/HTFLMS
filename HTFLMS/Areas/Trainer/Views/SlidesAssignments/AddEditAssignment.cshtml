@@ -1,0 +1,138 @@
+﻿@{
+    ViewData["Title"] = "Create Assignment";
+    Layout = "_TrainerLayout";
+
+    var courseId = ViewBag.CourseId ?? 0;
+    var moduleId = ViewBag.ModuleId ?? 0;
+    var assignmentId = ViewBag.AssignmentId ?? 0;
+}
+
+<div class="dashboard-page trainer-form-page">
+    <div class="dashboard-page-head trainer-content-head">
+        <div>
+            <h1 class="dashboard-h1">Create Assignment</h1>
+            <p class="dashboard-sub">Add a new assignment with due date, marks, instructions, and file attachment.</p>
+        </div>
+
+        <div class="trainer-content-head-actions">
+            <a asp-area="Trainer"
+               asp-controller="SlidesAssignments"
+               asp-action="Index"
+               asp-route-courseId="@courseId"
+               asp-route-moduleId="@moduleId"
+               class="dashboard-btn dashboard-btn-outline">
+                <i class="bi bi-arrow-left"></i>
+                Back to Slides & Assignments
+            </a>
+        </div>
+    </div>
+
+    <div class="error-box"></div>
+
+    <div class="dashboard-panel trainer-form-panel trainer-form-panel-wide">
+        <form id="assignmentCreateForm"
+              enctype="multipart/form-data"
+              class="trainer-material-form">
+
+            <input type="hidden" id="courseId" value="@courseId" />
+            <input type="hidden" id="moduleId" value="@moduleId" />
+            <input type="hidden" id="assignmentId" value="@assignmentId" />
+
+            <div class="trainer-form-grid">
+
+                <div class="trainer-form-group">
+                    <label class="trainer-form-label">Module</label>
+                    <select id="moduleSelect" class="course-input">
+                        <option value="0">Select Module</option>
+                    </select>
+                </div>
+
+                <div class="trainer-form-group">
+                    <label class="trainer-form-label">Assignment Title</label>
+                    <input type="text"
+                           id="title"
+                           class="course-input"
+                           placeholder="Enter assignment title" />
+                </div>
+
+                <div class="trainer-form-group">
+                    <label class="trainer-form-label">Marks</label>
+                    <input type="number"
+                           id="marks"
+                           class="course-input"
+                           placeholder="e.g. 20" />
+                </div>
+
+                <div class="trainer-form-group">
+                    <label class="trainer-form-label">Due Date</label>
+                    <input type="date"
+                           id="dueDate"
+                           class="course-input" />
+                </div>
+
+                <div class="trainer-form-group">
+                    <label class="trainer-form-label">Due Time</label>
+                    <input type="time"
+                           id="dueTime"
+                           class="course-input" />
+                </div>
+
+                <div class="trainer-form-group">
+                    <label class="trainer-form-label">Status</label>
+                    <select class="course-input" id="isActive">
+                        <option value="">Select option</option>
+                        <option value="true">Active</option>
+                        <option value="false">Draft</option>
+                    </select>
+                </div>
+
+                <div class="trainer-form-group trainer-form-full">
+                    <label class="trainer-form-label">Instructions</label>
+                    <textarea id="description"
+                              class="course-input"
+                              rows="5"
+                              placeholder="Write assignment instructions here"></textarea>
+                </div>
+
+                <div class="trainer-form-group trainer-form-full">
+                    <label class="trainer-form-label">Assignment File / Attachment</label>
+
+                    <label for="file" class="student-upload-box course-handbook-upload">
+                        <i class="bi bi-file-earmark-arrow-up"></i>
+
+                        <span id="assignmentFileName">
+                            Choose assignment file
+                        </span>
+
+                        <input type="file"
+                               id="file"
+                               onchange="showAssignmentFileName(event)" />
+                    </label>
+                </div>
+
+            </div>
+
+            <div class="trainer-form-actions">
+                <a asp-area="Trainer"
+                   asp-controller="SlidesAssignments"
+                   asp-action="Index"
+                   asp-route-courseId="@courseId"
+                   asp-route-moduleId="@moduleId"
+                   class="dashboard-btn dashboard-btn-outline"
+                   onclick="sessionStorage.setItem('selectedCourseId', '@courseId'); sessionStorage.setItem('selectedModuleId', '@moduleId'); sessionStorage.setItem('restoreSelectionAfterCancel', 'true');">
+                    Cancel
+                </a>
+
+                <button type="submit"
+                        id="saveAssignmentBtn"
+                        class="dashboard-btn add-course-btn">
+                    Create Assignment
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/ajax/SlideAssignment/addEditAssignment.js"></script>
+}

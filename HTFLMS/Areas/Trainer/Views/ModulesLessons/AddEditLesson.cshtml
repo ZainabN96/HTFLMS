@@ -1,0 +1,102 @@
+﻿@{
+    ViewData["Title"] = "Add Lesson";
+    Layout = "~/Views/Shared/_TrainerLayout.cshtml";
+
+    var courseId = ViewBag.CourseId ?? 0;
+    var moduleId = ViewBag.ModuleId ?? 0;
+    var lessonId = ViewBag.LessonId ?? 0;
+}
+
+<div class="dashboard-page trainer-content-page">
+    <div class="dashboard-page-head trainer-content-head">
+        <div>
+            <h1 class="dashboard-h1">Add Lesson</h1>
+            <p class="dashboard-sub">Create a lesson and assign it to a module.</p>
+        </div>
+
+        <div class="trainer-content-head-actions">
+            <a asp-area="Trainer"
+               asp-controller="ModulesLessons"
+               asp-action="Index"
+               asp-route-id="@courseId"
+               class="dashboard-btn dashboard-btn-outline">
+                <i class="bi bi-arrow-left"></i>
+                Back to Modules & Lessons
+            </a>
+        </div>
+    </div>
+
+    <div class="error-box"></div>
+
+    <div class="dashboard-panel trainer-form-panel">
+        <div class="dashboard-panel-head">
+            <div>
+                <div class="dashboard-panel-title">Lesson Details</div>
+                <div class="dashboard-muted-small">Add lesson content for the selected course and module.</div>
+            </div>
+        </div>
+
+        <form id="lessonCreateForm" class="trainer-form-grid">
+
+            <input type="hidden" id="courseId" value="@courseId" />
+            <input type="hidden" id="moduleId" value="@moduleId" />
+            <input type="hidden" id="lessonId" value="@lessonId" />
+
+            <div class="trainer-form-group">
+                <label class="trainer-form-label">Module</label>
+                <select id="moduleSelect" class="course-input">
+                    <option value="">Select module</option>
+                </select>
+            </div>
+
+            <div class="trainer-form-group">
+                <label class="trainer-form-label">Display Order</label>
+                <input type="number"
+                       id="displayOrder"
+                       class="course-input"
+                       placeholder="1"
+                       min="1"
+                       value="1" />
+            </div>
+
+            <div class="trainer-form-group trainer-form-group-full">
+                <label class="trainer-form-label">Lesson Title</label>
+                <input type="text"
+                       id="title"
+                       class="course-input"
+                       placeholder="Enter lesson title" />
+            </div>
+
+            <div class="trainer-form-group trainer-form-group-full">
+                <label class="trainer-form-label">Lesson Content</label>
+                <textarea id="description"
+                          class="course-input trainer-textarea trainer-content-textarea"
+                          placeholder="Add lesson text, summary, instructions, or links here"></textarea>
+            </div>
+
+            <input type="hidden" id="isActive" value="true" />
+
+            <div class="trainer-form-actions trainer-form-group-full">
+                <a asp-area="Trainer"
+                   asp-controller="ModulesLessons"
+                   asp-action="Index"
+                   asp-route-id="@courseId"
+                   class="dashboard-btn dashboard-btn-outline"
+                   onclick="sessionStorage.setItem('selectedCourseId', '@courseId'); sessionStorage.setItem('restoreSelectionAfterCancel', 'true');">
+                    Cancel
+                </a>
+
+                <button type="submit"
+                        id="saveLessonBtn"
+                        class="dashboard-btn add-course-btn">
+                    <i class="bi bi-plus-circle"></i>
+                    Save Lesson
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/ajax/ModuleLesson/addEditLesson.js"></script>
+}

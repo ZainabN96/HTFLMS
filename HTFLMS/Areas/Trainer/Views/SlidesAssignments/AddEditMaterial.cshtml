@@ -1,0 +1,154 @@
+﻿@{
+    ViewData["Title"] = "Create Material";
+    Layout = "_TrainerLayout";
+
+    var courseId = ViewBag.CourseId ?? 0;
+    var moduleId = ViewBag.ModuleId ?? 0;
+    var lessonId = ViewBag.LessonId ?? 0;
+    var materialId = ViewBag.MaterialId ?? 0;
+}
+
+<div class="dashboard-page trainer-form-page">
+    <div class="dashboard-page-head trainer-content-head">
+        <div>
+            <h1 class="dashboard-h1">Create Material</h1>
+            <p class="dashboard-sub">Add slides, files, uploaded videos, or lecture links for students.</p>
+        </div>
+
+        <div class="trainer-content-head-actions">
+            <a asp-area="Trainer"
+               asp-controller="SlidesAssignments"
+               asp-action="Index"
+               asp-route-courseId="@courseId"
+               asp-route-moduleId="@moduleId"
+               class="dashboard-btn dashboard-btn-outline">
+                <i class="bi bi-arrow-left"></i>
+                Back to Slides & Assignments
+            </a>
+        </div>
+    </div>
+
+    <div class="error-box"></div>
+
+    <div class="dashboard-panel trainer-form-panel trainer-form-panel-wide">
+        <form id="materialCreateForm"
+              enctype="multipart/form-data"
+              class="trainer-material-form">
+
+            <input type="hidden" id="courseId" value="@courseId" />
+            <input type="hidden" id="moduleId" value="@moduleId" />
+            <input type="hidden" id="lessonId" value="@lessonId" />
+            <input type="hidden" id="materialId" value="@materialId" />
+
+            <div class="trainer-form-grid">
+
+                <div class="trainer-form-group">
+                    <label class="trainer-form-label">Module</label>
+                    <select id="moduleSelect" class="course-input">
+                        <option value="0">No Module / Course Level Material</option>
+                    </select>
+                </div>
+
+                <div class="trainer-form-group">
+                    <label class="trainer-form-label">Material Title</label>
+                    <input type="text"
+                           id="title"
+                           class="course-input"
+                           placeholder="Enter material title" />
+                </div>
+
+                <div class="trainer-form-group">
+                    <label class="trainer-form-label">Content Type</label>
+                    <select class="course-input" id="contentType">
+                        <option value="">Select option</option>
+                        <option value="PDF">PDF</option>
+                        <option value="PPTX">PPTX</option>
+                        <option value="MP4 Upload">MP4 Upload</option>
+                        <option value="Video Link">Video Link</option>
+                    </select>
+                </div>
+
+                <div class="trainer-form-group" id="fileUploadField">
+                    <label class="trainer-form-label">Upload File</label>
+
+                    <label for="file" class="student-upload-box course-handbook-upload">
+                        <i class="bi bi-file-earmark-arrow-up"></i>
+
+                        <span id="materialFileName">
+                            Choose PDF / PPT / MP4 file
+                        </span>
+
+                        <input type="file"
+                               id="file"
+                               accept=".pdf,.ppt,.pptx,.mp4"
+                               onchange="showMaterialFileName(event)" />
+                    </label>
+                </div>
+
+                <div class="trainer-form-group" id="videoLinkField" style="display:none;">
+                    <label class="trainer-form-label">Lecture Video Link</label>
+                    <input type="url"
+                           id="externalUrl"
+                           class="course-input"
+                           placeholder="Paste recorded lecture link" />
+                </div>
+
+                <div class="trainer-form-group" id="pagesField" style="display:none;">
+                    <label class="trainer-form-label">Pages</label>
+                    <input type="number"
+                           id="pages"
+                           class="course-input"
+                           placeholder="Enter pages" />
+                </div>
+
+                <div class="trainer-form-group" id="slidesField" style="display:none;">
+                    <label class="trainer-form-label">Slides</label>
+                    <input type="number"
+                           id="slides"
+                           class="course-input"
+                           placeholder="Enter slides" />
+                </div>
+
+                <div class="trainer-form-group" id="minutesField" style="display:none;">
+                    <label class="trainer-form-label">Minutes</label>
+                    <input type="number"
+                           id="minutes"
+                           class="course-input"
+                           placeholder="Enter minutes" />
+                </div>
+
+                <div class="trainer-form-group">
+                    <label class="trainer-form-label">Status</label>
+                    <select class="course-input" id="isActive">
+                        <option value="">Select option</option>
+                        <option value="true">Active</option>
+                        <option value="false">Draft</option>
+                    </select>
+                </div>
+
+            </div>
+
+            <div class="trainer-form-actions">
+                <a asp-area="Trainer"
+                   asp-controller="SlidesAssignments"
+                   asp-action="Index"
+                   asp-route-courseId="@courseId"
+                   asp-route-moduleId="@moduleId"
+                   class="dashboard-btn dashboard-btn-outline"
+                   onclick="sessionStorage.setItem('selectedCourseId', '@courseId'); sessionStorage.setItem('selectedModuleId', '@moduleId'); sessionStorage.setItem('restoreSelectionAfterCancel', 'true');">
+                    Cancel
+                </a>
+
+                <button type="submit"
+                        id="saveMaterialBtn"
+                        class="dashboard-btn add-course-btn">
+                    Create Material
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/ajax/SlideAssignment/addEditMaterial.js"></script>
+}
