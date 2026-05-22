@@ -13,6 +13,7 @@ namespace HTFLMS.Data.Services
         public IQuizService QuizService { get; }
         public IMaterialService MaterialService { get; }
         public IAssignmentService AssignmentService { get; }
+        public IManageTrainerService ManageTrainerService { get; }
 
         public UnitOfWork(ApplicationDbContext context)
         {
@@ -25,6 +26,7 @@ namespace HTFLMS.Data.Services
             QuizService = new QuizService(context);
             MaterialService = new MaterialService(context);
             AssignmentService = new AssignmentService(context);
+            ManageTrainerService = new ManageTrainerService(context);
         }
 
         public async Task<bool> SaveAsync()

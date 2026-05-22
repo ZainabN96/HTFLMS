@@ -1,7 +1,13 @@
 ﻿@{
     ViewData["Title"] = "Modules & Lessons";
     Layout = "_AdminLayout";
+
+    var courseId = ViewBag.CourseId ?? 0;
 }
+
+<input type="hidden"
+       id="selectedCourseId"
+       value="@courseId" />
 
 <div class="dashboard-page admin-content-page admin-modules-page">
     <div class="dashboard-page-head admin-content-head">
@@ -11,14 +17,13 @@
         </div>
     </div>
 
-    <!-- QUICK STATS -->
     <div class="dashboard-stats admin-content-stats">
         <div class="dashboard-stat-card">
             <div class="dashboard-stat-top">
                 <div class="dashboard-stat-title">Total Modules</div>
                 <i class="bi bi-collection"></i>
             </div>
-            <div class="dashboard-stat-value">4</div>
+            <div class="dashboard-stat-value" id="totalModulesCount">0</div>
             <div class="dashboard-stat-meta">In this course</div>
         </div>
 
@@ -27,7 +32,7 @@
                 <div class="dashboard-stat-title">Lessons</div>
                 <i class="bi bi-journal-text"></i>
             </div>
-            <div class="dashboard-stat-value">18</div>
+            <div class="dashboard-stat-value" id="totalLessonsCount">0</div>
             <div class="dashboard-stat-meta">Across all modules</div>
         </div>
 
@@ -36,7 +41,7 @@
                 <div class="dashboard-stat-title">Quizzes</div>
                 <i class="bi bi-patch-question"></i>
             </div>
-            <div class="dashboard-stat-value">4</div>
+            <div class="dashboard-stat-value" id="totalQuizzesCount">0</div>
             <div class="dashboard-stat-meta">Separate quiz items</div>
         </div>
 
@@ -45,12 +50,11 @@
                 <div class="dashboard-stat-title">Published</div>
                 <i class="bi bi-check2-circle"></i>
             </div>
-            <div class="dashboard-stat-value">Yes</div>
+            <div class="dashboard-stat-value" id="publishedStatus">No</div>
             <div class="dashboard-stat-meta">Visible to students</div>
         </div>
     </div>
 
-    <!-- SHARED TOP FILTER LIKE SLIDES PAGE -->
     <div class="dashboard-panel admin-content-panel admin-modules-filter-panel">
         <div class="dashboard-panel-head admin-content-panel-head admin-modules-filter-head">
             <div>
@@ -58,24 +62,18 @@
             </div>
 
             <div class="admin-panel-actions admin-inline-tools admin-modules-filter-tools">
-                <select class="course-input admin-inline-select admin-modules-course-select">
-                    <option selected>React Advanced Patterns</option>
-                    <option>Node.js Backend Development</option>
-                    <option>Python for Data Science</option>
-                    <option>Full Stack Web Development</option>
+                <select id="courseSelect"
+                        class="course-input admin-inline-select admin-modules-course-select">
                 </select>
 
-                <select class="course-input admin-inline-select admin-modules-module-select">
-                    <option selected>Module 1: Introduction to Web Development</option>
-                    <option>Module 2: JavaScript Fundamentals</option>
-                    <option>Module 3: React Basics</option>
-                    <option>Module 4: Advanced React Patterns</option>
+                <select id="moduleSelect"
+                        class="course-input admin-inline-select admin-modules-module-select">
+                    <option value="0">Select a Course First to view modules list</option>
                 </select>
             </div>
         </div>
     </div>
 
-    <!-- MODULES SECTION -->
     <div class="dashboard-panel admin-content-panel">
         <div class="dashboard-panel-head admin-content-panel-head">
             <div>
@@ -83,10 +81,8 @@
             </div>
 
             <div class="admin-panel-actions">
-                <a asp-area="Admin"
-                   asp-controller="ModulesLessons"
-                   asp-action="CreateModule"
-                   asp-route-courseId="@ViewBag.CourseId"
+                <a id="addModuleBtn"
+                   href="/Admin/ModulesLessons/CreateModule?courseId=0"
                    class="dashboard-btn add-course-btn">
                     <i class="bi bi-plus-circle"></i>
                     Add Module
@@ -105,65 +101,12 @@
                 <div>Actions</div>
             </div>
 
-            <div class="dashboard-table-row admin-modules-table-row">
-                <div title="Module 1: Introduction to Web Development - Learn the fundamentals of web development">
-                    <div class="courses-title" title="Module 1: Introduction to Web Development">Module 1: Introduction to Web Development</div>
-                    <div class="courses-sub-text" title="Learn the fundamentals of web development">Learn the fundamentals of web development</div>
-                </div>
-                <div title="5 Lessons">5 Lessons</div>
-                <div title="1 Quiz">1 Quiz</div>
-                <div title="Published"><span class="pill pill-green">Published</span></div>
-                <div title="Access enabled">
-                    <label class="admin-toggle">
-                        <input type="checkbox"
-                               class="module-lock-toggle"
-                               data-module-id="1"
-                               checked />
-                    </label>
-                </div>
-                <div title="1">1</div>
-                <div class="admin-courses-actions" title="Edit or Delete">
-                    <a asp-area="Admin"
-                       asp-controller="ModulesLessons"
-                       asp-action="EditModule"
-                       asp-route-courseId="@ViewBag.CourseId"
-                       asp-route-moduleId="1"
-                       class="dashboard-btn dashboard-btn-outline admin-course-action-btn">Edit</a>
-                    <button class="dashboard-btn admin-delete-soft-btn admin-course-action-btn">Delete</button>
-                </div>
-            </div>
-
-            <div class="dashboard-table-row admin-modules-table-row">
-                <div title="Module 2: JavaScript Fundamentals - Master the basics of JavaScript programming">
-                    <div class="courses-title" title="Module 2: JavaScript Fundamentals">Module 2: JavaScript Fundamentals</div>
-                    <div class="courses-sub-text" title="Master the basics of JavaScript programming">Master the basics of JavaScript programming</div>
-                </div>
-                <div title="4 Lessons">4 Lessons</div>
-                <div title="1 Quiz">1 Quiz</div>
-                <div title="Draft"><span class="pill pill-yellow">Draft</span></div>
-                <div title="Access enabled">
-                    <label class="admin-toggle">
-                        <input type="checkbox"
-                               class="module-lock-toggle"
-                               data-module-id="2"
-                               checked />
-                    </label>
-                </div>
-                <div title="2">2</div>
-                <div class="admin-courses-actions" title="Edit or Delete">
-                    <a asp-area="Admin"
-                       asp-controller="ModulesLessons"
-                       asp-action="EditModule"
-                       asp-route-courseId="@ViewBag.CourseId"
-                       asp-route-moduleId="2"
-                       class="dashboard-btn dashboard-btn-outline admin-course-action-btn">Edit</a>
-                    <button class="dashboard-btn admin-delete-soft-btn admin-course-action-btn">Delete</button>
-                </div>
+            <div id="modulesContainer">
+                <div class="dashboard-empty-state">Please select a course.</div>
             </div>
         </div>
     </div>
 
-    <!-- LESSONS SECTION -->
     <div class="dashboard-panel admin-content-panel">
         <div class="dashboard-panel-head admin-content-panel-head">
             <div>
@@ -171,10 +114,8 @@
             </div>
 
             <div class="admin-panel-actions">
-                <a asp-area="Admin"
-                   asp-controller="ModulesLessons"
-                   asp-action="CreateLesson"
-                   asp-route-courseId="@ViewBag.CourseId"
+                <a id="addLessonBtn"
+                   href="/Admin/ModulesLessons/CreateLesson?courseId=0"
                    class="dashboard-btn add-course-btn">
                     <i class="bi bi-plus-circle"></i>
                     Add Lesson
@@ -187,59 +128,17 @@
                 <div>Title</div>
                 <div>Module</div>
                 <div>Type</div>
-                <div>Duration</div>
                 <div>Status</div>
                 <div>Order</div>
                 <div>Actions</div>
             </div>
 
-            <div class="dashboard-table-row admin-lessons-table-row">
-                <div title="What is Web Development? - Intro lesson for beginners">
-                    <div class="courses-title" title="What is Web Development?">What is Web Development?</div>
-                    <div class="courses-sub-text" title="Intro lesson for beginners">Intro lesson for beginners</div>
-                </div>
-                <div title="Module 1">Module 1</div>
-                <div title="Lesson"><span class="admin-course-chip">Lesson</span></div>
-                <div title="15 mins">15 mins</div>
-                <div title="Published"><span class="pill pill-green">Published</span></div>
-                <div title="1">1</div>
-                <div class="admin-courses-actions" title="Edit or Delete">
-                    <a asp-area="Admin"
-                       asp-controller="ModulesLessons"
-                       asp-action="EditLesson"
-                       asp-route-courseId="@ViewBag.CourseId"
-                       asp-route-lessonId="1"
-                       asp-route-moduleId="1"
-                       class="dashboard-btn dashboard-btn-outline admin-course-action-btn">Edit</a>
-                    <button class="dashboard-btn admin-delete-soft-btn admin-course-action-btn">Delete</button>
-                </div>
-            </div>
-
-            <div class="dashboard-table-row admin-lessons-table-row">
-                <div title="HTML Basics - Core HTML tags and structure">
-                    <div class="courses-title" title="HTML Basics">HTML Basics</div>
-                    <div class="courses-sub-text" title="Core HTML tags and structure">Core HTML tags and structure</div>
-                </div>
-                <div title="Module 1">Module 1</div>
-                <div title="Lesson"><span class="admin-course-chip">Lesson</span></div>
-                <div title="20 mins">20 mins</div>
-                <div title="Published"><span class="pill pill-green">Published</span></div>
-                <div title="2">2</div>
-                <div class="admin-courses-actions" title="Edit or Delete">
-                    <a asp-area="Admin"
-                       asp-controller="ModulesLessons"
-                       asp-action="EditLesson"
-                       asp-route-courseId="@ViewBag.CourseId"
-                       asp-route-lessonId="2"
-                       asp-route-moduleId="1"
-                       class="dashboard-btn dashboard-btn-outline admin-course-action-btn">Edit</a>
-                    <button class="dashboard-btn admin-delete-soft-btn admin-course-action-btn">Delete</button>
-                </div>
+            <div id="lessonsContainer">
+                <div class="dashboard-empty-state">Please select a course.</div>
             </div>
         </div>
     </div>
 
-    <!-- QUIZ SECTION -->
     <div class="dashboard-panel admin-content-panel">
         <div class="dashboard-panel-head admin-content-panel-head">
             <div>
@@ -247,10 +146,8 @@
             </div>
 
             <div class="admin-panel-actions">
-                <a asp-area="Admin"
-                   asp-controller="ModulesLessons"
-                   asp-action="CreateQuiz"
-                   asp-route-courseId="@ViewBag.CourseId"
+                <a id="addQuizBtn"
+                   href="/Admin/ModulesLessons/CreateQuiz?courseId=0"
                    class="dashboard-btn add-course-btn">
                     <i class="bi bi-plus-circle"></i>
                     Add Quiz
@@ -266,69 +163,16 @@
                 <div>Attempts</div>
                 <div>Status</div>
                 <div>Access</div>
-                <div>Order</div>
                 <div>Actions</div>
             </div>
 
-            <div class="dashboard-table-row admin-quiz-table-row">
-                <div title="HTML & CSS Quiz - Basic knowledge check">
-                    <div class="courses-title" title="HTML & CSS Quiz">HTML &amp; CSS Quiz</div>
-                    <div class="courses-sub-text" title="Basic knowledge check">Basic knowledge check</div>
-                </div>
-                <div title="Module 1">Module 1</div>
-                <div title="5">5</div>
-                <div title="3">3</div>
-                <div title="Published"><span class="pill pill-green">Published</span></div>
-                <div title="Access enabled">
-                    <label class="admin-toggle">
-                        <input type="checkbox"
-                               class="quiz-lock-toggle"
-                               data-quiz-id="1"
-                               checked />
-                    </label>
-                </div>
-                <div title="1">1</div>
-                <div class="admin-courses-actions" title="Edit or Delete">
-                    <a asp-area="Admin"
-                       asp-controller="ModulesLessons"
-                       asp-action="EditQuiz"
-                       asp-route-courseId="@ViewBag.CourseId"
-                       asp-route-quizId="1"
-                       asp-route-moduleId="1"
-                       class="dashboard-btn dashboard-btn-outline admin-course-action-btn">Edit</a>
-                    <button class="dashboard-btn admin-delete-soft-btn admin-course-action-btn">Delete</button>
-                </div>
-            </div>
-
-            <div class="dashboard-table-row admin-quiz-table-row">
-                <div title="JavaScript Basics Quiz - End of module assessment">
-                    <div class="courses-title" title="JavaScript Basics Quiz">JavaScript Basics Quiz</div>
-                    <div class="courses-sub-text" title="End of module assessment">End of module assessment</div>
-                </div>
-                <div title="Module 2">Module 2</div>
-                <div title="8">8</div>
-                <div title="2">2</div>
-                <div title="Draft"><span class="pill pill-yellow">Draft</span></div>
-                <div title="Access enabled">
-                    <label class="admin-toggle">
-                        <input type="checkbox"
-                               class="quiz-lock-toggle"
-                               data-quiz-id="2"
-                               checked />
-                    </label>
-                </div>
-                <div title="2">2</div>
-                <div class="admin-courses-actions" title="Edit or Delete">
-                    <a asp-area="Admin"
-                       asp-controller="ModulesLessons"
-                       asp-action="EditQuiz"
-                       asp-route-courseId="@ViewBag.CourseId"
-                       asp-route-quizId="2"
-                       asp-route-moduleId="2"
-                       class="dashboard-btn dashboard-btn-outline admin-course-action-btn">Edit</a>
-                    <button class="dashboard-btn admin-delete-soft-btn admin-course-action-btn">Delete</button>
-                </div>
+            <div id="quizzesContainer">
+                <div class="dashboard-empty-state">Please select a course.</div>
             </div>
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script src="~/js/ajax/ModuleLesson/adminIndex.js"></script>
+}

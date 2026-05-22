@@ -22,6 +22,11 @@ namespace HTFLMS.Controllers.api
             this.mapper = mapper;
         }
 
+        private bool IsAdmin()
+        {
+            return User.IsInRole("Admin");
+        }
+
         [HttpPost("create")]
         public async Task<IActionResult> Create([FromForm] LessonDto dto)
         {
@@ -33,10 +38,10 @@ namespace HTFLMS.Controllers.api
             if (string.IsNullOrWhiteSpace(email))
                 return Unauthorized(new APIError(401, "User is not logged in."));
 
-            var trainer = await uow.UserService.GetUserByEmailAsync(email);
+            var user = await uow.UserService.GetUserByEmailAsync(email);
 
-            if (trainer == null)
-                return NotFound(new APIError(404, "Logged-in trainer was not found."));
+            if (user == null)
+                return NotFound(new APIError(404, "Logged-in user was not found."));
 
             var module = await uow.ModuleService.GetByIdAsync(dto.ModuleId);
 
@@ -48,7 +53,7 @@ namespace HTFLMS.Controllers.api
             if (course == null)
                 return NotFound(new APIError(404, "Course not found."));
 
-            if (course.TrainerId != trainer.Id)
+            if (!IsAdmin() && course.TrainerId != user.Id)
             {
                 return Unauthorized(
                     new APIError(401, "You are not allowed to add lessons to this module.")
@@ -83,10 +88,10 @@ namespace HTFLMS.Controllers.api
             if (string.IsNullOrWhiteSpace(email))
                 return Unauthorized(new APIError(401, "User is not logged in."));
 
-            var trainer = await uow.UserService.GetUserByEmailAsync(email);
+            var user = await uow.UserService.GetUserByEmailAsync(email);
 
-            if (trainer == null)
-                return NotFound(new APIError(404, "Logged-in trainer was not found."));
+            if (user == null)
+                return NotFound(new APIError(404, "Logged-in user was not found."));
 
             var module = await uow.ModuleService.GetByIdAsync(moduleId);
 
@@ -98,7 +103,7 @@ namespace HTFLMS.Controllers.api
             if (course == null)
                 return NotFound(new APIError(404, "Course not found."));
 
-            if (course.TrainerId != trainer.Id)
+            if (!IsAdmin() && course.TrainerId != user.Id)
             {
                 return Unauthorized(
                     new APIError(401, "You are not allowed to view these lessons.")
@@ -124,12 +129,35 @@ namespace HTFLMS.Controllers.api
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetLesson(int id)
         {
+            var email = User.Identity?.Name;
+
+            if (string.IsNullOrWhiteSpace(email))
+                return Unauthorized(new APIError(401, "User is not logged in."));
+
+            var user = await uow.UserService.GetUserByEmailAsync(email);
+
+            if (user == null)
+                return NotFound(new APIError(404, "Logged-in user was not found."));
+
             var lesson = await uow.LessonService.GetByIdAsync(id);
 
             if (lesson == null)
+                return NotFound(new APIError(404, "Lesson not found."));
+
+            var module = await uow.ModuleService.GetByIdAsync(lesson.ModuleId);
+
+            if (module == null)
+                return NotFound(new APIError(404, "Module not found."));
+
+            var course = await uow.CourseService.GetByIdAsync(module.CourseId);
+
+            if (course == null)
+                return NotFound(new APIError(404, "Course not found."));
+
+            if (!IsAdmin() && course.TrainerId != user.Id)
             {
-                return NotFound(
-                    new APIError(404, "Lesson not found.")
+                return Unauthorized(
+                    new APIError(401, "You are not allowed to view this lesson.")
                 );
             }
 
@@ -145,10 +173,7 @@ namespace HTFLMS.Controllers.api
         }
 
         [HttpPut("edit/{id:int}")]
-        public async Task<IActionResult> Edit(
-            int id,
-            [FromForm] LessonDto dto
-        )
+        public async Task<IActionResult> Edit(int id, [FromForm] LessonDto dto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -158,19 +183,15 @@ namespace HTFLMS.Controllers.api
             if (string.IsNullOrWhiteSpace(email))
                 return Unauthorized(new APIError(401, "User is not logged in."));
 
-            var trainer = await uow.UserService.GetUserByEmailAsync(email);
+            var user = await uow.UserService.GetUserByEmailAsync(email);
 
-            if (trainer == null)
-                return NotFound(new APIError(404, "Logged-in trainer was not found."));
+            if (user == null)
+                return NotFound(new APIError(404, "Logged-in user was not found."));
 
             var lesson = await uow.LessonService.GetByIdAsync(id);
 
             if (lesson == null)
-            {
-                return NotFound(
-                    new APIError(404, "Lesson not found.")
-                );
-            }
+                return NotFound(new APIError(404, "Lesson not found."));
 
             var module = await uow.ModuleService.GetByIdAsync(dto.ModuleId);
 
@@ -182,7 +203,7 @@ namespace HTFLMS.Controllers.api
             if (course == null)
                 return NotFound(new APIError(404, "Course not found."));
 
-            if (course.TrainerId != trainer.Id)
+            if (!IsAdmin() && course.TrainerId != user.Id)
             {
                 return Unauthorized(
                     new APIError(401, "You are not allowed to edit this lesson.")
@@ -214,19 +235,15 @@ namespace HTFLMS.Controllers.api
             if (string.IsNullOrWhiteSpace(email))
                 return Unauthorized(new APIError(401, "User is not logged in."));
 
-            var trainer = await uow.UserService.GetUserByEmailAsync(email);
+            var user = await uow.UserService.GetUserByEmailAsync(email);
 
-            if (trainer == null)
-                return NotFound(new APIError(404, "Logged-in trainer was not found."));
+            if (user == null)
+                return NotFound(new APIError(404, "Logged-in user was not found."));
 
             var lesson = await uow.LessonService.GetByIdAsync(id);
 
             if (lesson == null)
-            {
-                return NotFound(
-                    new APIError(404, "Lesson not found.")
-                );
-            }
+                return NotFound(new APIError(404, "Lesson not found."));
 
             var module = await uow.ModuleService.GetByIdAsync(lesson.ModuleId);
 
@@ -238,7 +255,7 @@ namespace HTFLMS.Controllers.api
             if (course == null)
                 return NotFound(new APIError(404, "Course not found."));
 
-            if (course.TrainerId != trainer.Id)
+            if (!IsAdmin() && course.TrainerId != user.Id)
             {
                 return Unauthorized(
                     new APIError(401, "You are not allowed to delete this lesson.")

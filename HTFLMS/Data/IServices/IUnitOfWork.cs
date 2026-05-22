@@ -1,6 +1,4 @@
-﻿using HTFLMS.Models;
-
-namespace HTFLMS.Data.IServices
+﻿namespace HTFLMS.Data.IServices
 {
     public interface IUnitOfWork
     {
@@ -11,7 +9,7 @@ namespace HTFLMS.Data.IServices
         IQuizService QuizService { get; }
         IMaterialService MaterialService { get; }
         IAssignmentService AssignmentService { get; }
-
+        IManageTrainerService ManageTrainerService { get; }
         Task<bool> SaveAsync();
     }
 }
