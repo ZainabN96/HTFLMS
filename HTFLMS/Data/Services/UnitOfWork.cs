@@ -1,4 +1,7 @@
 ﻿using HTFLMS.Data.IServices;
+using HTFLMS.Data.Services;
+//using HTFLMS.Data.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace HTFLMS.Data.Services
 {
@@ -13,6 +16,9 @@ namespace HTFLMS.Data.Services
         public IQuizService QuizService { get; }
         public IMaterialService MaterialService { get; }
         public IAssignmentService AssignmentService { get; }
+        public ICourseEnrollmentService CourseEnrollmentService { get; private set; }
+        public IStudentDashboardService StudentDashboardService { get; private set; }
+   
 
         public UnitOfWork(ApplicationDbContext context)
         {
@@ -25,6 +31,10 @@ namespace HTFLMS.Data.Services
             QuizService = new QuizService(context);
             MaterialService = new MaterialService(context);
             AssignmentService = new AssignmentService(context);
+            CourseEnrollmentService = new CourseEnrollmentService(context);
+            StudentDashboardService = new StudentDashboardService(context);
+           
+        
         }
 
         public async Task<bool> SaveAsync()

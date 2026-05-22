@@ -30,7 +30,16 @@
             contentType: 'application/json',
             data: JSON.stringify(payload),
             success: function (res) {
-                window.location.href = '/Account/Login?registered=true';
+                //window.location.href = '/Account/Login?registered=true';
+                var returnUrl = $('#returnUrl').val();
+
+                var loginUrl = '/Account/Login?registered=true';
+
+                if (returnUrl) {
+                    loginUrl += '&returnUrl=' + encodeURIComponent(returnUrl);
+                }
+
+                window.location.href = loginUrl;
             },
             error: function (xhr) {
                 var err = xhr.responseJSON;

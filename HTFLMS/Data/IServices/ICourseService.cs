@@ -1,4 +1,5 @@
 ﻿using HTFLMS.Models;
+using HTFLMS.Dtos;
 
 namespace HTFLMS.Data.IServices
 {
@@ -10,5 +11,6 @@ namespace HTFLMS.Data.IServices
         void Delete(Course course);
         Task<List<Course>> GetAllAsync();
         Task<List<Course>> GetByTrainerIdAsync(int trainerId);
+        Task<StudentCourseDetailDto?> GetStudentCourseDetailAsync(int courseId);
     }
 }

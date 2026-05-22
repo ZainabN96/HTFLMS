@@ -11,7 +11,9 @@ namespace HTFLMS.Data.IServices
         IQuizService QuizService { get; }
         IMaterialService MaterialService { get; }
         IAssignmentService AssignmentService { get; }
-
+        ICourseEnrollmentService CourseEnrollmentService { get; }
+        IStudentDashboardService StudentDashboardService { get; }
+       
         Task<bool> SaveAsync();
     }
 }
