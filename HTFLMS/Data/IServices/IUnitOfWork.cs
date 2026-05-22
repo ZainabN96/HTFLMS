@@ -9,7 +9,9 @@
         IQuizService QuizService { get; }
         IMaterialService MaterialService { get; }
         IAssignmentService AssignmentService { get; }
-        IManageTrainerService ManageTrainerService { get; }
+ICourseEnrollmentService CourseEnrollmentService { get; }
+IStudentDashboardService StudentDashboardService { get; }
+IManageTrainerService ManageTrainerService { get; }
         Task<bool> SaveAsync();
     }
 }
