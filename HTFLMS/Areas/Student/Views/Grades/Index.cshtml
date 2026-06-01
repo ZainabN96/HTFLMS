@@ -1,4 +1,4 @@
-﻿@{
+﻿@* @{
     ViewData["Title"] = "Grades";
     Layout = "_StudentLayout";
 }
@@ -330,4 +330,118 @@
             });
         })();
     </script>
+} *@
+
+
+@{
+    ViewData["Title"] = "Grades";
+    Layout = "_StudentLayout";
+}
+
+<div class="student-grades-page">
+    <div class="student-grades-head">
+        <div>
+            <h1 class="dashboard-h1">Grades</h1>
+            <p class="dashboard-sub">Track your course performance, marked work, and results.</p>
+        </div>
+    </div>
+
+    <!-- Summary Cards -->
+    <div class="dashboard-stats student-grades-stats">
+        <div class="dashboard-stat-card">
+            <div class="dashboard-stat-top">
+                <div class="dashboard-stat-title" id="averageTitle">Current Average</div>
+                <i class="bi bi-bar-chart-line"></i>
+            </div>
+            <div class="dashboard-stat-value" id="averageValue">0%</div>
+            <div class="dashboard-stat-meta" id="averageMeta">Grades will appear after your work is marked.</div>
+        </div>
+
+        <div class="dashboard-stat-card">
+            <div class="dashboard-stat-top">
+                <div class="dashboard-stat-title">Courses Completed</div>
+                <i class="bi bi-journal-bookmark"></i>
+            </div>
+            <div class="dashboard-stat-value" id="coursesCompletedValue">0</div>
+            <div class="dashboard-stat-meta">Previous completed courses</div>
+        </div>
+
+        <div class="dashboard-stat-card">
+            <div class="dashboard-stat-top">
+                <div class="dashboard-stat-title">Completed Assignments</div>
+                <i class="bi bi-check2-circle"></i>
+            </div>
+            <div class="dashboard-stat-value" id="completedAssignmentsValue">0</div>
+            <div class="dashboard-stat-meta" id="completedAssignmentsMeta">0 pending review</div>
+        </div>
+
+        <div class="dashboard-stat-card">
+            <div class="dashboard-stat-top">
+                <div class="dashboard-stat-title">Pending Reviews</div>
+                <i class="bi bi-hourglass-split"></i>
+            </div>
+            <div class="dashboard-stat-value" id="pendingReviewsValue">0</div>
+            <div class="dashboard-stat-meta" id="pendingReviewsMeta">Submitted work awaiting marks</div>
+        </div>
+    </div>
+
+    <div class="student-grades-layout">
+        <!-- Left Side -->
+        <div class="student-grades-main">
+            <div class="dashboard-panel">
+                <div class="dashboard-panel-head student-panel-head">
+                    <div>
+                        <h3 class="page-h2 student-panel-title">Course Grades Overview</h3>
+                        <p class="student-panel-sub">
+                            View your course average, graded assignments, pending reviews, and current standing.
+                        </p>
+                    </div>
+
+                    <div class="student-count-pill" id="studentCourseCount">0 course(s)</div>
+                </div>
+
+                <div class="student-course-grade-list" id="studentCourseGradeList">
+                    <div class="student-grade-empty">Loading grades...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Side -->
+        <div class="student-grades-side">
+            <div class="dashboard-panel">
+                <div class="dashboard-panel-head">
+                    <div class="dashboard-panel-title">Recent Results</div>
+                </div>
+
+                <div class="student-grade-activity-list" id="studentRecentResultsList">
+                    <div class="student-grade-empty">Loading recent results...</div>
+                </div>
+            </div>
+
+            <div class="dashboard-panel">
+                <div class="dashboard-panel-head">
+                    <div class="dashboard-panel-title">Grade Legend</div>
+                </div>
+
+                <div class="student-grade-legend-list">
+                    <div class="student-grade-legend-row">
+                        <span class="student-course-grade-badge excellent">Excellent</span>
+                        <span>85% and above</span>
+                    </div>
+                    <div class="student-grade-legend-row">
+                        <span class="student-course-grade-badge good">Good</span>
+                        <span>70% to 84%</span>
+                    </div>
+                    <div class="student-grade-legend-row">
+                        <span class="student-course-grade-badge fair">Fair</span>
+                        <span>Below 70%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/student/studentgrades.js"></script>
 }

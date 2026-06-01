@@ -17,5 +17,7 @@
         public int PendingTasks { get; set; }
 
         public List<StudentEnrolledCoursesDto> EnrolledCourses { get; set; } = new();
+
+        public List<StudentUpcomingDeadlineDto> UpcomingDeadlines { get; set; } = new();
     }
 }
