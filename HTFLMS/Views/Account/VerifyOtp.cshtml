@@ -14,29 +14,18 @@
             <h1 class="auth-title">Verify OTP</h1>
             <p class="auth-subtitle">Enter the 6-digit code sent to your email</p>
 
-            <form asp-action="VerifyOtp" asp-controller="Account" method="post">
+            <form id="verifyOtpForm">
                 @Html.AntiForgeryToken()
-                <input type="hidden" asp-for="FlowId" />
-                <input type="hidden" asp-for="Email" />
+                <input type="hidden" asp-for="FlowId" id="FlowId" />
+                <input type="hidden" asp-for="Email" id="Email" />
 
                 <div class="auth-field">
-                    <input asp-for="Otp" class="auth-input" placeholder=" " inputmode="numeric" maxlength="6" />
+                    <input asp-for="Otp" class="auth-input" id="Otp" placeholder=" " inputmode="numeric" maxlength="6" />
                     <label>OTP (6 digits)</label>
                     <span asp-validation-for="Otp" class="text-danger small"></span>
                 </div>
 
-                <div class="text-danger small mb-2">
-                    @foreach (var err in ViewData.ModelState.Values.SelectMany(v => v.Errors))
-                    {
-                        <div>@err.ErrorMessage</div>
-                    }
-                </div>
-
-                <button type="submit" class="auth-btn">Verify</button>
-
-                <div class="auth-links mt-3">
-                    <a asp-action="ForgotPassword" asp-controller="Account">Resend OTP</a>
-                </div>
+                <button type="submit" class="auth-btn" id="verifyOtpBtn">Verify</button>
             </form>
         </div>
     </section>
@@ -44,4 +33,54 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        document.getElementById("verifyOtpForm").addEventListener("submit", async function (e) {
+            e.preventDefault();
+
+            const flowId = document.getElementById("FlowId").value;
+            const email = document.getElementById("Email").value;
+            const otp = document.getElementById("Otp").value;
+
+            const btn = document.getElementById("verifyOtpBtn");
+            btn.disabled = true;
+            btn.innerText = "Verifying...";
+
+            try {
+                const response = await fetch("/api/email/verify-otp", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        flowId: flowId,
+                        email: email,
+                        otp: otp
+                    })
+                });
+
+                const result = await response.json();
+
+                if (response.ok && result.success) {
+                    localStorage.setItem("successMessage", result.message || "OTP verified successfully.");
+
+                    window.location.href = "/Account/ResetPassword?flowId="
+                        + encodeURIComponent(result.flowId)
+                        + "&email="
+                        + encodeURIComponent(result.email);
+
+                    return;
+                }
+
+                showSuccessPopup(result.message || "Invalid OTP.");
+            }
+            catch {
+                showSuccessPopup("Something went wrong. Please try again.");
+            }
+            finally {
+                btn.disabled = false;
+                btn.innerText = "Verify";
+            }
+        });
+    </script>
 }

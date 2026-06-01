@@ -1,9 +1,7 @@
 ﻿using AutoMapper;
 using HTFLMS.Data.IServices;
 using HTFLMS.Dtos;
-using HTFLMS.Errors;
 using HTFLMS.Helper;
-using HTFLMS.Helpers;
 using HTFLMS.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -18,47 +16,72 @@ namespace HTFLMS.Controllers.api
         private readonly IUnitOfWork uow;
         private readonly IMapper mapper;
         private readonly IPasswordHasher<User> hasher;
+        private readonly IMailService mailService;
 
-        public UserController(IUnitOfWork uow, IMapper mapper, IPasswordHasher<User> hasher)
+        public UserController(
+            IUnitOfWork uow,
+            IMapper mapper,
+            IPasswordHasher<User> hasher,
+            IMailService mailService)
         {
             this.uow = uow;
             this.mapper = mapper;
             this.hasher = hasher;
+            this.mailService = mailService;
         }
 
         [AllowAnonymous]
         [HttpPost("register")]
         public async Task<IActionResult> Register(UserDto dto)
         {
-            // 1. ModelState validation (handles [Required] etc.)
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            // 2. Duplicate check
             if (await uow.UserService.UserAlreadyExists(dto.CNIC, dto.Email))
             {
-                return BadRequest(new APIError(
-                    BadRequest().StatusCode,
-                    "User already exists with this CNIC or Email."
-                ));
+                return BadRequest(new
+                {
+                    success = false,
+                    message = "User already exists with this CNIC or Email."
+                });
             }
 
-            // 3. Map DTO -> User
             var user = mapper.Map<User>(dto);
 
-            // 4. Generate unique UserId
             user.UserId = await GenerateUniqueUserIdAsync();
-
-            // 5. Hash password
+            user.MemberType = "Student";
+            user.CreatedAt = DateTime.Now;
+            user.IsActive = true;
             user.PasswordHash = hasher.HashPassword(user, dto.Password);
-            // 6. Save
-            uow.UserService.Register(user);
-            await uow.SaveAsync();
 
-            return Ok(new { message = "User registered successfully.", userId = user.UserId });
+            uow.UserService.Register(user);
+            var saved = await uow.SaveAsync();
+
+            if (!saved)
+            {
+                return BadRequest(new
+                {
+                    success = false,
+                    message = "Registration failed. Please try again."
+                });
+            }
+
+            await mailService.SendRegistrationEmailAsync(
+                user.Email,
+                user.Name,
+                user.UserId,
+                dto.Password
+            );
+
+            return Ok(new
+            {
+                success = true,
+                message = "Registered successfully! Please login.",
+                userId = user.UserId,
+                email = user.Email
+            });
         }
 
-        //trainer dropdown list by sb 
         [HttpGet("trainers")]
         public async Task<IActionResult> GetActiveTrainers()
         {
@@ -77,13 +100,32 @@ namespace HTFLMS.Controllers.api
             return Ok(trainers);
         }
 
-        // ── private helper ────────────────────────────────────────────
         private async Task<string> GenerateUniqueUserIdAsync()
         {
-            string id;
-            do { id = UHelper.GenerateUserId(); }
-            while (await uow.UserService.UserIdExists(id));
-            return id;
+            var users = await uow.UserService.GetAllAsync();
+
+            int maxNumber = 0;
+
+            foreach (var user in users)
+            {
+                if (string.IsNullOrWhiteSpace(user.UserId))
+                    continue;
+
+                if (user.UserId.StartsWith("HTF"))
+                {
+                    string numericPart = user.UserId.Substring(3);
+
+                    if (int.TryParse(numericPart, out int number))
+                    {
+                        if (number > maxNumber)
+                            maxNumber = number;
+                    }
+                }
+            }
+
+            int nextNumber = maxNumber + 1;
+
+            return UHelper.GenerateUserId(nextNumber);
         }
     }
 }

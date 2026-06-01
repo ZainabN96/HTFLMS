@@ -236,7 +236,7 @@ h6 {
 }
 
 .header .logo img {
-  max-height: 40px;
+  max-height: 60px;
   margin-right: 8px;
 }
 
@@ -543,7 +543,7 @@ h6 {
 }
 
 .footer .footer-about .logo img {
-  max-height: 40px;
+  max-height: 53px;
   margin-right: 6px;
 }
 
@@ -1052,11 +1052,26 @@ section,
   width: 100%;
 }
 
-    .counts .stats-item span {
+    .counts .stats-item .counter-wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center; 
+        gap: 2px;
+    }
+
+    .counts .stats-item .purecounter {
         font-size: 48px;
-        display: block;
         color: #212529cc;
         font-weight: 700;
+        line-height: 1;
+    }
+
+    .counts .stats-item .counter-plus {
+        font-size: 48px;
+        color: #212529cc;
+        font-weight: 700;
+        line-height: 1;
+        margin-top: -2px; 
     }
 
 .counts .stats-item p {

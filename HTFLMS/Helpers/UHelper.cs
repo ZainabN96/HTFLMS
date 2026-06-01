@@ -92,10 +92,9 @@ namespace HTFLMS.Helper
 
             return null;
         }
-        public static string GenerateUserId()
+        public static string GenerateUserId(int nextNumber)
         {
-            return $"HCC-{DateTime.UtcNow:yyyy}-{Random.Shared.Next(10000, 99999)}";
+            return $"HTF{nextNumber:D3}";
         }
-
     }
 }

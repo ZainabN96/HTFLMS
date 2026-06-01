@@ -30,13 +30,22 @@
             contentType: 'application/json',
             data: JSON.stringify(payload),
             success: function (res) {
-                //window.location.href = '/Account/Login?registered=true';
+                localStorage.setItem(
+                    "loginSuccessMessage",
+                    res.message || "Registered successfully! Please login."
+                );
+
+                localStorage.setItem(
+                    "prefillLoginEmail",
+                    res.email || $('#Email').val()
+                );
+
                 var returnUrl = $('#returnUrl').val();
 
-                var loginUrl = '/Account/Login?registered=true';
+                var loginUrl = '/Account/Login';
 
                 if (returnUrl) {
-                    loginUrl += '&returnUrl=' + encodeURIComponent(returnUrl);
+                    loginUrl += '?returnUrl=' + encodeURIComponent(returnUrl);
                 }
 
                 window.location.href = loginUrl;

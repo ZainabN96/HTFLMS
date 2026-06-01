@@ -7,13 +7,13 @@
     <div class="dashboard-page-head trainer-courses-page-head">
         <div>
             <h1 class="dashboard-h1">Students</h1>
-            <p class="dashboard-sub">Manage all students and their course enrollments.</p>
+            <p class="dashboard-sub">Manage students and their course enrollments.</p>
         </div>
 
         <div class="trainer-courses-head-actions">
             <div class="courses-head-search">
                 <i class="bi bi-search"></i>
-                <input type="text" placeholder="Search students..." />
+                <input type="text" id="studentSearchInput" placeholder="Search students..." />
             </div>
 
             <a asp-area="Trainer"
@@ -32,7 +32,7 @@
                 <div class="dashboard-stat-title">Total Students</div>
                 <i class="bi bi-people"></i>
             </div>
-            <div class="dashboard-stat-value">128</div>
+            <div class="dashboard-stat-value" id="totalStudentsCount">0</div>
             <div class="dashboard-stat-meta">Registered students</div>
         </div>
 
@@ -41,17 +41,8 @@
                 <div class="dashboard-stat-title">Active Students</div>
                 <i class="bi bi-person-check"></i>
             </div>
-            <div class="dashboard-stat-value">96</div>
+            <div class="dashboard-stat-value" id="activeStudentsCount">0</div>
             <div class="dashboard-stat-meta">Currently active</div>
-        </div>
-
-        <div class="dashboard-stat-card">
-            <div class="dashboard-stat-top">
-                <div class="dashboard-stat-title">At Risk</div>
-                <i class="bi bi-exclamation-circle"></i>
-            </div>
-            <div class="dashboard-stat-value">18</div>
-            <div class="dashboard-stat-meta">Need attention</div>
         </div>
 
         <div class="dashboard-stat-card">
@@ -59,30 +50,34 @@
                 <div class="dashboard-stat-title">Inactive Students</div>
                 <i class="bi bi-person-x"></i>
             </div>
-            <div class="dashboard-stat-value">14</div>
+            <div class="dashboard-stat-value" id="inactiveStudentsCount">0</div>
             <div class="dashboard-stat-meta">Not currently active</div>
+        </div>
+
+        <div class="dashboard-stat-card">
+            <div class="dashboard-stat-top">
+                <div class="dashboard-stat-title">Enrollments</div>
+                <i class="bi bi-journal-check"></i>
+            </div>
+            <div class="dashboard-stat-value" id="totalEnrollmentsCount">0</div>
+            <div class="dashboard-stat-meta">Active course enrollments</div>
         </div>
     </div>
 
     <div class="dashboard-panel trainer-students-filter-panel">
         <div class="dashboard-panel-head trainer-content-panel-head">
-            <div class="dashboard-panel-title">
-                Select Filter
-            </div>
+            <div class="dashboard-panel-title">Select Filter</div>
         </div>
+
         <div class="trainer-students-filter-row">
-            <select class="course-input trainer-students-select">
-                <option>All courses</option>
-                <option>Web Development</option>
-                <option>Digital Marketing</option>
-                <option>Graphic Design</option>
+            <select class="course-input trainer-students-select" id="courseFilter">
+                <option value="">All courses</option>
             </select>
 
-            <select class="course-input trainer-students-select">
-                <option>All statuses</option>
-                <option>Active</option>
-                <option>At Risk</option>
-                <option>Inactive</option>
+            <select class="course-input trainer-students-select" id="statusFilter">
+                <option value="">All statuses</option>
+                <option value="Active">Active</option>
+                <option value="Inactive">Inactive</option>
             </select>
         </div>
     </div>
@@ -90,7 +85,7 @@
     <div class="dashboard-panel trainer-students-table-panel">
         <div class="dashboard-panel-head">
             <div class="dashboard-panel-title">All Students</div>
-            <div class="dashboard-muted-small">5 student(s)</div>
+            <div class="dashboard-muted-small" id="studentCountText">0 student(s)</div>
         </div>
 
         <div class="dashboard-table-wrap">
@@ -104,136 +99,30 @@
                 <div>Actions</div>
             </div>
 
-            <div class="dashboard-table-row trainer-students-table-row">
-                <div class="trainer-student-main" title="daudrana400">
-                    <div class="trainer-student-avatar trainer-avatar-pink">D</div>
-                    <div class="trainer-student-name-wrap">
-                        <div class="trainer-student-name">daudrana400</div>
-                    </div>
-                </div>
-                <div title="daudrana400@gmail.com">daudrana400@gmail.com</div>
-                <div title="3 courses">3 courses</div>
-                <div class="trainer-grade-good" title="93.7%">93.7%</div>
-                <div title="Jan 10, 2026">Jan 10, 2026</div>
-                <div title="Active"><span class="dashboard-status status-active">Active</span></div>
-                <div class="trainer-courses-actions">
-                    <a asp-area="Trainer"
-                       asp-controller="Students"
-                       asp-action="Edit"
-                       asp-route-id="1"
-                       class="dashboard-btn dashboard-btn-outline trainer-course-action-btn">
-                        Edit
-                    </a>
-                    <button type="button" class="dashboard-btn trainer-delete-soft-btn trainer-course-action-btn">
-                        Delete
-                    </button>
-                </div>
-            </div>
-
-            <div class="dashboard-table-row trainer-students-table-row">
-                <div class="trainer-student-main" title="Ali Hassan">
-                    <div class="trainer-student-avatar trainer-avatar-blue">A</div>
-                    <div class="trainer-student-name-wrap">
-                        <div class="trainer-student-name">Ali Hassan</div>
-                    </div>
-                </div>
-                <div title="ali.hassan@gmail.com">ali.hassan@gmail.com</div>
-                <div title="2 courses">2 courses</div>
-                <div class="trainer-grade-good" title="87.2%">87.2%</div>
-                <div title="Jan 15, 2026">Jan 15, 2026</div>
-                <div title="Active"><span class="dashboard-status status-active">Active</span></div>
-                <div class="trainer-courses-actions">
-                    <a asp-area="Trainer"
-                       asp-controller="Students"
-                       asp-action="Edit"
-                       asp-route-id="2"
-                       class="dashboard-btn dashboard-btn-outline trainer-course-action-btn">
-                        Edit
-                    </a>
-                    <button type="button" class="dashboard-btn trainer-delete-soft-btn trainer-course-action-btn">
-                        Delete
-                    </button>
-                </div>
-            </div>
-
-            <div class="dashboard-table-row trainer-students-table-row">
-                <div class="trainer-student-main" title="Sara Malik">
-                    <div class="trainer-student-avatar trainer-avatar-purple">S</div>
-                    <div class="trainer-student-name-wrap">
-                        <div class="trainer-student-name">Sara Malik</div>
-                    </div>
-                </div>
-                <div title="sara.malik@gmail.com">sara.malik@gmail.com</div>
-                <div title="1 course">1 course</div>
-                <div class="trainer-grade-warn" title="74.5%">74.5%</div>
-                <div title="Feb 2, 2026">Feb 2, 2026</div>
-                <div title="At Risk"><span class="dashboard-status status-warning">At Risk</span></div>
-                <div class="trainer-courses-actions">
-                    <a asp-area="Trainer"
-                       asp-controller="Students"
-                       asp-action="Edit"
-                       asp-route-id="3"
-                       class="dashboard-btn dashboard-btn-outline trainer-course-action-btn">
-                        Edit
-                    </a>
-                    <button type="button" class="dashboard-btn trainer-delete-soft-btn trainer-course-action-btn">
-                        Delete
-                    </button>
-                </div>
-            </div>
-
-            <div class="dashboard-table-row trainer-students-table-row">
-                <div class="trainer-student-main" title="Omar Sheikh">
-                    <div class="trainer-student-avatar trainer-avatar-green">O</div>
-                    <div class="trainer-student-name-wrap">
-                        <div class="trainer-student-name">Omar Sheikh</div>
-                    </div>
-                </div>
-                <div title="omar.sheikh@gmail.com">omar.sheikh@gmail.com</div>
-                <div title="2 courses">2 courses</div>
-                <div class="trainer-grade-good" title="91.0%">91.0%</div>
-                <div title="Feb 8, 2026">Feb 8, 2026</div>
-                <div title="Active"><span class="dashboard-status status-active">Active</span></div>
-                <div class="trainer-courses-actions">
-                    <a asp-area="Trainer"
-                       asp-controller="Students"
-                       asp-action="Edit"
-                       asp-route-id="4"
-                       class="dashboard-btn dashboard-btn-outline trainer-course-action-btn">
-                        Edit
-                    </a>
-                    <button type="button" class="dashboard-btn trainer-delete-soft-btn trainer-course-action-btn">
-                        Delete
-                    </button>
-                </div>
-            </div>
-
-            <div class="dashboard-table-row trainer-students-table-row">
-                <div class="trainer-student-main" title="Hina Rao">
-                    <div class="trainer-student-avatar trainer-avatar-rose">H</div>
-                    <div class="trainer-student-name-wrap">
-                        <div class="trainer-student-name">Hina Rao</div>
-                    </div>
-                </div>
-                <div title="hina.rao@gmail.com">hina.rao@gmail.com</div>
-                <div title="3 courses">3 courses</div>
-                <div class="trainer-grade-danger" title="61.3%">61.3%</div>
-                <div title="Mar 1, 2026">Mar 1, 2026</div>
-                <div title="Inactive"><span class="dashboard-status status-inactive">Inactive</span></div>
-                <div class="trainer-courses-actions">
-                    <a asp-area="Trainer"
-                       asp-controller="Students"
-                       asp-action="Edit"
-                       asp-route-id="5"
-                       class="dashboard-btn dashboard-btn-outline trainer-course-action-btn">
-                        Edit
-                    </a>
-                    <button type="button" class="dashboard-btn trainer-delete-soft-btn trainer-course-action-btn">
-                        Delete
-                    </button>
-                </div>
-            </div>
-
+            <div id="studentsTableBody"></div>
         </div>
     </div>
 </div>
+
+<div id="deleteStudentModal" class="custom-modal">
+    <div class="custom-modal-backdrop"></div>
+
+    <div class="custom-modal-box">
+        <h3>Deactivate Student</h3>
+        <p>Are you sure you want to deactivate this student?</p>
+
+        <div class="custom-modal-actions">
+            <button id="cancelDeleteStudentBtn" class="dashboard-btn dashboard-btn-outline">
+                Cancel
+            </button>
+
+            <button id="confirmDeleteStudentBtn" class="dashboard-btn add-course-btn">
+                Deactivate
+            </button>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/ajax/ManageStudent/index.js"></script>
+}

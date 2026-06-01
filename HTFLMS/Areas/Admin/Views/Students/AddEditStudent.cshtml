@@ -1,0 +1,96 @@
+﻿@{
+    ViewData["Title"] = "Add Student";
+    Layout = "_AdminLayout";
+}
+
+<div class="dashboard-page admin-student-form-page">
+    <div class="dashboard-page-head admin-courses-page-head">
+        <div>
+            <h1 class="dashboard-h1" id="pageTitle">Add Student</h1>
+            <p class="dashboard-sub" id="pageSub">Register or enroll a student into courses.</p>
+        </div>
+
+        <div class="dashboard-head-actions">
+            <a asp-area="Admin"
+               asp-controller="Students"
+               asp-action="Index"
+               class="dashboard-btn dashboard-btn-outline">
+                <i class="bi bi-arrow-left"></i>
+                Back to Students
+            </a>
+        </div>
+    </div>
+
+    <div class="dashboard-panel admin-student-form-panel">
+        <form id="studentForm" class="admin-student-form">
+            <input type="hidden" id="studentId" value="@ViewBag.StudentId" />
+
+            <div class="admin-student-form-top">
+                <div class="admin-student-form-main">
+                    <div class="admin-student-form-grid">
+
+                        <div class="admin-student-form-group admin-student-form-group-full">
+                            <label class="admin-student-label">Student Name</label>
+
+                            <input type="text"
+                                   id="name"
+                                   class="course-input"
+                                   placeholder="Enter student name"
+                                   required />
+                        </div>
+
+                        <div class="admin-student-form-group">
+                            <label class="admin-student-label">Email Address</label>
+                            <input type="email" id="email" class="course-input" placeholder="Enter email address" required />
+                        </div>
+
+                        <div class="admin-student-form-group">
+                            <label class="admin-student-label">Password</label>
+                            <input type="password" id="password" class="course-input" placeholder="Required for new student" />
+                        </div>
+
+                        <div class="admin-student-form-group">
+                            <label class="admin-student-label">Status</label>
+                            <select id="status" class="course-input" required>
+                                <option value="Active">Active</option>
+                                <option value="Inactive">Inactive</option>
+                            </select>
+                        </div>
+
+                        <div class="admin-student-form-group">
+                            <label class="admin-student-label">Join Date</label>
+                            <input type="date" id="joinDate" class="course-input" />
+                        </div>
+
+                        <div class="admin-student-form-group admin-student-form-group-full">
+                            <label class="admin-student-label">Enrolled Courses</label>
+
+                            <div class="course-select-list" id="courseSelectList">
+                                <div class="dashboard-muted-small">Loading courses...</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="text-danger small mb-2 error-box"></div>
+
+                    <div class="admin-student-form-actions">
+                        <a asp-area="Admin"
+                           asp-controller="Students"
+                           asp-action="Index"
+                           class="dashboard-btn dashboard-btn-outline">
+                            Cancel
+                        </a>
+
+                        <button type="submit" id="saveStudentBtn" class="dashboard-btn add-course-btn">
+                            Save Student
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/ajax/ManageStudent/addEditStudent.js"></script>
+}

@@ -14,7 +14,11 @@
             <h2 data-aos="fade-up" data-aos-delay="100">Learn Today,<br>Lead Tomorrow</h2>
             <p data-aos="fade-up" data-aos-delay="200">HTF LMS is the digital learning platform of HCC, designed to help students and professionals gain practical skills through structured courses, hands-on projects, and guided learning paths.</p>
             <div class="d-flex mt-4" data-aos="fade-up" data-aos-delay="300">
-                <a href="courses.html" class="btn-get-started">Get Started</a>
+                <a class="btn-get-started"
+                   asp-controller="Courses"
+                   asp-action="CoursesIndex">
+                    Get Started
+                </a>
             </div>
         </div>
 
@@ -44,7 +48,7 @@
                         <li><i class="bi bi-check-circle"></i> <span>Career-focused learning paths</span></li>
                         <li><i class="bi bi-check-circle"></i> <span>Continuous skill development for modern digital jobs</span></li>
                     </ul>
-                    <a href="#" class="read-more"><span>Read More</span><i class="bi bi-arrow-right"></i></a>
+                    <a asp-controller="About" asp-action="AboutIndex" class="read-more"><span>Read More</span><i class="bi bi-arrow-right"></i></a>
                 </div>
 
             </div>
@@ -52,6 +56,7 @@
         </div>
 
     </section><!-- /About Section -->
+
     <!-- Counts Section -->
     <section id="counts" class="section counts light-background">
 
@@ -61,37 +66,62 @@
 
                 <div class="col-lg-3 col-md-6">
                     <div class="stats-item text-center w-100 h-100">
-                        <span data-purecounter-start="0" data-purecounter-end="1232" data-purecounter-duration="1" class="purecounter"></span>
+                        <div class="counter-wrapper">
+                            <span data-purecounter-start="0"
+                                  data-purecounter-end="397"
+                                  data-purecounter-duration="1"
+                                  class="purecounter"></span>
+                            <span class="counter-plus">+</span>
+                        </div>
                         <p>Alumni</p>
                     </div>
-                </div><!-- End Stats Item -->
+                </div>
 
                 <div class="col-lg-3 col-md-6">
                     <div class="stats-item text-center w-100 h-100">
-                        <span data-purecounter-start="0" data-purecounter-end="64" data-purecounter-duration="1" class="purecounter"></span>
+                        <div class="counter-wrapper">
+                            <span data-purecounter-start="0"
+                                  data-purecounter-end="12"
+                                  data-purecounter-duration="1"
+                                  class="purecounter"></span>
+                            <span class="counter-plus">+</span>
+                        </div>
                         <p>Courses</p>
                     </div>
-                </div><!-- End Stats Item -->
+                </div>
 
                 <div class="col-lg-3 col-md-6">
                     <div class="stats-item text-center w-100 h-100">
-                        <span data-purecounter-start="0" data-purecounter-end="42" data-purecounter-duration="1" class="purecounter"></span>
+                        <div class="counter-wrapper">
+                            <span data-purecounter-start="0"
+                                  data-purecounter-end="45"
+                                  data-purecounter-duration="1"
+                                  class="purecounter"></span>
+                            <span class="counter-plus">+</span>
+                        </div>
                         <p>Events</p>
                     </div>
-                </div><!-- End Stats Item -->
+                </div>
 
                 <div class="col-lg-3 col-md-6">
                     <div class="stats-item text-center w-100 h-100">
-                        <span data-purecounter-start="0" data-purecounter-end="24" data-purecounter-duration="1" class="purecounter"></span>
-                        <p>Students</p>
+                        <div class="counter-wrapper">
+                            <span data-purecounter-start="0"
+                                  data-purecounter-end="28"
+                                  data-purecounter-duration="1"
+                                  class="purecounter"></span>
+                            <span class="counter-plus">+</span>
+                        </div>
+                        <p>Cohorts</p>
                     </div>
-                </div><!-- End Stats Item -->
+                </div>
 
             </div>
 
         </div>
 
-    </section><!-- /Counts Section -->
+    </section>
+    
     <!-- Why Us Section -->
     <section id="why-us" class="section why-us">
 
@@ -106,7 +136,12 @@
                             HTF LMS provides structured learning paths designed with industry experts. Our programs combine theory, practical exercises, and real-world projects to ensure learners develop skills that are directly applicable in professional environments.
                         </p>
                         <div class="text-center">
-                            <a href="#" class="more-btn"><span>Learn More</span> <i class="bi bi-chevron-right"></i></a>
+                            <a asp-controller="Courses"
+                               asp-action="CoursesIndex"
+                               class="more-btn">
+                                <span>Learn More</span>
+                                <i class="bi bi-chevron-right"></i>
+                            </a>
                         </div>
                     </div>
                 </div><!-- End Why Box -->
@@ -150,7 +185,7 @@
 
         <div class="container">
 
-            <div class="section-title text-center mb-5" data-aos="fade-up">
+            <div class="section-title text-center mb-3" data-aos="fade-up">
                 <h2>Partners</h2>
                 <p>Our Technology & Academic Partners</p>
             </div>
@@ -159,96 +194,40 @@
 
                 <div class="col-lg-3 col-md-4" data-aos="fade-up" data-aos-delay="100">
                     <div class="features-item">
-                        <i class="bi bi-building" style="color: #ffbb2c;"></i>
-                        <h3><a href="" class="stretched-link">SAP</a></h3>
-                    </div>
-                </div><!-- End Feature Item -->
-
-                <div class="col-lg-3 col-md-4" data-aos="fade-up" data-aos-delay="150">
-                    <div class="features-item">
-                        <i class="bi bi-calculator" style="color: #5578ff;"></i>
-                        <h3><a href="" class="stretched-link">Sage</a></h3>
-                    </div>
-                </div><!-- End Feature Item -->
-
-                <div class="col-lg-3 col-md-4" data-aos="fade-up" data-aos-delay="200">
-                    <div class="features-item">
-                        <i class="bi bi-box-seam" style="color: #e80368;"></i>
-                        <h3><a href="" class="stretched-link">Odoo</a></h3>
-                    </div>
-                </div><!-- End Feature Item -->
-
-                <div class="col-lg-3 col-md-4" data-aos="fade-up" data-aos-delay="250">
-                    <div class="features-item">
-                        <i class="bi bi-windows" style="color: #e361ff;"></i>
-                        <h3><a href="" class="stretched-link">Microsoft</a></h3>
-                    </div>
-                </div><!-- End Feature Item -->
-
-                <div class="col-lg-3 col-md-4" data-aos="fade-up" data-aos-delay="300">
-                    <div class="features-item">
-                        <i class="bi bi-diagram-3" style="color: #47aeff;"></i>
-                        <h3><a href="" class="stretched-link">Redington</a></h3>
-                    </div>
-                </div><!-- End Feature Item -->
-
-                <div class="col-lg-3 col-md-4" data-aos="fade-up" data-aos-delay="350">
-                    <div class="features-item">
-                        <i class="bi bi-cpu" style="color: #ffa76e;"></i>
-                        <h3><a href="" class="stretched-link">Octopus Digital</a></h3>
-                    </div>
-                </div><!-- End Feature Item -->
-
-                <div class="col-lg-3 col-md-4" data-aos="fade-up" data-aos-delay="400">
-                    <div class="features-item">
-                        <i class="bi bi-soundwave" style="color: #11dbcf;"></i>
-                        <h3><a href="" class="stretched-link">MYWAVE.ai</a></h3>
-                    </div>
-                </div><!-- End Feature Item -->
-
-                <div class="col-lg-3 col-md-4" data-aos="fade-up" data-aos-delay="450">
-                    <div class="features-item">
-                        <i class="bi bi-cloud" style="color: #4233ff;"></i>
-                        <h3><a href="" class="stretched-link">Salesforce</a></h3>
-                    </div>
-                </div><!-- End Feature Item -->
-
-                <div class="col-lg-3 col-md-4" data-aos="fade-up" data-aos-delay="500">
-                    <div class="features-item">
                         <i class="bi bi-mortarboard" style="color: #b2904f;"></i>
                         <h3><a href="" class="stretched-link">NUST</a></h3>
                     </div>
                 </div><!-- End Feature Item -->
 
-                <div class="col-lg-3 col-md-4" data-aos="fade-up" data-aos-delay="550">
+                <div class="col-lg-3 col-md-4" data-aos="fade-up" data-aos-delay="150">
                     <div class="features-item">
                         <i class="bi bi-mortarboard-fill" style="color: #b20969;"></i>
                         <h3><a href="" class="stretched-link">Namal University</a></h3>
                     </div>
                 </div><!-- End Feature Item -->
 
-                <div class="col-lg-3 col-md-4" data-aos="fade-up" data-aos-delay="600">
+                <div class="col-lg-3 col-md-4" data-aos="fade-up" data-aos-delay="200">
                     <div class="features-item">
                         <i class="bi bi-briefcase" style="color: #ff5828;"></i>
                         <h3><a href="" class="stretched-link">SABAC</a></h3>
                     </div>
                 </div><!-- End Feature Item -->
 
-                <div class="col-lg-3 col-md-4" data-aos="fade-up" data-aos-delay="650">
+                <div class="col-lg-3 col-md-4" data-aos="fade-up" data-aos-delay="250">
                     <div class="features-item">
                         <i class="bi bi-bank" style="color: #29cc61;"></i>
                         <h3><a href="" class="stretched-link">Superior University</a></h3>
                     </div>
                 </div><!-- End Feature Item -->
 
-                <div class="col-lg-3 col-md-4" data-aos="fade-up" data-aos-delay="700">
+                <div class="col-lg-3 col-md-4" data-aos="fade-up" data-aos-delay="300">
                     <div class="features-item">
                         <i class="bi bi-cash-coin" style="color: #ffbb2c;"></i>
                         <h3><a href="" class="stretched-link">EduFi</a></h3>
                     </div>
                 </div><!-- End Feature Item -->
 
-                <div class="col-lg-3 col-md-4" data-aos="fade-up" data-aos-delay="750">
+                <div class="col-lg-3 col-md-4" data-aos="fade-up" data-aos-delay="350">
                     <div class="features-item">
                         <i class="bi bi-lightning-charge" style="color: #5578ff;"></i>
                         <h3><a href="" class="stretched-link">Apexx</a></h3>
@@ -275,81 +254,70 @@
 
                 <div class="col-lg-4 col-md-6 d-flex align-items-stretch" data-aos="zoom-in" data-aos-delay="100">
                     <div class="course-item">
-                        <img src="~/img/course/course-1.webp" class="img-fluid" alt="...">
+                        <img src="~/img/course/wordpress.jpg" class="img-fluid" alt="WordPress Course">
                         <div class="course-content">
                             <div class="d-flex justify-content-between align-items-center mb-3">
-                                <p class="category">Web Development</p>
-                                <p class="price">$169</p>
+                                <p class="category">WordPress</p>
                             </div>
 
-                            <h3><a href="course-details.html">Website Design</a></h3>
-                            <p class="description">Et architecto provident deleniti facere repellat nobis iste. Id facere quia quae dolores dolorem tempore.</p>
+                            <h3><a href="course-details.html">WordPress</a></h3>
+                            <p class="description">Learn how to create, customize, and manage professional websites using WordPress.</p>
+
                             <div class="trainer d-flex justify-content-between align-items-center">
                                 <div class="trainer-profile d-flex align-items-center">
-                                    <img src="~/img/person/person-m-7.webp" class="img-fluid" alt="">
-                                    <a href="" class="trainer-link">Antonio</a>
-                                </div>
-                                <div class="trainer-rank d-flex align-items-center">
-                                    <i class="bi bi-person user-icon"></i>&nbsp;50
-                                    &nbsp;&nbsp;
-                                    <i class="bi bi-heart heart-icon"></i>&nbsp;65
+                                    <img src="~/img/trainers/zainab1.png" class="img-fluid" alt="Zainab">
+                                    <a href="" class="trainer-link">Zainab</a>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div> <!-- End Course Item-->
+                </div>
 
                 <div class="col-lg-4 col-md-6 d-flex align-items-stretch mt-4 mt-md-0" data-aos="zoom-in" data-aos-delay="200">
                     <div class="course-item">
-                        <img src="~/img/course/course-2.webp" class="img-fluid" alt="...">
+                        <img src="~/img/course/videoediting.jpg" class="img-fluid" alt="Video Editing Course">
                         <div class="course-content">
                             <div class="d-flex justify-content-between align-items-center mb-3">
-                                <p class="category">Marketing</p>
-                                <p class="price">$250</p>
+                                <p class="category">Video Editing</p>
                             </div>
 
-                            <h3><a href="course-details.html">Search Engine Optimization</a></h3>
-                            <p class="description">Et architecto provident deleniti facere repellat nobis iste. Id facere quia quae dolores dolorem tempore.</p>
+                            <h3><a href="course-details.html">Video Editing</a></h3>
+                            <p class="description">Learn professional video editing skills, transitions, effects, and content creation techniques.</p>
+
                             <div class="trainer d-flex justify-content-between align-items-center">
                                 <div class="trainer-profile d-flex align-items-center">
-                                    <img src="~/img/person/person-f-14.webp" class="img-fluid" alt="">
-                                    <a href="" class="trainer-link">Lana</a>
-                                </div>
-                                <div class="trainer-rank d-flex align-items-center">
-                                    <i class="bi bi-person user-icon"></i>&nbsp;35
-                                    &nbsp;&nbsp;
-                                    <i class="bi bi-heart heart-icon"></i>&nbsp;42
+                                    <img src="~/img/trainers/ayman1.png" class="img-fluid" alt="Ayman">
+                                    <a href="" class="trainer-link">Ayman</a>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div> <!-- End Course Item-->
+                </div>
 
                 <div class="col-lg-4 col-md-6 d-flex align-items-stretch mt-4 mt-lg-0" data-aos="zoom-in" data-aos-delay="300">
                     <div class="course-item">
-                        <img src="~/img/course/course-3.webp" class="img-fluid" alt="...">
+                        <img src="~/img/course/figma.jpg" class="img-fluid" alt="Figma Course">
                         <div class="course-content">
                             <div class="d-flex justify-content-between align-items-center mb-3">
-                                <p class="category">Content</p>
-                                <p class="price">$180</p>
+                                <p class="category">Figma</p>
                             </div>
 
-                            <h3><a href="course-details.html">Copywriting</a></h3>
-                            <p class="description">Et architecto provident deleniti facere repellat nobis iste. Id facere quia quae dolores dolorem tempore.</p>
+                            <h3>
+                                <a href="course-details.html">
+                                    Figma UI/UX
+                                </a>
+                            </h3>
+                            <p class="description">Learn how to design modern user interfaces, wireframes, and prototypes using Figma.</p>
+
                             <div class="trainer d-flex justify-content-between align-items-center">
                                 <div class="trainer-profile d-flex align-items-center">
-                                    <img src="~/img/person/person-m-12.webp" class="img-fluid" alt="">
-                                    <a href="" class="trainer-link">Brandon</a>
-                                </div>
-                                <div class="trainer-rank d-flex align-items-center">
-                                    <i class="bi bi-person user-icon"></i>&nbsp;20
-                                    &nbsp;&nbsp;
-                                    <i class="bi bi-heart heart-icon"></i>&nbsp;85
+                                    <img src="~/img/trainers/trainer-2.jpg" class="img-fluid" alt="Sehrish">
+                                    <a href="" class="trainer-link">Sehrish</a>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div> <!-- End Course Item-->
+                </div>
 
             </div>
 

@@ -19,6 +19,9 @@ namespace HTFLMS.Data.Services
         public ICourseEnrollmentService CourseEnrollmentService { get; }
         public IStudentDashboardService StudentDashboardService { get; }
         public IManageTrainerService ManageTrainerService { get; }
+        public IPasswordResetOtpService PasswordResetOtpService { get; }
+        public IManageStudentService ManageStudentService { get; }
+
         public UnitOfWork(ApplicationDbContext context)
         {
             this.context = context;
@@ -33,7 +36,8 @@ namespace HTFLMS.Data.Services
             CourseEnrollmentService = new CourseEnrollmentService(context);
             StudentDashboardService = new StudentDashboardService(context);
             ManageTrainerService = new ManageTrainerService(context);
-
+            PasswordResetOtpService = new PasswordResetOtpService(context);
+            ManageStudentService = new ManageStudentService(context);
 
         }
 

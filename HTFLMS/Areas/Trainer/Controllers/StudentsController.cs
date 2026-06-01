@@ -13,20 +13,15 @@ namespace HTFLMS.Areas.Trainer.Controllers
         [HttpGet]
         public IActionResult Create()
         {
-            return View();
+            ViewBag.StudentId = 0;
+            return View("AddEditStudent");
         }
 
         [HttpGet]
         public IActionResult Edit(int id)
         {
             ViewBag.StudentId = id;
-            return View();
-        }
-
-        [HttpPost]
-        public IActionResult Delete(int id)
-        {
-            return RedirectToAction(nameof(Index));
+            return View("AddEditStudent");
         }
     }
 }
