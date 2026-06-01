@@ -15,14 +15,14 @@ namespace HTFLMS.Areas.Admin.Controllers
         public IActionResult Create()
         {
             ViewBag.CourseId = "";
-            return View("Create");
+            return View("AddEditCourse");
         }
 
         [HttpGet]
         public IActionResult Edit(int id)
         {
             ViewBag.CourseId = id;
-            return View("Create");
+            return View("AddEditCourse");
         }
     }
 }

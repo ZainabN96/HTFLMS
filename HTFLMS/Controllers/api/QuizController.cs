@@ -19,6 +19,11 @@ namespace HTFLMS.Controllers.api
             this.uow = uow;
         }
 
+        private bool IsAdmin()
+        {
+            return User.IsInRole("Admin");
+        }
+
         [HttpPost("create")]
         public async Task<IActionResult> Create([FromBody] QuizDto dto)
         {
@@ -30,10 +35,10 @@ namespace HTFLMS.Controllers.api
             if (string.IsNullOrWhiteSpace(email))
                 return Unauthorized(new APIError(401, "User is not logged in."));
 
-            var trainer = await uow.UserService.GetUserByEmailAsync(email);
+            var user = await uow.UserService.GetUserByEmailAsync(email);
 
-            if (trainer == null)
-                return NotFound(new APIError(404, "Logged-in trainer was not found."));
+            if (user == null)
+                return NotFound(new APIError(404, "Logged-in user was not found."));
 
             var module = await uow.ModuleService.GetByIdAsync(dto.ModuleId);
 
@@ -45,7 +50,7 @@ namespace HTFLMS.Controllers.api
             if (course == null)
                 return NotFound(new APIError(404, "Course not found."));
 
-            if (course.TrainerId != trainer.Id)
+            if (!IsAdmin() && course.TrainerId != user.Id)
             {
                 return Unauthorized(
                     new APIError(401, "You are not allowed to add quizzes to this module.")
@@ -74,26 +79,10 @@ namespace HTFLMS.Controllers.api
                     DisplayOrder = q.DisplayOrder > 0 ? q.DisplayOrder : questionOrder,
                     Options = new List<QuizOption>
                     {
-                        new QuizOption
-                        {
-                            OptionText = q.OptionA,
-                            IsCorrect = q.CorrectAnswer == "A"
-                        },
-                        new QuizOption
-                        {
-                            OptionText = q.OptionB,
-                            IsCorrect = q.CorrectAnswer == "B"
-                        },
-                        new QuizOption
-                        {
-                            OptionText = q.OptionC,
-                            IsCorrect = q.CorrectAnswer == "C"
-                        },
-                        new QuizOption
-                        {
-                            OptionText = q.OptionD,
-                            IsCorrect = q.CorrectAnswer == "D"
-                        }
+                        new QuizOption { OptionText = q.OptionA, IsCorrect = q.CorrectAnswer == "A" },
+                        new QuizOption { OptionText = q.OptionB, IsCorrect = q.CorrectAnswer == "B" },
+                        new QuizOption { OptionText = q.OptionC, IsCorrect = q.CorrectAnswer == "C" },
+                        new QuizOption { OptionText = q.OptionD, IsCorrect = q.CorrectAnswer == "D" }
                     }
                 };
 
@@ -120,10 +109,10 @@ namespace HTFLMS.Controllers.api
             if (string.IsNullOrWhiteSpace(email))
                 return Unauthorized(new APIError(401, "User is not logged in."));
 
-            var trainer = await uow.UserService.GetUserByEmailAsync(email);
+            var user = await uow.UserService.GetUserByEmailAsync(email);
 
-            if (trainer == null)
-                return NotFound(new APIError(404, "Logged-in trainer was not found."));
+            if (user == null)
+                return NotFound(new APIError(404, "Logged-in user was not found."));
 
             var module = await uow.ModuleService.GetByIdAsync(moduleId);
 
@@ -135,7 +124,7 @@ namespace HTFLMS.Controllers.api
             if (course == null)
                 return NotFound(new APIError(404, "Course not found."));
 
-            if (course.TrainerId != trainer.Id)
+            if (!IsAdmin() && course.TrainerId != user.Id)
             {
                 return Unauthorized(
                     new APIError(401, "You are not allowed to view these quizzes.")
@@ -163,10 +152,37 @@ namespace HTFLMS.Controllers.api
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetQuiz(int id)
         {
+            var email = User.Identity?.Name;
+
+            if (string.IsNullOrWhiteSpace(email))
+                return Unauthorized(new APIError(401, "User is not logged in."));
+
+            var user = await uow.UserService.GetUserByEmailAsync(email);
+
+            if (user == null)
+                return NotFound(new APIError(404, "Logged-in user was not found."));
+
             var quiz = await uow.QuizService.GetByIdAsync(id);
 
             if (quiz == null)
                 return NotFound(new APIError(404, "Quiz not found."));
+
+            var module = await uow.ModuleService.GetByIdAsync(quiz.ModuleId);
+
+            if (module == null)
+                return NotFound(new APIError(404, "Module not found."));
+
+            var course = await uow.CourseService.GetByIdAsync(module.CourseId);
+
+            if (course == null)
+                return NotFound(new APIError(404, "Course not found."));
+
+            if (!IsAdmin() && course.TrainerId != user.Id)
+            {
+                return Unauthorized(
+                    new APIError(401, "You are not allowed to view this quiz.")
+                );
+            }
 
             return Ok(new
             {
@@ -209,10 +225,10 @@ namespace HTFLMS.Controllers.api
             if (string.IsNullOrWhiteSpace(email))
                 return Unauthorized(new APIError(401, "User is not logged in."));
 
-            var trainer = await uow.UserService.GetUserByEmailAsync(email);
+            var user = await uow.UserService.GetUserByEmailAsync(email);
 
-            if (trainer == null)
-                return NotFound(new APIError(404, "Logged-in trainer was not found."));
+            if (user == null)
+                return NotFound(new APIError(404, "Logged-in user was not found."));
 
             var quiz = await uow.QuizService.GetByIdAsync(id);
 
@@ -229,7 +245,7 @@ namespace HTFLMS.Controllers.api
             if (course == null)
                 return NotFound(new APIError(404, "Course not found."));
 
-            if (course.TrainerId != trainer.Id)
+            if (!IsAdmin() && course.TrainerId != user.Id)
             {
                 return Unauthorized(
                     new APIError(401, "You are not allowed to edit this quiz.")
@@ -244,7 +260,6 @@ namespace HTFLMS.Controllers.api
             quiz.IsAccessible = dto.IsAccessible;
 
             quiz.Questions?.Clear();
-
             quiz.Questions = new List<QuizQuestion>();
 
             int questionOrder = 1;
@@ -258,26 +273,10 @@ namespace HTFLMS.Controllers.api
                     DisplayOrder = q.DisplayOrder > 0 ? q.DisplayOrder : questionOrder,
                     Options = new List<QuizOption>
                     {
-                        new QuizOption
-                        {
-                            OptionText = q.OptionA,
-                            IsCorrect = q.CorrectAnswer == "A"
-                        },
-                        new QuizOption
-                        {
-                            OptionText = q.OptionB,
-                            IsCorrect = q.CorrectAnswer == "B"
-                        },
-                        new QuizOption
-                        {
-                            OptionText = q.OptionC,
-                            IsCorrect = q.CorrectAnswer == "C"
-                        },
-                        new QuizOption
-                        {
-                            OptionText = q.OptionD,
-                            IsCorrect = q.CorrectAnswer == "D"
-                        }
+                        new QuizOption { OptionText = q.OptionA, IsCorrect = q.CorrectAnswer == "A" },
+                        new QuizOption { OptionText = q.OptionB, IsCorrect = q.CorrectAnswer == "B" },
+                        new QuizOption { OptionText = q.OptionC, IsCorrect = q.CorrectAnswer == "C" },
+                        new QuizOption { OptionText = q.OptionD, IsCorrect = q.CorrectAnswer == "D" }
                     }
                 };
 
@@ -299,10 +298,37 @@ namespace HTFLMS.Controllers.api
         [HttpPut("toggle-access/{id:int}")]
         public async Task<IActionResult> ToggleAccess(int id, [FromBody] ToggleQuizAccessDto dto)
         {
+            var email = User.Identity?.Name;
+
+            if (string.IsNullOrWhiteSpace(email))
+                return Unauthorized(new APIError(401, "User is not logged in."));
+
+            var user = await uow.UserService.GetUserByEmailAsync(email);
+
+            if (user == null)
+                return NotFound(new APIError(404, "Logged-in user was not found."));
+
             var quiz = await uow.QuizService.GetByIdAsync(id);
 
             if (quiz == null)
                 return NotFound(new APIError(404, "Quiz not found."));
+
+            var module = await uow.ModuleService.GetByIdAsync(quiz.ModuleId);
+
+            if (module == null)
+                return NotFound(new APIError(404, "Module not found."));
+
+            var course = await uow.CourseService.GetByIdAsync(module.CourseId);
+
+            if (course == null)
+                return NotFound(new APIError(404, "Course not found."));
+
+            if (!IsAdmin() && course.TrainerId != user.Id)
+            {
+                return Unauthorized(
+                    new APIError(401, "You are not allowed to update this quiz access.")
+                );
+            }
 
             quiz.IsAccessible = dto.IsAccessible;
 
@@ -324,10 +350,10 @@ namespace HTFLMS.Controllers.api
             if (string.IsNullOrWhiteSpace(email))
                 return Unauthorized(new APIError(401, "User is not logged in."));
 
-            var trainer = await uow.UserService.GetUserByEmailAsync(email);
+            var user = await uow.UserService.GetUserByEmailAsync(email);
 
-            if (trainer == null)
-                return NotFound(new APIError(404, "Logged-in trainer was not found."));
+            if (user == null)
+                return NotFound(new APIError(404, "Logged-in user was not found."));
 
             var quiz = await uow.QuizService.GetByIdAsync(id);
 
@@ -344,7 +370,7 @@ namespace HTFLMS.Controllers.api
             if (course == null)
                 return NotFound(new APIError(404, "Course not found."));
 
-            if (course.TrainerId != trainer.Id)
+            if (!IsAdmin() && course.TrainerId != user.Id)
             {
                 return Unauthorized(
                     new APIError(401, "You are not allowed to delete this quiz.")

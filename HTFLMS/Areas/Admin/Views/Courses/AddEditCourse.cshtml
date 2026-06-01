@@ -6,8 +6,8 @@
 <div class="dashboard-page admin-form-page">
     <div class="dashboard-page-head admin-courses-page-head">
         <div>
-            <h1 class="dashboard-h1">Add New Course</h1>
-            <p class="dashboard-sub">Create a course with all the details needed for the student pages.</p>
+            <h1 class="dashboard-h1" id="pageTitle">Add New Course</h1>
+            <p class="dashboard-sub" id="pageSub">Create a course with all the details needed for the student pages.</p>
         </div>
 
         <div class="dashboard-head-actions">
@@ -25,12 +25,10 @@
         <form id="courseCreateForm"
               enctype="multipart/form-data"
               class="course-form-grid admin-form-layout-split">
-            <input type="hidden" id="courseId" value="@ViewBag.CourseId" />
-            <input type="hidden" id="isAdminPage" value="true" />
-            <input type="hidden" id="redirectUrl" value="/Admin/Courses/Index" />
-            <input type="hidden" id="selectedTrainerId" value="" />
 
-            <!-- LEFT SIDE IMAGE -->
+            <input type="hidden" id="courseId" value="@ViewBag.CourseId" />
+            <input type="hidden" id="redirectUrl" value="/Admin/Courses/Index" />
+
             <div class="admin-form-media">
                 <label for="imageFile" class="admin-form-media-box admin-upload-box">
                     <div class="admin-form-media-inner" id="uploadInner">
@@ -53,23 +51,22 @@
 
                 <input type="file"
                        id="imageFile"
-                       name="ImageFile"
+                       name="imageFile"
                        accept=".png,.jpg,.jpeg"
                        class="admin-hidden-file"
                        onchange="previewAdminImage(event)" />
             </div>
 
-            <!-- RIGHT SIDE FIELDS -->
             <div class="course-fields">
                 <div class="course-row-2">
                     <div>
                         <label class="course-label">Course Title</label>
-                        <input type="text" id="title" name="Title" class="course-input" placeholder="Enter course title" required />
+                        <input type="text" id="title" name="title" class="course-input" placeholder="Enter course title" required />
                     </div>
 
                     <div>
                         <label class="course-label">Course Category</label>
-                        <select id="category" name="Category" class="course-input" required>
+                        <select id="category" name="category" class="course-input" required>
                             <option value="">Select category</option>
                             <option>Marketing</option>
                             <option>Design</option>
@@ -86,63 +83,53 @@
                 <div class="course-row-2">
                     <div>
                         <label class="course-label">Batch Number</label>
-                        <input type="text" id="batchNumber" name="BatchNumber" class="course-input" placeholder="Optional (e.g. CS101)" />
+                        <input type="text" id="batchNumber" name="batchNumber" class="course-input" placeholder="Optional (e.g. CS101)" />
                     </div>
+
                     <div>
                         <label class="course-label">Trainer</label>
                         <select id="trainerId" name="trainerId" class="course-input" required>
-                            <option value="">Select trainers</option>
+                            <option value="">Select trainer</option>
                         </select>
                     </div>
-                    @* <div>
-                        <label class="course-label">Trainer</label>
-                        <select id="trainerId" name="TrainerId" class="course-input" required>
-                            <option value="">Select trainer</option>
-                            @foreach (var trainer in ViewBag.Trainers)
-                            {
-                                <option value="@trainer.Value">@trainer.Text</option>
-                            }
-                        </select>
-                    </div> *@
+                </div>
+
+                <div class="course-row-2">
                     <div>
                         <label class="course-label">Duration</label>
-                        <input type="text" id="durationText" name="DurationText" class="course-input" placeholder="e.g. 3 Months" />
+                        <input type="text" id="durationText" name="durationText" class="course-input" placeholder="e.g. 3 Months" />
                     </div>
-                </div>
 
-                <div class="course-row-2">
                     <div>
                         <label class="course-label">Batch Start Date</label>
-                        <input type="date" id="batchStartDate" name="BatchStartDate" class="course-input" required />
-                    </div>
-
-                    <div>
-                        <label class="course-label">Batch End Date</label>
-                        <input type="date" id="batchEndDate" name="BatchEndDate" class="course-input" />
+                        <input type="date" id="batchStartDate" name="batchStartDate" class="course-input" required />
                     </div>
                 </div>
 
                 <div class="course-row-2">
-                    @* <div>
-                        <label class="course-label">Total Modules</label>
-                        <input type="number" min="0" id="totalModules" name="totalModules" class="course-input" placeholder="e.g. 4" />
-                    </div> *@
+                    <div>
+                        <label class="course-label">Batch End Date</label>
+                        <input type="date" id="batchEndDate" name="batchEndDate" class="course-input" />
+                    </div>
 
                     <div>
                         <label class="course-label">Certificate</label>
-                        <select id="certificateIncluded" name="CertificateIncluded" class="course-input">
+                        <select id="certificateIncluded" name="certificateIncluded" class="course-input">
                             <option value="false">Not Included</option>
                             <option value="true">Included</option>
                         </select>
                     </div>
+                </div>
 
+                <div class="course-row-2">
                     <div>
                         <label class="course-label">Status</label>
-                        <select id="status" name="Status" class="course-input">
+                        <select id="status" name="status" class="course-input">
                             <option value="Draft">Draft</option>
                             <option value="Active">Active</option>
                         </select>
                     </div>
+
                     <div>
                         <label class="course-label">Course Handbook</label>
 
@@ -152,7 +139,7 @@
 
                             <input type="file"
                                    id="handbookFile"
-                                   name="HandbookFile"
+                                   name="handbookFile"
                                    accept=".pdf,.doc,.docx,.ppt,.pptx"
                                    onchange="showHandbookFileName(event)" />
                         </label>
@@ -162,13 +149,11 @@
                 <div>
                     <label class="course-label">Course Description</label>
                     <textarea id="description"
-                              name="Description"
+                              name="description"
                               class="course-input"
                               placeholder="Short summary shown in cards and overview"
                               required></textarea>
                 </div>
-
-               
 
                 <div class="text-danger small mb-2 error-box"></div>
 
@@ -190,5 +175,5 @@
 </div>
 
 @section Scripts {
-    <script src="~/js/ajax/Course/addEditCourse.js"></script>
+    <script src="~/js/ajax/Course/adminAddEditCourse.js"></script>
 }

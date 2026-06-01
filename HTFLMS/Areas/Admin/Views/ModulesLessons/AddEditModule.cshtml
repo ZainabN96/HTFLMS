@@ -1,7 +1,9 @@
 ﻿@{
     ViewData["Title"] = "Add Module";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
+
     var courseId = ViewBag.CourseId ?? 0;
+    var moduleId = ViewBag.ModuleId ?? 0;
 }
 
 <div class="dashboard-page admin-content-page">
@@ -12,10 +14,8 @@
         </div>
 
         <div class="admin-content-head-actions">
-            <a asp-area="Admin"
-               asp-controller="ModulesLessons"
-               asp-action="Index"
-               asp-route-id="@courseId"
+            <a id="cancelBtn"
+               href="#"
                class="dashboard-btn dashboard-btn-outline">
                 <i class="bi bi-arrow-left"></i>
                 Back to Modules & Lessons
@@ -31,34 +31,32 @@
             </div>
         </div>
 
-        <form asp-area="Admin"
-              asp-controller="ModulesLessons"
-              asp-action="CreateModule"
-              method="post"
-              class="admin-form-grid">
+        <div class="error-box"></div>
 
-            <input type="hidden" name="courseId" value="@courseId" />
+        <form id="moduleCreateForm" class="admin-form-grid">
+            <input type="hidden" id="courseId" value="@courseId" />
+            <input type="hidden" id="moduleId" value="@moduleId" />
 
             <div class="admin-form-group admin-form-group-full">
                 <label class="admin-form-label">Module Title</label>
-                <input type="text" name="title" class="course-input" placeholder="Enter module title" />
+                <input type="text" id="title" class="course-input" placeholder="Enter module title" />
             </div>
 
             <div class="admin-form-group admin-form-group-full">
                 <label class="admin-form-label">Description</label>
-                <textarea name="description" class="course-input admin-textarea" placeholder="Write a short description"></textarea>
+                <textarea id="description" class="course-input admin-textarea" placeholder="Write a short description"></textarea>
             </div>
 
             <div class="admin-form-group">
                 <label class="admin-form-label">Display Order</label>
-                <input type="number" name="displayOrder" class="course-input" placeholder="1" min="1" />
+                <input type="number" id="displayOrder" class="course-input" value="1" min="1" />
             </div>
 
             <div class="admin-form-group">
                 <label class="admin-form-label">Status</label>
-                <select name="status" class="course-input">
-                    <option value="Draft">Draft</option>
-                    <option value="Published">Published</option>
+                <select id="isActive" class="course-input">
+                    <option value="false">Draft</option>
+                    <option value="true">Published</option>
                 </select>
             </div>
 
@@ -66,22 +64,22 @@
                 <label class="admin-form-label">Module Access</label>
                 <div class="admin-checkbox-wrap">
                     <label>
-                        <input type="checkbox" name="isOpenAtStart" value="true" />
+                        <input type="checkbox" id="isAccessible" />
                         Open this module at the start
                     </label>
                 </div>
             </div>
 
             <div class="admin-form-actions admin-form-group-full">
-                <a asp-area="Admin"
-                   asp-controller="ModulesLessons"
-                   asp-action="Index"
-                   asp-route-id="@courseId"
+                <a id="cancelBtn"
+                   href="#"
                    class="dashboard-btn dashboard-btn-outline">
                     Cancel
                 </a>
 
-                <button type="submit" class="dashboard-btn add-course-btn">
+                <button type="submit"
+                        id="saveModuleBtn"
+                        class="dashboard-btn add-course-btn">
                     <i class="bi bi-plus-circle"></i>
                     Save Module
                 </button>
@@ -89,3 +87,7 @@
         </form>
     </div>
 </div>
+
+@section Scripts {
+    <script src="~/js/ajax/ModuleLesson/adminAddEditModule.js"></script>
+}

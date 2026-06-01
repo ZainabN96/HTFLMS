@@ -16,10 +16,9 @@ namespace HTFLMS.Data.Services
         public IQuizService QuizService { get; }
         public IMaterialService MaterialService { get; }
         public IAssignmentService AssignmentService { get; }
-        public ICourseEnrollmentService CourseEnrollmentService { get; private set; }
-        public IStudentDashboardService StudentDashboardService { get; private set; }
-   
-
+        public ICourseEnrollmentService CourseEnrollmentService { get; }
+        public IStudentDashboardService StudentDashboardService { get; }
+        public IManageTrainerService ManageTrainerService { get; }
         public UnitOfWork(ApplicationDbContext context)
         {
             this.context = context;
@@ -33,8 +32,9 @@ namespace HTFLMS.Data.Services
             AssignmentService = new AssignmentService(context);
             CourseEnrollmentService = new CourseEnrollmentService(context);
             StudentDashboardService = new StudentDashboardService(context);
-           
-        
+            ManageTrainerService = new ManageTrainerService(context);
+
+
         }
 
         public async Task<bool> SaveAsync()

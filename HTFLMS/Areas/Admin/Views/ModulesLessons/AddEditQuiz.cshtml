@@ -1,0 +1,118 @@
+﻿@{
+    ViewData["Title"] = "Add Quiz";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+
+    var courseId = ViewBag.CourseId ?? 0;
+    var moduleId = ViewBag.ModuleId ?? 0;
+    var quizId = ViewBag.QuizId ?? 0;
+}
+
+<div class="dashboard-page admin-content-page">
+    <div class="dashboard-page-head admin-content-head">
+        <div>
+            <h1 class="dashboard-h1">Add Quiz</h1>
+            <p class="dashboard-sub">Create a quiz the way students will actually see and attempt it.</p>
+        </div>
+
+        <div class="admin-content-head-actions">
+            <a id="cancelBtn"
+               href="#"
+               class="dashboard-btn dashboard-btn-outline">
+                <i class="bi bi-arrow-left"></i>
+                Back to Modules & Lessons
+            </a>
+        </div>
+    </div>
+
+    <div class="error-box"></div>
+
+    <form id="quizCreateForm" class="admin-quiz-builder-form">
+        <input type="hidden" id="courseId" value="@courseId" />
+        <input type="hidden" id="moduleId" value="@moduleId" />
+        <input type="hidden" id="quizId" value="@quizId" />
+
+        <div class="dashboard-panel admin-form-panel">
+            <div class="dashboard-panel-head">
+                <div>
+                    <div class="dashboard-panel-title">Quiz Details</div>
+                    <div class="dashboard-muted-small">Set up the main quiz information first.</div>
+                </div>
+            </div>
+
+            <div class="admin-form-grid">
+                <div class="admin-form-group">
+                    <label class="admin-form-label">Module</label>
+                    <select id="moduleSelect" class="course-input">
+                        <option value="">Select module</option>
+                    </select>
+                </div>
+
+                <div class="admin-form-group">
+                    <label class="admin-form-label">Quiz Title</label>
+                    <input type="text" id="title" class="course-input" placeholder="Enter quiz title" />
+                </div>
+
+                <div class="admin-form-group">
+                    <label class="admin-form-label">Attempts Allowed</label>
+                    <input type="number" id="attemptsAllowed" class="course-input" value="3" min="1" />
+                </div>
+
+                <div class="admin-form-group admin-form-group-full">
+                    <label class="admin-form-label">Instructions</label>
+                    <textarea id="instructions" class="course-input admin-textarea" placeholder="Add instructions for the quiz"></textarea>
+                </div>
+
+                <input type="hidden" id="isActive" value="true" />
+
+                <div class="admin-form-group">
+                    <label class="admin-form-label">Quiz Access</label>
+                    <div style="padding-top:12px;">
+                        <label style="display:flex; align-items:center; gap:10px; font-weight:500;">
+                            <input type="checkbox" id="isAccessible" />
+                            Allow students to access this quiz
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="dashboard-panel admin-form-panel">
+            <div class="dashboard-panel-head admin-content-panel-head">
+                <div>
+                    <div class="dashboard-panel-title">Quiz Questions</div>
+                    <div class="dashboard-muted-small">Add the questions and answer options students will attempt.</div>
+                </div>
+
+                <div class="admin-panel-actions">
+                    <button type="button"
+                            id="addQuestionBtn"
+                            class="dashboard-btn add-course-btn">
+                        <i class="bi bi-plus-circle"></i>
+                        Add Question
+                    </button>
+                </div>
+            </div>
+
+            <div id="questionsContainer" class="admin-question-builder-list"></div>
+
+            <div class="admin-form-actions admin-form-actions-sticky">
+                <a id="cancelBtn"
+                   href="#"
+                   class="dashboard-btn dashboard-btn-outline">
+                    Cancel
+                </a>
+
+                <button type="submit"
+                        id="saveQuizBtn"
+                        class="dashboard-btn add-course-btn">
+                    <i class="bi bi-plus-circle"></i>
+                    Save Quiz
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <script src="~/js/ajax/ModuleLesson/adminAddEditQuiz.js"></script>
+}
