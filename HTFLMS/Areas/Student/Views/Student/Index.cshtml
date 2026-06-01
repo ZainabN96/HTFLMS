@@ -66,10 +66,15 @@
         <div class="dashboard-panel">
             <div class="dashboard-panel-head">
                 <div class="dashboard-panel-title">Upcoming Deadlines</div>
-                <a href="#" class="dashboard-panel-link">View all</a>
+                <a asp-area="Student"
+                   asp-controller="Courses"
+                   asp-action="Index"
+                   class="dashboard-panel-link">
+                    View all
+                </a>
             </div>
 
-            <div class="dashboard-table">
+            <div class="dashboard-table" id="upcomingDeadlinesTable">
                 <div class="dashboard-table-row dashboard-table-head">
                     <div>Item</div>
                     <div>Course</div>
@@ -78,17 +83,10 @@
                 </div>
 
                 <div class="dashboard-table-row">
-                    <div class="dashboard-cell-strong">Unit 2 Homework</div>
-                    <div>Writing in the Sciences</div>
-                    <div>Today 11:59 PM</div>
-                    <div><span class="pill pill-yellow">Pending</span></div>
-                </div>
-
-                <div class="dashboard-table-row">
-                    <div class="dashboard-cell-strong">Unit 3 Homework</div>
-                    <div>Writing in the Sciences</div>
-                    <div>In 2 days</div>
-                    <div><span class="pill pill-yellow">Pending</span></div>
+                    <div class="dashboard-cell-strong">Loading...</div>
+                    <div>Please wait</div>
+                    <div>-</div>
+                    <div><span class="pill pill-yellow">Loading</span></div>
                 </div>
             </div>
         </div>
