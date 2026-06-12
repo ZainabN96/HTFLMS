@@ -210,7 +210,7 @@ function renderModulesAndLessons(modules) {
                         </div>
 
                         <div>
-                            <div class="student-module-title">Module ${index + 1}: ${escapeHtml(module.title)}</div>
+                            <div class="student-module-title">${escapeHtml(module.title)}</div>
                             <div class="student-module-desc">${escapeHtml(module.description || '')}</div>
                         </div>
                     </div>
@@ -329,7 +329,7 @@ function renderSlidesAndAssignments(modules) {
             <div class="dashboard-panel">
                 <div class="dashboard-panel-head student-panel-head">
                     <div>
-                        <h3 class="page-h2 student-panel-title">Module ${index + 1}: ${escapeHtml(module.title)}</h3>
+                        <h3 class="page-h2 student-panel-title">${escapeHtml(module.title)}</h3>
                         <p class="student-panel-sub">${escapeHtml(module.description || 'Slides, videos, and assignments for this module.')}</p>
                     </div>
                 </div>

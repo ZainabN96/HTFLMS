@@ -162,8 +162,7 @@ namespace HTFLMS.Controllers.api
 
             uow.ManageStudentService.Update(student);
 
-            await uow.ManageStudentService.EnrollStudentInCoursesAsync(student.Id, dto.CourseIds);
-
+            await uow.ManageStudentService.UpdateStudentCourseEnrollmentsAsync(student.Id, dto.CourseIds);
             await uow.SaveAsync();
 
             return Ok(new

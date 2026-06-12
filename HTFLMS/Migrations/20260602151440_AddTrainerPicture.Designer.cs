@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HTFLMS.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260511062519_AddDurationTextToCourse")]
-    partial class AddDurationTextToCourse
+    [Migration("20260602151440_AddTrainerPicture")]
+    partial class AddTrainerPicture
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -771,6 +771,9 @@ namespace HTFLMS.Migrations
 
                     b.Property<string>("PasswordHash")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ProfilePicturePath")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Qualification")

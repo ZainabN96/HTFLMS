@@ -36,6 +36,12 @@ namespace HTFLMS.Dtos
 
         public string? Address { get; set; }
 
+        // NEW
+        public IFormFile? Picture { get; set; }
+
+        // NEW
+        public string? ProfilePicturePath { get; set; }
+
         public int AssignedCourseCount { get; set; }
 
         public DateTime CreatedAt { get; set; }

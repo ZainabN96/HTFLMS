@@ -1,0 +1,88 @@
+﻿@model List<HTFLMS.Models.Course>
+
+@{
+    ViewData["Title"] = "Enroll Courses";
+    Layout = "_StudentLayout";
+}
+
+<div class="dashboard-page">
+
+    <div class="dashboard-page-header">
+        <div>
+            <h1 class="dashboard-page-title">Enroll Courses</h1>
+            <p class="dashboard-page-subtitle">
+                Browse available courses and enroll to start learning.
+            </p>
+        </div>
+    </div>
+
+    <div class="student-course-grid">
+
+        @if (Model == null || Model.Count == 0)
+        {
+            <div class="dashboard-panel">
+                <div class="text-center p-4">
+                    <h4>No courses available yet</h4>
+                    <p class="dashboard-muted-small mb-0">Please check back soon.</p>
+                </div>
+            </div>
+        }
+        else
+        {
+            @foreach (var c in Model)
+            {
+                <div class="student-course-card">
+
+                    <div class="student-course-image-wrap">
+                        <img src="@(string.IsNullOrWhiteSpace(c.CourseImagePath)
+                                                                                    ? Url.Content("~/img/course/course-2.webp")
+                                                                                    : c.CourseImagePath)"
+                                                                                                        class="student-course-image"
+                                                                                                        alt="@c.Title" />
+
+                        <span class="student-course-tag">@c.Category</span>
+                    </div>
+
+                    <div class="student-course-body">
+                        <h3 class="student-course-title">@c.Title</h3>
+
+                        <p class="student-course-author">
+                            by @(c.Trainer != null ? c.Trainer.Name : "No Trainer")
+                        </p>
+
+                        <p class="dashboard-muted-small">
+                            @(string.IsNullOrWhiteSpace(c.Description)
+                                                ? "Course description coming soon."
+                                                : c.Description)
+                </p>
+
+                        <div class="student-course-meta">
+                            <div class="student-course-meta-item">
+                                <i class="bi bi-book"></i>
+                                <span>@c.Category</span>
+                            </div>
+
+                            <div class="student-course-meta-item">
+                                <i class="bi bi-patch-check"></i>
+                                <span>@(c.CertificateIncluded ? "Certificate" : "No Certificate")</span>
+                            </div>
+                        </div>
+
+                        <div class="student-enroll-wrap">
+                            <a asp-area="Student"
+                               asp-controller="Courses"
+                               asp-action="EnrollDetail"
+                               asp-route-id="@c.Id"
+                               class="student-enroll-btn">
+                                <i class="bi bi-plus-circle"></i>
+                                Enroll Now
+                            </a>
+                        </div>
+                    </div>
+
+                </div>
+                }
+        }
+
+    </div>
+</div>

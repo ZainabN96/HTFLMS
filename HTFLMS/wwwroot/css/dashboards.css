@@ -2594,6 +2594,14 @@
     border-top: 1px solid var(--dashboard-border);
 }
 
+.student-module-section-block {
+    background: #fff;
+    border: 1px solid #ececec;
+    border-radius: 20px;
+    padding: 24px;
+    margin-bottom: 20px;
+}
+
 /* grades */
 .student-grade-legend {
     display: flex;
@@ -7470,3 +7478,62 @@
     justify-content: center;
     gap: 10px;
 }
+
+/*Gradebook approve/reject dropdown*/
+.admin-gradebook-certificate-dropdown {
+    width: 125px;
+}
+
+.admin-certificate-select {
+    width: 125px;
+    height: 34px;
+    border-radius: 999px;
+    border: 1px solid #dce3dc;
+    padding: 0 10px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+    .admin-certificate-select:hover {
+        border-color: #8bc48a;
+    }
+
+    .admin-certificate-select:focus {
+        outline: none;
+        border-color: #6fb36e;
+        box-shadow: 0 0 0 3px rgba(111, 179, 110, .15);
+    }
+
+/*student-dashboard enroll button*/
+.student-enroll-wrap {
+    display: flex;
+    justify-content: center;
+    margin-top: 22px;
+}
+
+.student-enroll-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-width: 170px;
+    padding: 10px 22px;
+    background: transparent;
+    color: #c3323a !important;
+    border: 1.5px solid #c3323a;
+    border-radius: 999px;
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 700;
+    transition: all 0.25s ease;
+}
+
+    .student-enroll-btn i {
+        font-size: 17px;
+    }
+
+    .student-enroll-btn:hover {
+        background: #c3323a;
+        color: #fff !important;
+        transform: translateY(-1px);
+    }

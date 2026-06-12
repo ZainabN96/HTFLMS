@@ -5,16 +5,15 @@
 namespace HTFLMS.Migrations
 {
     /// <inheritdoc />
-    public partial class AddDurationTextToCourse : Migration
+    public partial class AddTrainerPicture : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<string>(
-                name: "DurationText",
-                table: "Courses",
-                type: "nvarchar(100)",
-                maxLength: 100,
+                name: "ProfilePicturePath",
+                table: "Users",
+                type: "nvarchar(max)",
                 nullable: true);
         }
 
@@ -22,8 +21,8 @@ namespace HTFLMS.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "DurationText",
-                table: "Courses");
+                name: "ProfilePicturePath",
+                table: "Users");
         }
     }
 }

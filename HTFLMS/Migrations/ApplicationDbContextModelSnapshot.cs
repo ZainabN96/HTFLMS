@@ -770,6 +770,9 @@ namespace HTFLMS.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("ProfilePicturePath")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Qualification")
                         .HasColumnType("nvarchar(max)");
 

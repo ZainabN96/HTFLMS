@@ -122,6 +122,12 @@
                     My Course
                 </a>
 
+                <a class="dashboard-nav-item @((area == "Student" && controller == "Courses" && action == "Enroll") ? "active" : "")"
+                   asp-area="Student" asp-controller="Courses" asp-action="Enroll">
+                    <i class="bi bi-plus-circle"></i>
+                    Enroll Course
+                </a>
+
                 <a class="dashboard-nav-item @((area == "Student" && controller == "Grades" && action == "Index") ? "active" : "")"
                    asp-area="Student" asp-controller="Grades" asp-action="Index">
                     <i class="bi bi-award"></i>

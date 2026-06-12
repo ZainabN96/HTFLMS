@@ -50,8 +50,10 @@ namespace HTFLMS.Models
 
         public bool IsActive { get; set; } = true;
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-        
+
         public string? Designation { get; set; } = "";
+
+        public string? ProfilePicturePath { get; set; }
         // Navigation Properties
         public ICollection<Course>? TrainerCourses { get; set; }
         public ICollection<CourseEnrollment>? Enrollments { get; set; }

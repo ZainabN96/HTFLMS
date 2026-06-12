@@ -25,5 +25,6 @@ namespace HTFLMS.Data.IServices
         void Update(User student);
 
         Task EnrollStudentInCoursesAsync(int studentId, List<int> courseIds);
+        Task UpdateStudentCourseEnrollmentsAsync(int studentId, List<int> selectedCourseIds);
     }
 }

@@ -1,5 +1,5 @@
 ﻿$(document).ready(function () {
-    var trainerId = parseInt($('#trainerId').val());
+    var trainerId = parseInt($('#trainerId').val()) || 0;
 
     setupImagePreview();
 
@@ -37,22 +37,28 @@ function setupEditPage(trainerId) {
     loadTrainer(trainerId);
 }
 
-function getTrainerPayload() {
-    var isActiveValue = $('#isActive').val();
+function getTrainerFormData() {
+    var formData = new FormData();
 
-    return {
-        name: $('#name').val(),
-        email: $('#email').val(),
-        password: $('#password').val(),
-        confirmPassword: $('#confirmPassword').val(),
-        designation: $('#designation').val(),
-        cnic: $('#cnic').val(),
-        mobileNumber: $('#mobileNumber').val(),
-        isActive: isActiveValue === '' ? null : isActiveValue === 'true',
-        gender: $('#gender').val(),
-        qualification: $('#qualification').val(),
-        address: $('#address').val()
-    };
+    formData.append('Name', $('#name').val() || '');
+    formData.append('Email', $('#email').val() || '');
+    formData.append('Password', $('#password').val() || '');
+    formData.append('ConfirmPassword', $('#confirmPassword').val() || '');
+    formData.append('Designation', $('#designation').val() || '');
+    formData.append('CNIC', $('#cnic').val() || '');
+    formData.append('MobileNumber', $('#mobileNumber').val() || '');
+    formData.append('IsActive', $('#isActive').val() || '');
+    formData.append('Gender', $('#gender').val() || '');
+    formData.append('Qualification', $('#qualification').val() || '');
+    formData.append('Address', $('#address').val() || '');
+
+    var pictureInput = document.getElementById('Picture');
+
+    if (pictureInput && pictureInput.files && pictureInput.files.length > 0) {
+        formData.append('Picture', pictureInput.files[0]);
+    }
+
+    return formData;
 }
 
 function createTrainer() {
@@ -61,8 +67,9 @@ function createTrainer() {
     $.ajax({
         url: '/api/ManageTrainer',
         type: 'POST',
-        contentType: 'application/json',
-        data: JSON.stringify(getTrainerPayload()),
+        data: getTrainerFormData(),
+        processData: false,
+        contentType: false,
 
         success: function (response) {
             sessionStorage.setItem('successMessage', response?.message || 'Trainer added successfully.');
@@ -81,8 +88,9 @@ function updateTrainer(trainerId) {
     $.ajax({
         url: '/api/ManageTrainer/' + trainerId,
         type: 'PUT',
-        contentType: 'application/json',
-        data: JSON.stringify(getTrainerPayload()),
+        data: getTrainerFormData(),
+        processData: false,
+        contentType: false,
 
         success: function (response) {
             sessionStorage.setItem('successMessage', response?.message || 'Trainer updated successfully.');
@@ -101,17 +109,24 @@ function loadTrainer(trainerId) {
         type: 'GET',
 
         success: function (trainer) {
-            $('#name').val(trainer.name ?? trainer.Name);
-            $('#email').val(trainer.email ?? trainer.Email);
-            $('#designation').val(trainer.designation ?? trainer.Designation);
-            $('#cnic').val(trainer.cnic ?? trainer.CNIC);
-            $('#mobileNumber').val(trainer.mobileNumber ?? trainer.MobileNumber);
-            $('#gender').val(trainer.gender ?? trainer.Gender);
-            $('#qualification').val(trainer.qualification ?? trainer.Qualification);
-            $('#address').val(trainer.address ?? trainer.Address);
+            $('#name').val(trainer.name ?? trainer.Name ?? '');
+            $('#email').val(trainer.email ?? trainer.Email ?? '');
+            $('#designation').val(trainer.designation ?? trainer.Designation ?? '');
+            $('#cnic').val(trainer.cnic ?? trainer.CNIC ?? '');
+            $('#mobileNumber').val(trainer.mobileNumber ?? trainer.MobileNumber ?? '');
+            $('#gender').val(trainer.gender ?? trainer.Gender ?? '');
+            $('#qualification').val(trainer.qualification ?? trainer.Qualification ?? '');
+            $('#address').val(trainer.address ?? trainer.Address ?? '');
 
             var isActive = trainer.isActive ?? trainer.IsActive;
             $('#isActive').val(isActive === true ? 'true' : 'false');
+
+            var picturePath = trainer.profilePicturePath ?? trainer.ProfilePicturePath;
+
+            if (picturePath) {
+                $('#trainerPicturePreview').attr('src', picturePath).show();
+                $('#trainerPicturePlaceholder').hide();
+            }
         },
 
         error: function (xhr) {

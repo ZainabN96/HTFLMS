@@ -241,5 +241,41 @@ namespace HTFLMS.Data.Services
 
             return new List<ManageStudentListDto>();
         }
+
+        public async Task UpdateStudentCourseEnrollmentsAsync(int studentId, List<int> selectedCourseIds)
+        {
+            selectedCourseIds ??= new List<int>();
+
+            var existingEnrollments = await context.CourseEnrollments
+                .Where(x => x.StudentId == studentId)
+                .ToListAsync();
+
+            var existingCourseIds = existingEnrollments
+                .Select(x => x.CourseId)
+                .ToList();
+
+            // Unenroll unchecked courses
+            var enrollmentsToRemove = existingEnrollments
+                .Where(x => !selectedCourseIds.Contains(x.CourseId))
+                .ToList();
+
+            context.CourseEnrollments.RemoveRange(enrollmentsToRemove);
+
+            // Enroll newly checked courses
+            var courseIdsToAdd = selectedCourseIds
+                .Where(courseId => !existingCourseIds.Contains(courseId))
+                .ToList();
+
+            foreach (var courseId in courseIdsToAdd)
+            {
+                context.CourseEnrollments.Add(new CourseEnrollment
+                {
+                    StudentId = studentId,
+                    CourseId = courseId,
+                    EnrolledAt = DateTime.UtcNow,
+                    Status = "Active"
+                });
+            }
+        }
     }
 }

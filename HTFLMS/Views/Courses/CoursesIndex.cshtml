@@ -78,14 +78,17 @@
 
                                     <div class="trainer d-flex justify-content-between align-items-center">
                                         <div class="trainer-profile d-flex align-items-center">
-                                            <img src="~/img/trainers/trainer-2.jpg" class="img-fluid" alt="">
-                                            @* <a href="#" class="trainer-link">@c.Trainer</a> *@
-                                            <a href="#" class="trainer-link">@(c.Trainer != null ? c.Trainer.Name : "No Trainer")</a>
-                                        </div>
-                                        <div class="trainer-rank d-flex align-items-center">
-                                            <i class="bi bi-person user-icon"></i>&nbsp;35
-                                            &nbsp;&nbsp;
-                                            <i class="bi bi-heart heart-icon"></i>&nbsp;42
+
+                                            <img src="@(string.IsNullOrWhiteSpace(c.Trainer?.ProfilePicturePath)
+                                                         ? Url.Content("~/img/trainers/trainer-2.jpg")
+                                                         : c.Trainer.ProfilePicturePath)"
+                                         class="img-fluid trainer-profile-img"
+                                         alt="@(c.Trainer?.Name ?? "Trainer")">
+
+                                            <a href="#" class="trainer-link">
+                                                @(c.Trainer != null ? c.Trainer.Name : "No Trainer")
+                                            </a>
+
                                         </div>
                                     </div>
                                 </div>

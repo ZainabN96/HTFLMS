@@ -14,6 +14,7 @@
         IManageTrainerService ManageTrainerService { get; }
         IPasswordResetOtpService PasswordResetOtpService { get; }
         IManageStudentService ManageStudentService { get; }
+        IStudentGradesService StudentGradesService { get; }
         Task<bool> SaveAsync();
     }
 }

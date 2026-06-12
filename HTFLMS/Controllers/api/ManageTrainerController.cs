@@ -12,13 +12,16 @@ namespace HTFLMS.Controllers.API
     {
         private readonly IUnitOfWork unitOfWork;
         private readonly IPasswordHasher<User> hasher;
+        private readonly IWebHostEnvironment env;
 
         public ManageTrainerController(
             IUnitOfWork unitOfWork,
-            IPasswordHasher<User> hasher)
+            IPasswordHasher<User> hasher,
+            IWebHostEnvironment env)
         {
             this.unitOfWork = unitOfWork;
             this.hasher = hasher;
+            this.env = env;
         }
 
         [HttpGet("admin/all")]
@@ -42,15 +45,13 @@ namespace HTFLMS.Controllers.API
             var trainer = await unitOfWork.ManageTrainerService.GetByIdAsync(id);
 
             if (trainer == null)
-            {
                 return NotFound(new { message = "Trainer not found." });
-            }
 
             return Ok(await ToDto(trainer));
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] ManageTrainerDto dto)
+        public async Task<IActionResult> Create([FromForm] ManageTrainerDto dto)
         {
             if (string.IsNullOrWhiteSpace(dto.Password))
                 ModelState.AddModelError(nameof(dto.Password), "Password is required.");
@@ -83,6 +84,9 @@ namespace HTFLMS.Controllers.API
                 CreatedAt = DateTime.Now
             };
 
+            if (dto.Picture != null)
+                trainer.ProfilePicturePath = await SaveTrainerPicture(dto.Picture);
+
             trainer.PasswordHash = hasher.HashPassword(trainer, dto.Password!);
 
             unitOfWork.ManageTrainerService.Add(trainer);
@@ -96,7 +100,7 @@ namespace HTFLMS.Controllers.API
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, [FromBody] ManageTrainerDto dto)
+        public async Task<IActionResult> Update(int id, [FromForm] ManageTrainerDto dto)
         {
             ModelState.Remove(nameof(dto.Password));
             ModelState.Remove(nameof(dto.ConfirmPassword));
@@ -131,10 +135,14 @@ namespace HTFLMS.Controllers.API
             trainer.Qualification = dto.Qualification;
             trainer.Address = dto.Address;
 
-            if (!string.IsNullOrWhiteSpace(dto.Password))
+            if (dto.Picture != null)
             {
-                trainer.PasswordHash = hasher.HashPassword(trainer, dto.Password);
+                DeleteOldPicture(trainer.ProfilePicturePath);
+                trainer.ProfilePicturePath = await SaveTrainerPicture(dto.Picture);
             }
+
+            if (!string.IsNullOrWhiteSpace(dto.Password))
+                trainer.PasswordHash = hasher.HashPassword(trainer, dto.Password);
 
             unitOfWork.ManageTrainerService.Update(trainer);
 
@@ -154,6 +162,8 @@ namespace HTFLMS.Controllers.API
             if (trainer == null)
                 return NotFound(new { message = "Trainer not found." });
 
+            DeleteOldPicture(trainer.ProfilePicturePath);
+
             unitOfWork.ManageTrainerService.Delete(trainer);
 
             var saved = await unitOfWork.SaveAsync();
@@ -162,6 +172,36 @@ namespace HTFLMS.Controllers.API
                 return BadRequest(new { message = "Trainer could not be deleted." });
 
             return Ok(new { message = "Trainer deleted successfully." });
+        }
+
+        private async Task<string> SaveTrainerPicture(IFormFile picture)
+        {
+            var folder = Path.Combine(env.WebRootPath, "uploads", "trainers");
+
+            if (!Directory.Exists(folder))
+                Directory.CreateDirectory(folder);
+
+            var fileName = Guid.NewGuid() + Path.GetExtension(picture.FileName);
+            var filePath = Path.Combine(folder, fileName);
+
+            using var stream = new FileStream(filePath, FileMode.Create);
+            await picture.CopyToAsync(stream);
+
+            return "/uploads/trainers/" + fileName;
+        }
+
+        private void DeleteOldPicture(string? picturePath)
+        {
+            if (string.IsNullOrWhiteSpace(picturePath))
+                return;
+
+            var fullPath = Path.Combine(
+                env.WebRootPath,
+                picturePath.TrimStart('/').Replace("/", Path.DirectorySeparatorChar.ToString())
+            );
+
+            if (System.IO.File.Exists(fullPath))
+                System.IO.File.Delete(fullPath);
         }
 
         private async Task<ManageTrainerDto> ToDto(User trainer)
@@ -178,6 +218,7 @@ namespace HTFLMS.Controllers.API
                 Gender = trainer.Gender,
                 Qualification = trainer.Qualification,
                 Address = trainer.Address,
+                ProfilePicturePath = trainer.ProfilePicturePath,
                 CreatedAt = trainer.CreatedAt,
                 AssignedCourseCount = await unitOfWork.ManageTrainerService
                     .GetAssignedCourseCountAsync(trainer.Id)

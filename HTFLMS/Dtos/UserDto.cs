@@ -10,7 +10,7 @@ namespace HTFLMS.Dtos
 
         [Required, EmailAddress]
         public string Email { get; set; } = "";
-        public string? ProfilePictureUrl { get; set; }
+        public string? ProfilePicturePath { get; set; }
         public string? Password { get; set; }
         public string? PasswordHash { get; set; } = "";
 

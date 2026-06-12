@@ -43,398 +43,454 @@
             <div id="studentSlidesAssignmentsContainer"></div>
         </div>
 
-        <div class="student-course-tab-panel" id="tab-grades">
+        @* <div class="student-course-tab-panel" id="tab-grades">
             <div class="dashboard-panel">
                 <h3 class="page-h2">Grades</h3>
                 <p class="student-panel-sub">Grades will appear here once your work is graded.</p>
             </div>
-        </div>
+        </div> *@
 
-        <div class="student-course-tab-panel" id="tab-notes">
+        @* <div class="student-course-tab-panel" id="tab-notes">
             <div class="dashboard-panel">
                 <h3 class="page-h2">Notes</h3>
                 <p class="student-panel-sub">Notes can be connected later.</p>
             </div>
-        </div>
+        </div> *@
 
         <div class="student-course-tab-panel" id="tab-info">
             <div id="studentCourseInfoContainer"></div>
         </div>
 
+        <!-- GRADES TAB -->
+        <div class="student-course-tab-panel" id="tab-grades">
+            <div class="student-tab-stack">
+                <div class="dashboard-stats">
+                    <div class="student-summary-card">
+                        <div class="dashboard-stat-title">Overall Grade</div>
+                        <div class="dashboard-stat-value">84%</div>
+                        <div class="dashboard-stat-meta">Based on graded submissions</div>
+                    </div>
+
+                    <div class="student-summary-card">
+                        <div class="dashboard-stat-title">Graded Items</div>
+                        <div class="dashboard-stat-value">2/4</div>
+                        <div class="dashboard-stat-meta">2 items still pending review</div>
+                    </div>
+
+                    <div class="student-summary-card">
+                        <div class="dashboard-stat-title">Highest Score</div>
+                        <div class="dashboard-stat-value">92%</div>
+                        <div class="dashboard-stat-meta">Assignment 1</div>
+                    </div>
+
+                    <div class="student-summary-card">
+                        <div class="dashboard-stat-title">Current Standing</div>
+                        <div class="dashboard-stat-value">Good</div>
+                        <div class="dashboard-stat-meta">Keep completing upcoming work</div>
+                    </div>
+                </div>
+
+                <div class="dashboard-panel">
+                    <div class="dashboard-panel-head student-panel-head">
+                        <div>
+                            <h3 class="page-h2">Grade Breakdown</h3>
+                            <p class="student-panel-sub">
+                                View your assignment and assessment results, grading status, and trainer feedback.
+                            </p>
+                        </div>
+
+                        <div class="student-grade-legend">
+                            <span class="student-grade-legend-item"><span class="student-grade-dot graded"></span> Graded</span>
+                            <span class="student-grade-legend-item"><span class="student-grade-dot pending"></span> Pending</span>
+                            <span class="student-grade-legend-item"><span class="student-grade-dot missing"></span> Missing</span>
+                        </div>
+                    </div>
+
+                    <div class="student-grade-list">
+                        <div class="student-grade-card graded">
+                            <div class="student-grade-card-top">
+                                <div class="student-grade-card-left">
+                                    <div class="student-grade-item-title">Assignment 1: Rewrite the abstract</div>
+                                    <div class="student-grade-item-meta">
+                                        <span>Module 1</span>
+                                        <span>•</span>
+                                        <span>Submitted: 10 Mar, 08:30 PM</span>
+                                    </div>
+                                </div>
+
+                                <div class="student-grade-card-right">
+                                    <span class="student-grade-status graded">Graded</span>
+                                    <div class="student-grade-score-block">
+                                        <span class="student-grade-score">18/20</span>
+                                        <span class="student-grade-score-percent">90%</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="student-grade-extra-grid">
+                                <div class="student-grade-extra-item">
+                                    <span class="student-grade-extra-label">Trainer</span>
+                                    <span class="student-grade-extra-value">John Doe</span>
+                                </div>
+
+                                <div class="student-grade-extra-item">
+                                    <span class="student-grade-extra-label">Graded On</span>
+                                    <span class="student-grade-extra-value">11 Mar, 04:10 PM</span>
+                                </div>
+
+                                <div class="student-grade-extra-item">
+                                    <span class="student-grade-extra-label">Weight</span>
+                                    <span class="student-grade-extra-value">20 Marks</span>
+                                </div>
+
+                                <div class="student-grade-extra-item">
+                                    <span class="student-grade-extra-label">Result</span>
+                                    <span class="student-grade-extra-value good">Excellent Work</span>
+                                </div>
+                            </div>
+
+                            <div class="student-grade-feedback-box">
+                                <div class="student-grade-feedback-title">
+                                    <i class="bi bi-chat-left-text"></i> Trainer Feedback
+                                </div>
+                                <p>
+                                    Strong rewrite overall. The abstract is much clearer and easier to follow.
+                                    Try to tighten the second sentence and make the conclusion slightly more specific.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="student-grade-card graded">
+                            <div class="student-grade-card-top">
+                                <div class="student-grade-card-left">
+                                    <div class="student-grade-item-title">Module 1 Assessment</div>
+                                    <div class="student-grade-item-meta">
+                                        <span>Type: Assessment</span>
+                                        <span>•</span>
+                                        <span>Module 1</span>
+                                        <span>•</span>
+                                        <span>Submitted: 09 Mar, 06:15 PM</span>
+                                    </div>
+                                </div>
+
+                                <div class="student-grade-card-right">
+                                    <span class="student-grade-status graded">Graded</span>
+                                    <div class="student-grade-score-block">
+                                        <span class="student-grade-score">23/30</span>
+                                        <span class="student-grade-score-percent">77%</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="student-grade-extra-grid">
+                                <div class="student-grade-extra-item">
+                                    <span class="student-grade-extra-label">Trainer</span>
+                                    <span class="student-grade-extra-value">John Doe</span>
+                                </div>
+
+                                <div class="student-grade-extra-item">
+                                    <span class="student-grade-extra-label">Graded On</span>
+                                    <span class="student-grade-extra-value">10 Mar, 12:40 PM</span>
+                                </div>
+
+                                <div class="student-grade-extra-item">
+                                    <span class="student-grade-extra-label">Weight</span>
+                                    <span class="student-grade-extra-value">30 Marks</span>
+                                </div>
+
+                                <div class="student-grade-extra-item">
+                                    <span class="student-grade-extra-label">Result</span>
+                                    <span class="student-grade-extra-value average">Good Attempt</span>
+                                </div>
+                            </div>
+
+                            <div class="student-grade-feedback-box">
+                                <div class="student-grade-feedback-title">
+                                    <i class="bi bi-chat-left-text"></i> Trainer Feedback
+                                </div>
+                                <p>
+                                    Good understanding of the main ideas. Review structure and supporting detail in the
+                                    longer answers because that is where most marks were lost.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="student-grade-card pending">
+                            <div class="student-grade-card-top">
+                                <div class="student-grade-card-left">
+                                    <div class="student-grade-item-title">Assignment 2: Analyze the reading passage</div>
+                                    <div class="student-grade-item-meta">
+                                        <span>Type: Written Assignment</span>
+                                        <span>•</span>
+                                        <span>Module 2</span>
+                                        <span>•</span>
+                                        <span>Submitted: 18 Mar, 10:42 PM</span>
+                                    </div>
+                                </div>
+
+                                <div class="student-grade-card-right">
+                                    <span class="student-grade-status pending">Pending Review</span>
+                                    <div class="student-grade-score-block">
+                                        <span class="student-grade-score muted-text">--/15</span>
+                                        <span class="student-grade-score-percent muted-text">Pending</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="student-grade-extra-grid">
+                                <div class="student-grade-extra-item">
+                                    <span class="student-grade-extra-label">Submission Status</span>
+                                    <span class="student-grade-extra-value">Submitted Successfully</span>
+                                </div>
+
+                                <div class="student-grade-extra-item">
+                                    <span class="student-grade-extra-label">Review Status</span>
+                                    <span class="student-grade-extra-value">Waiting for trainer review</span>
+                                </div>
+
+                                <div class="student-grade-extra-item">
+                                    <span class="student-grade-extra-label">Due Date</span>
+                                    <span class="student-grade-extra-value">18 Mar, 11:59 PM</span>
+                                </div>
+
+                                <div class="student-grade-extra-item">
+                                    <span class="student-grade-extra-label">Marks</span>
+                                    <span class="student-grade-extra-value">15 Marks</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="student-grade-card missing">
+                            <div class="student-grade-card-top">
+                                <div class="student-grade-card-left">
+                                    <div class="student-grade-item-title">Module 2 Assessment</div>
+                                    <div class="student-grade-item-meta">
+                                        <span>Type: Assessment</span>
+                                        <span>•</span>
+                                        <span>Module 2</span>
+                                        <span>•</span>
+                                        <span>Due: 22 Mar, 11:59 PM</span>
+                                    </div>
+                                </div>
+
+                                <div class="student-grade-card-right">
+                                    <span class="student-grade-status missing">Not Submitted</span>
+                                    <div class="student-grade-score-block">
+                                        <span class="student-grade-score muted-text">--/25</span>
+                                        <span class="student-grade-score-percent muted-text">Missing</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="student-grade-extra-grid">
+                                <div class="student-grade-extra-item">
+                                    <span class="student-grade-extra-label">Submission</span>
+                                    <span class="student-grade-extra-value danger">No submission found</span>
+                                </div>
+
+                                <div class="student-grade-extra-item">
+                                    <span class="student-grade-extra-label">Status</span>
+                                    <span class="student-grade-extra-value">Awaiting student submission</span>
+                                </div>
+
+                                <div class="student-grade-extra-item">
+                                    <span class="student-grade-extra-label">Due Date</span>
+                                    <span class="student-grade-extra-value">22 Mar, 11:59 PM</span>
+                                </div>
+
+                                <div class="student-grade-extra-item">
+                                    <span class="student-grade-extra-label">Marks</span>
+                                    <span class="student-grade-extra-value">25 Marks</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- NOTES TAB -->
+        <div class="student-course-tab-panel" id="tab-notes">
+            <div class="student-tab-stack">
+                <div class="dashboard-stats">
+                    <div class="student-summary-card">
+                        <div class="dashboard-stat-title">Total Notes</div>
+                        <div class="dashboard-stat-value">4</div>
+                        <div class="dashboard-stat-meta">Saved for this course</div>
+                    </div>
+
+                    <div class="student-summary-card">
+                        <div class="dashboard-stat-title">Pinned Notes</div>
+                        <div class="dashboard-stat-value">1</div>
+                        <div class="dashboard-stat-meta">Quick access note</div>
+                    </div>
+
+                    <div class="student-summary-card">
+                        <div class="dashboard-stat-title">Recent Activity</div>
+                        <div class="dashboard-stat-value">Today</div>
+                        <div class="dashboard-stat-meta">Last note updated</div>
+                    </div>
+
+                    <div class="student-summary-card">
+                        <div class="dashboard-stat-title">Lesson Coverage</div>
+                        <div class="dashboard-stat-value">3 Lessons</div>
+                        <div class="dashboard-stat-meta">Notes linked to lessons</div>
+                    </div>
+                </div>
+
+                <div class="dashboard-panel">
+                    <div class="dashboard-panel-head student-panel-head">
+                        <div>
+                            <h3 class="page-h2">My Notes</h3>
+                            <p class="student-panel-sub">Save your personal notes while studying lessons and course material.</p>
+                        </div>
+
+                        <div class="student-notes-actions">
+                            <div class="dashboard-search student-notes-searchbar">
+                                <i class="bi bi-search"></i>
+                                <input type="text" placeholder="Search notes..." />
+                            </div>
+
+                            <button type="button" class="dashboard-btn dashboard-btn-outline student-add-note-btn" id="openNoteFormBtn">
+                                <i class="bi bi-plus-circle"></i>
+                                <span>Add Note</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="student-note-list">
+                        <div class="student-note-card pinned"
+                             data-module="Module 1: Introduction to Web Development"
+                             data-lesson="HTML Basics"
+                             data-title="HTML Structure Basics"
+                             data-note="HTML gives structure to a webpage. I should remember semantic tags like header, section, article, and footer because they make content more meaningful."
+                             data-pinned="true">
+                            <div class="student-note-card-top">
+                                <div class="student-note-card-left">
+                                    <div class="student-note-title-row">
+                                        <h4 class="student-note-title">HTML Structure Basics</h4>
+                                        <span class="student-note-badge pinned">
+                                            <i class="bi bi-pin-angle-fill"></i> Pinned
+                                        </span>
+                                    </div>
+
+                                    <div class="student-note-meta">
+                                        <span>Module 1</span>
+                                        <span>•</span>
+                                        <span>Lesson: HTML Basics</span>
+                                        <span>•</span>
+                                        <span>Updated: Today, 10:24 AM</span>
+                                    </div>
+                                </div>
+
+                                <div class="student-note-card-right">
+                                    <button type="button" class="student-note-action-btn js-edit-note-btn">
+                                        <i class="bi bi-pencil-square"></i> Edit
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="student-note-content">
+                                HTML gives structure to a webpage. I should remember semantic tags like
+                                header, section, article, and footer because they make content more meaningful.
+                            </div>
+
+                            <div class="student-note-footer">
+                                <span class="student-note-tag">HTML</span>
+                                <span class="student-note-tag">Structure</span>
+                                <span class="student-note-tag">Semantic</span>
+                            </div>
+                        </div>
+
+                        <div class="student-note-card"
+                             data-module="Module 1: Introduction to Web Development"
+                             data-lesson="CSS Fundamentals"
+                             data-title="CSS Box Model Reminder"
+                             data-note="Remember the order: content, padding, border, margin. This is important when debugging layout spacing issues."
+                             data-pinned="false">
+                            <div class="student-note-card-top">
+                                <div class="student-note-card-left">
+                                    <div class="student-note-title-row">
+                                        <h4 class="student-note-title">CSS Box Model Reminder</h4>
+                                    </div>
+
+                                    <div class="student-note-meta">
+                                        <span>Module 1</span>
+                                        <span>•</span>
+                                        <span>Lesson: CSS Fundamentals</span>
+                                        <span>•</span>
+                                        <span>Updated: Yesterday</span>
+                                    </div>
+                                </div>
+
+                                <div class="student-note-card-right">
+                                    <button type="button" class="student-note-action-btn js-edit-note-btn">
+                                        <i class="bi bi-pencil-square"></i> Edit
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="student-note-content">
+                                Remember the order: content, padding, border, margin. This is important
+                                when debugging layout spacing issues.
+                            </div>
+
+                            <div class="student-note-footer">
+                                <span class="student-note-tag">CSS</span>
+                                <span class="student-note-tag">Box Model</span>
+                                <span class="student-note-tag">Layout</span>
+                            </div>
+                        </div>
+
+                        <div class="student-note-card"
+                             data-module="Module 2: JavaScript Fundamentals"
+                             data-lesson="Variables and Data Types"
+                             data-title="JavaScript Variables"
+                             data-note="Use const when value should not change, let when it can change, and avoid var in modern JavaScript unless there is a specific reason."
+                             data-pinned="false">
+                            <div class="student-note-card-top">
+                                <div class="student-note-card-left">
+                                    <div class="student-note-title-row">
+                                        <h4 class="student-note-title">JavaScript Variables</h4>
+                                    </div>
+
+                                    <div class="student-note-meta">
+                                        <span>Module 2</span>
+                                        <span>•</span>
+                                        <span>Lesson: Variables and Data Types</span>
+                                        <span>•</span>
+                                        <span>Updated: 2 days ago</span>
+                                    </div>
+                                </div>
+
+                                <div class="student-note-card-right">
+                                    <button type="button" class="student-note-action-btn js-edit-note-btn">
+                                        <i class="bi bi-pencil-square"></i> Edit
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="student-note-content">
+                                Use const when value should not change, let when it can change, and avoid var
+                                in modern JavaScript unless there is a specific reason.
+                            </div>
+
+                            <div class="student-note-footer">
+                                <span class="student-note-tag">JavaScript</span>
+                                <span class="student-note-tag">Variables</span>
+                                <span class="student-note-tag">Data Types</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
     </div>
 </div>
 
 @section Scripts {
-    <script>
-
-        (function () {
-            const videoToggleButtons = document.querySelectorAll('.js-video-toggle');
-
-            videoToggleButtons.forEach(btn => {
-                btn.addEventListener('click', function () {
-                    const card = this.closest('.student-material-card');
-                    if (!card) return;
-
-                    card.classList.toggle('video-open');
-
-                    const isOpen = card.classList.contains('video-open');
-                    this.innerHTML = isOpen
-                        ? '<i class="bi bi-x-circle"></i> Close Video'
-                        : '<i class="bi bi-play-circle"></i> Watch Video';
-                });
-            });
-        })();
-
-        (function () {
-            const openNoteFormBtn = document.getElementById('openNoteFormBtn');
-            const closeNoteFormBtn = document.getElementById('closeNoteFormBtn');
-            const cancelNoteFormBtn = document.getElementById('cancelNoteFormBtn');
-            const studentNoteModal = document.getElementById('studentNoteModal');
-            const studentNoteModalBackdrop = document.getElementById('studentNoteModalBackdrop');
-            const studentNoteForm = document.getElementById('studentNoteForm');
-            const editButtons = document.querySelectorAll('.js-edit-note-btn');
-
-            const modalTitle = document.getElementById('studentNoteModalTitle');
-            const submitBtn = document.getElementById('studentNoteSubmitBtn');
-            const editingNoteIndex = document.getElementById('editingNoteIndex');
-
-            const noteModule = document.getElementById('noteModule');
-            const noteLesson = document.getElementById('noteLesson');
-            const noteTitle = document.getElementById('noteTitle');
-            const noteContent = document.getElementById('noteContent');
-            const notePinned = document.getElementById('notePinned');
-
-            let currentEditingCard = null;
-
-            function openModal() {
-                if (studentNoteModal) {
-                    studentNoteModal.style.display = 'block';
-                    document.body.style.overflow = 'hidden';
-                }
-            }
-
-            function closeModal() {
-                if (studentNoteModal) {
-                    studentNoteModal.style.display = 'none';
-                    document.body.style.overflow = '';
-                }
-            }
-
-            function resetFormForAdd() {
-                currentEditingCard = null;
-                if (modalTitle) modalTitle.textContent = 'Add New Note';
-                if (submitBtn) {
-                    submitBtn.innerHTML = '<i class="bi bi-floppy"></i> Save Note';
-                }
-
-                if (editingNoteIndex) editingNoteIndex.value = '';
-                if (noteModule) noteModule.value = '';
-                if (noteLesson) noteLesson.value = '';
-                if (noteTitle) noteTitle.value = '';
-                if (noteContent) noteContent.value = '';
-                if (notePinned) notePinned.checked = false;
-            }
-
-            function fillFormForEdit(card) {
-                if (!card) return;
-
-                currentEditingCard = card;
-
-                if (modalTitle) modalTitle.textContent = 'Edit Note';
-                if (submitBtn) {
-                    submitBtn.innerHTML = '<i class="bi bi-check2"></i> Update Note';
-                }
-
-                if (noteModule) noteModule.value = card.getAttribute('data-module') || '';
-                if (noteLesson) noteLesson.value = card.getAttribute('data-lesson') || '';
-                if (noteTitle) noteTitle.value = card.getAttribute('data-title') || '';
-                if (noteContent) noteContent.value = card.getAttribute('data-note') || '';
-                if (notePinned) notePinned.checked = (card.getAttribute('data-pinned') === 'true');
-            }
-
-            function updateNoteCard(card) {
-                if (!card) return;
-
-                const titleText = noteTitle.value.trim();
-                const contentText = noteContent.value.trim();
-                const moduleText = noteModule.value;
-                const lessonText = noteLesson.value;
-                const isPinned = notePinned.checked;
-
-                const titleEl = card.querySelector('.student-note-title');
-                const contentEl = card.querySelector('.student-note-content');
-                const metaEl = card.querySelector('.student-note-meta');
-                let titleRow = card.querySelector('.student-note-title-row');
-                let pinnedBadge = card.querySelector('.student-note-badge.pinned');
-
-                if (titleEl) titleEl.textContent = titleText;
-                if (contentEl) contentEl.textContent = contentText;
-
-                if (metaEl) {
-                    metaEl.innerHTML = `
-                        <span>${moduleText}</span>
-                        <span>•</span>
-                        <span>Lesson: ${lessonText}</span>
-                        <span>•</span>
-                        <span>Updated: Just now</span>
-                    `;
-                }
-
-                card.setAttribute('data-module', moduleText);
-                card.setAttribute('data-lesson', lessonText);
-                card.setAttribute('data-title', titleText);
-                card.setAttribute('data-note', contentText);
-                card.setAttribute('data-pinned', isPinned ? 'true' : 'false');
-
-                if (isPinned) {
-                    card.classList.add('pinned');
-
-                    if (!pinnedBadge && titleRow) {
-                        pinnedBadge = document.createElement('span');
-                        pinnedBadge.className = 'student-note-badge pinned';
-                        pinnedBadge.innerHTML = '<i class="bi bi-pin-angle-fill"></i> Pinned';
-                        titleRow.appendChild(pinnedBadge);
-                    }
-                } else {
-                    card.classList.remove('pinned');
-                    if (pinnedBadge) pinnedBadge.remove();
-                }
-            }
-
-            if (openNoteFormBtn) {
-                openNoteFormBtn.addEventListener('click', function () {
-                    resetFormForAdd();
-                    openModal();
-                });
-            }
-
-            editButtons.forEach(btn => {
-                btn.addEventListener('click', function () {
-                    const card = this.closest('.student-note-card');
-                    fillFormForEdit(card);
-                    openModal();
-                });
-            });
-
-            if (closeNoteFormBtn) {
-                closeNoteFormBtn.addEventListener('click', closeModal);
-            }
-
-            if (cancelNoteFormBtn) {
-                cancelNoteFormBtn.addEventListener('click', closeModal);
-            }
-
-            if (studentNoteModalBackdrop) {
-                studentNoteModalBackdrop.addEventListener('click', closeModal);
-            }
-
-            if (studentNoteForm) {
-                studentNoteForm.addEventListener('submit', function (e) {
-                    e.preventDefault();
-
-                    if (currentEditingCard) {
-                        updateNoteCard(currentEditingCard);
-                    }
-
-                    closeModal();
-                });
-            }
-        })();
-
-        (function () {
-            const tabs = document.querySelectorAll('.student-course-tab');
-            const panels = document.querySelectorAll('.student-course-tab-panel');
-
-            tabs.forEach(tab => {
-                tab.addEventListener('click', function () {
-                    const target = this.getAttribute('data-tab');
-
-                    tabs.forEach(t => t.classList.remove('active'));
-                    panels.forEach(p => p.classList.remove('active'));
-
-                    this.classList.add('active');
-
-                    const panel = document.getElementById('tab-' + target);
-                    if (panel) panel.classList.add('active');
-                });
-            });
-
-            const modules = document.querySelectorAll('.js-module');
-
-            modules.forEach(module => {
-                const head = module.querySelector('.student-module-head');
-                const lessons = module.querySelectorAll('.js-lesson');
-                const total = parseInt(module.getAttribute('data-total')) || lessons.length;
-                const countEl = module.querySelector('.js-module-count');
-                const percentEl = module.querySelector('.js-module-percent');
-                const fillEl = module.querySelector('.js-module-fill');
-                const statusEl = module.querySelector('.js-module-status');
-                const iconEl = module.querySelector('.js-module-icon');
-
-                function markLessonDone(lesson) {
-                    const doneBtn = lesson.querySelector('.js-done-btn');
-                    const title = lesson.querySelector('.student-lesson-title');
-                    const icon = lesson.querySelector('.student-lesson-type-icon');
-
-                    lesson.classList.add('done');
-
-                    if (doneBtn) {
-                        doneBtn.textContent = 'Completed';
-                        doneBtn.classList.add('done');
-                        doneBtn.disabled = true;
-                    }
-
-                    if (title) title.classList.add('done-text');
-                    if (icon) icon.classList.remove('muted');
-
-                    updateModuleState();
-                }
-
-                function updateModuleState() {
-                    const doneCount = module.querySelectorAll('.js-lesson.done').length;
-                    const percent = total > 0 ? Math.round((doneCount / total) * 100) : 0;
-
-                    countEl.textContent = `${doneCount}/${total} lessons completed`;
-                    percentEl.textContent = `${percent}%`;
-                    fillEl.style.width = `${percent}%`;
-
-                    statusEl.classList.remove('dark', 'light', 'muted');
-                    iconEl.classList.remove('success', 'primary');
-
-                    if (doneCount === 0) {
-                        statusEl.textContent = 'Not Started';
-                        statusEl.classList.add('muted');
-                        iconEl.classList.add('primary');
-                        iconEl.innerHTML = '<i class="bi bi-book"></i>';
-                    } else if (doneCount < total) {
-                        statusEl.textContent = 'In Progress';
-                        statusEl.classList.add('light');
-                        iconEl.classList.add('primary');
-                        iconEl.innerHTML = '<i class="bi bi-book"></i>';
-                    } else {
-                        statusEl.textContent = 'Completed';
-                        statusEl.classList.add('dark');
-                        iconEl.classList.add('success');
-                        iconEl.innerHTML = '<i class="bi bi-check-lg"></i>';
-                    }
-                }
-
-                if (head && !module.classList.contains('locked')) {
-                    head.addEventListener('click', function () {
-                        module.classList.toggle('expanded');
-                    });
-                }
-
-                lessons.forEach(lesson => {
-                    const toggleBtn = lesson.querySelector('.js-lesson-toggle');
-                    const doneBtn = lesson.querySelector('.js-done-btn');
-                    const isQuizLesson = lesson.classList.contains('js-quiz-lesson');
-
-                    if (toggleBtn) {
-                        toggleBtn.addEventListener('click', function (e) {
-                            e.stopPropagation();
-                            lesson.classList.toggle('open');
-                        });
-                    }
-
-                    if (doneBtn && !isQuizLesson) {
-                        doneBtn.addEventListener('click', function (e) {
-                            e.stopPropagation();
-
-                            if (lesson.classList.contains('done')) return;
-
-                            markLessonDone(lesson);
-                        });
-                    }
-
-                    if (isQuizLesson) {
-                        const submitQuizBtn = lesson.querySelector('.js-submit-quiz');
-                        const resultEl = lesson.querySelector('.js-quiz-result');
-                        const attemptsLeftEl = lesson.querySelector('.js-attempts-left');
-                        const questionEls = lesson.querySelectorAll('.student-quiz-question');
-                        const maxAttempts = parseInt(lesson.getAttribute('data-max-attempts')) || 3;
-
-                        let attemptsUsed = 0;
-                        let passed = false;
-
-                        if (submitQuizBtn) {
-                            submitQuizBtn.addEventListener('click', function (e) {
-                                e.stopPropagation();
-
-                                if (passed || attemptsUsed >= maxAttempts) return;
-
-                                let allAnswered = true;
-                                let allCorrect = true;
-
-                                questionEls.forEach(question => {
-
-                                    /* remove previous highlight */
-                                    question.querySelectorAll('label').forEach(l => {
-                                        l.classList.remove('quiz-wrong');
-                                    });
-
-                                    const correctAnswer = question.getAttribute('data-correct');
-                                    const selected = question.querySelector('input[type="radio"]:checked');
-
-                                    if (!selected) {
-                                        allAnswered = false;
-                                        allCorrect = false;
-                                        return;
-                                    }
-
-                                    if (selected.value !== correctAnswer) {
-
-                                        allCorrect = false;
-
-                                        /* highlight only the wrong selected answer */
-                                        const selectedLabel = selected.closest('label');
-                                        if (selectedLabel) {
-                                            selectedLabel.classList.add('quiz-wrong');
-                                        }
-                                    }
-
-                                });
-
-                                if (!allAnswered) {
-                                    resultEl.textContent = 'Please answer all questions first.';
-                                    resultEl.className = 'student-quiz-result js-quiz-result error';
-                                    return;
-                                }
-
-                                attemptsUsed++;
-                                const attemptsLeft = maxAttempts - attemptsUsed;
-
-                                if (attemptsLeftEl) {
-                                    attemptsLeftEl.textContent = attemptsLeft;
-                                }
-
-                                if (allCorrect) {
-                                    passed = true;
-                                    resultEl.textContent = 'Great job. You got all answers correct and this quiz is now completed.';
-                                    resultEl.className = 'student-quiz-result js-quiz-result success';
-
-                                    markLessonDone(lesson);
-                                    submitQuizBtn.disabled = true;
-                                } else {
-                                    if (attemptsLeft > 0) {
-                                        resultEl.textContent = `Some answers are incorrect. Please try again. Attempts left: ${attemptsLeft}`;
-                                        resultEl.className = 'student-quiz-result js-quiz-result error';
-                                    } else {
-                                        resultEl.textContent = 'You have used all attempts for this quiz.';
-                                        resultEl.className = 'student-quiz-result js-quiz-result error';
-                                        submitQuizBtn.disabled = true;
-
-                                        const radios = lesson.querySelectorAll('input[type="radio"]');
-                                        radios.forEach(radio => radio.disabled = true);
-                                    }
-                                }
-                            });
-                        }
-                    }
-                });
-
-                updateModuleState();
-            });
-        })();
-    </script>
+    <script src="~/js/student/student-course-detail.js" asp-append-version="true"></script>
 }

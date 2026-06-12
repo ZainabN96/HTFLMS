@@ -1,6 +1,5 @@
 ﻿using HTFLMS.Data.IServices;
 using HTFLMS.Data.Services;
-//using HTFLMS.Data.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace HTFLMS.Data.Services
@@ -22,6 +21,8 @@ namespace HTFLMS.Data.Services
         public IPasswordResetOtpService PasswordResetOtpService { get; }
         public IManageStudentService ManageStudentService { get; }
 
+        public IStudentGradesService StudentGradesService { get; }
+
         public UnitOfWork(ApplicationDbContext context)
         {
             this.context = context;
@@ -39,6 +40,7 @@ namespace HTFLMS.Data.Services
             PasswordResetOtpService = new PasswordResetOtpService(context);
             ManageStudentService = new ManageStudentService(context);
 
+            StudentGradesService = new StudentGradesService(context);
         }
 
         public async Task<bool> SaveAsync()
