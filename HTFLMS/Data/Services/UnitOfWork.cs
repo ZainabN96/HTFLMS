@@ -22,6 +22,7 @@ namespace HTFLMS.Data.Services
         public IManageStudentService ManageStudentService { get; }
 
         public IStudentGradesService StudentGradesService { get; }
+        public IStudentCourseContentService StudentCourseContentService { get; }
 
         public UnitOfWork(ApplicationDbContext context)
         {
@@ -41,6 +42,7 @@ namespace HTFLMS.Data.Services
             ManageStudentService = new ManageStudentService(context);
 
             StudentGradesService = new StudentGradesService(context);
+            StudentCourseContentService = new StudentCourseContentService(context);
         }
 
         public async Task<bool> SaveAsync()

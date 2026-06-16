@@ -31,6 +31,8 @@ namespace HTFLMS.Data
         public DbSet<StudentQuizAttemptAnswer> StudentQuizAttemptAnswers => Set<StudentQuizAttemptAnswer>();
         public DbSet<Notification> Notifications => Set<Notification>();
         public DbSet<CertificateRequest> CertificateRequests => Set<CertificateRequest>();
+        public DbSet<StudentCourseNote> StudentCourseNotes => Set<StudentCourseNote>();
+        public DbSet<QuizAttemptsReset> QuizAttemptsResets => Set<QuizAttemptsReset>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
