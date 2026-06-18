@@ -329,61 +329,7 @@ function renderStudentCourseContentModules(modules) {
         });
 
         quizzes.forEach(function (quiz) {
-            var quizStatus = quiz.isPassed
-                ? 'Completed'
-                : quiz.isLocked
-                    ? 'Locked'
-                    : 'Quiz Required';
-
-            var quizMeta = quiz.isLocked && quiz.lockedUntil
-                ? 'Locked until ' + new Date(quiz.lockedUntil).toLocaleString()
-                : (quiz.questionsCount || 0) + ' Questions • Passing: 60% • Attempts: 3';
-
-            itemsHtml += `
-                <div class="student-lesson-item js-lesson js-quiz-lesson ${quiz.isPassed ? 'done' : ''}">
-                    <div class="student-lesson-main">
-                        <button type="button" class="student-lesson-toggle js-lesson-toggle">
-                            <div class="student-lesson-left">
-                                <div class="student-lesson-type-icon">
-                                    <i class="bi bi-patch-question"></i>
-                                </div>
-
-                                <div>
-                                    <div class="student-lesson-title ${quiz.isPassed ? 'done-text' : ''}">
-                                        ${escapeHtml(quiz.title)}
-                                    </div>
-                                    <div class="student-lesson-meta">
-                                        ${escapeHtml(quizStatus)} • ${escapeHtml(quizMeta)}
-                                    </div>
-                                </div>
-                            </div>
-
-                            <span class="student-lesson-chevron">
-                                <i class="bi bi-chevron-down"></i>
-                            </span>
-                        </button>
-
-                        <div class="student-lesson-side">
-                            <button type="button" class="student-done-btn" disabled>
-                                ${quiz.isPassed ? 'Completed' : 'Complete Quiz'}
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="student-lesson-dropdown">
-                        <div class="student-quiz-box">
-                            <div class="student-quiz-instructions">
-                                <strong>Instructions:</strong>
-                                ${escapeHtml(quiz.instructions || 'Complete this quiz to unlock the next module.')}
-                            </div>
-
-                            <div class="student-quiz-result">
-                                Quiz attempt will be connected in the next step.
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
+            itemsHtml += renderStudentCourseContentQuizItem(quiz, module.id);
         });
 
         container.append(`
@@ -427,6 +373,133 @@ function renderStudentCourseContentModules(modules) {
     });
 
     bindStudentCourseContentModuleEvents();
+}
+
+function renderStudentCourseContentQuizItem(quiz, moduleId) {
+    var statusText = quiz.statusText || 'Start Quiz';
+    var isCompleted = quiz.isPassed === true;
+    var isLocked = quiz.isLocked === true;
+
+    var quizClass = isCompleted ? 'done' : '';
+    var titleClass = isCompleted ? 'done-text' : '';
+
+    var statusBadgeClass = isCompleted
+        ? 'student-quiz-status-completed'
+        : isLocked
+            ? 'student-quiz-status-locked'
+            : 'student-quiz-status-pending';
+
+    var meta = isLocked && quiz.lockedUntil
+        ? 'Locked until ' + formatStudentCourseDateTime(quiz.lockedUntil)
+        : (quiz.questionsCount || 0) + ' Questions • Passing: 60% • Attempts left: ' + (quiz.attemptsLeft ?? 3);
+
+    var actionButtons = '';
+
+    if (isLocked) {
+        actionButtons += `
+            <button type="button"
+                    class="dashboard-btn dashboard-btn-outline js-view-quiz-review"
+                    data-quiz-id="${quiz.id}">
+                <i class="bi bi-eye"></i> View Attempt
+            </button>
+        `;
+    } else if (isCompleted) {
+        actionButtons += `
+            <button type="button"
+                    class="dashboard-btn dashboard-btn-outline js-view-quiz-review"
+                    data-quiz-id="${quiz.id}">
+                <i class="bi bi-eye"></i> View Quiz
+            </button>
+        `;
+    } else if (quiz.canViewAttempt && quiz.canRetake) {
+        actionButtons += `
+            <button type="button"
+                    class="dashboard-btn dashboard-btn-outline js-view-quiz-review"
+                    data-quiz-id="${quiz.id}">
+                <i class="bi bi-eye"></i> View Attempt
+            </button>
+
+            <button type="button"
+                    class="dashboard-btn dashboard-btn-primary js-start-quiz"
+                    data-module-id="${moduleId}"
+                    data-quiz-id="${quiz.id}">
+                <i class="bi bi-arrow-repeat"></i> Retake Quiz
+            </button>
+        `;
+    } else if (quiz.canViewAttempt && !quiz.canRetake) {
+        actionButtons += `
+            <button type="button"
+                    class="dashboard-btn dashboard-btn-outline js-view-quiz-review"
+                    data-quiz-id="${quiz.id}">
+                <i class="bi bi-eye"></i> View Attempt
+            </button>
+        `;
+    } else {
+        actionButtons += `
+            <button type="button"
+                    class="dashboard-btn dashboard-btn-primary js-start-quiz"
+                    data-module-id="${moduleId}"
+                    data-quiz-id="${quiz.id}">
+                <i class="bi bi-play-circle"></i> Start Quiz
+            </button>
+        `;
+    }
+
+    return `
+        <div class="student-lesson-item js-lesson js-quiz-lesson ${quizClass}"
+             data-module-id="${moduleId}"
+             data-quiz-id="${quiz.id}">
+            <div class="student-lesson-main">
+                <button type="button" class="student-lesson-toggle js-lesson-toggle">
+                    <div class="student-lesson-left">
+                        <div class="student-lesson-type-icon">
+                            <i class="bi bi-patch-question"></i>
+                        </div>
+
+                        <div>
+                            <div class="student-lesson-title ${titleClass}">
+                                ${escapeHtml(quiz.title)}
+                            </div>
+                            <div class="student-lesson-meta">
+                                ${escapeHtml(meta)}
+                            </div>
+                        </div>
+                    </div>
+
+                    <span class="student-lesson-chevron">
+                        <i class="bi bi-chevron-down"></i>
+                    </span>
+                </button>
+
+                <div class="student-lesson-side">
+                    <span class="student-quiz-status-badge ${statusBadgeClass}">
+                        ${escapeHtml(statusText)}
+                    </span>
+                </div>
+            </div>
+
+            <div class="student-lesson-dropdown student-course-quiz-dropdown">
+                <div class="student-quiz-box">
+                    <div class="student-quiz-instructions">
+                        <strong>Instructions:</strong>
+                        ${escapeHtml(quiz.instructions || 'Complete this quiz to unlock the next module.')}
+                    </div>
+
+                    <div class="student-quiz-small-meta">
+                        Score: ${quiz.lastScorePercentage === null || quiz.lastScorePercentage === undefined ? 'N/A' : quiz.lastScorePercentage + '%'}
+                        • Attempts used: ${quiz.attemptsUsed || 0}/3
+                    </div>
+
+                    <div class="student-quiz-actions">
+                        ${actionButtons}
+                    </div>
+
+                    <div class="student-quiz-result js-quiz-result"></div>
+                    <div class="student-quiz-dynamic-area js-quiz-dynamic-area"></div>
+                </div>
+            </div>
+        </div>
+    `;
 }
 
 function bindStudentCourseContentModuleEvents() {
@@ -476,6 +549,333 @@ function bindStudentCourseContentModuleEvents() {
             }
         });
     });
+
+    $(document).off('click', '.js-start-quiz').on('click', '.js-start-quiz', function (e) {
+        e.stopPropagation();
+
+        var button = $(this);
+        var moduleId = button.data('module-id');
+        var quizItem = button.closest('.js-quiz-lesson');
+
+        loadStudentCourseContentQuiz(moduleId, quizItem);
+    });
+
+    $(document).off('click', '.js-submit-quiz').on('click', '.js-submit-quiz', function (e) {
+        e.stopPropagation();
+
+        var button = $(this);
+        var moduleId = button.data('module-id');
+        var quizId = button.data('quiz-id');
+        var quizItem = button.closest('.js-quiz-lesson');
+
+        submitStudentCourseContentQuiz(moduleId, quizId, quizItem);
+    });
+
+    $(document).off('click', '.js-view-quiz-review').on('click', '.js-view-quiz-review', function (e) {
+        e.stopPropagation();
+
+        var quizId = $(this).data('quiz-id');
+        var quizItem = $(this).closest('.js-quiz-lesson');
+
+        loadStudentCourseContentQuizReview(quizId, quizItem);
+    });
+}
+
+/* =========================
+   QUIZ
+========================= */
+
+function loadStudentCourseContentQuiz(moduleId, quizItem) {
+    var dynamicArea = quizItem.find('.js-quiz-dynamic-area');
+    var resultBox = quizItem.find('.js-quiz-result');
+
+    resultBox.removeClass('success error').text('');
+    dynamicArea.html('<div class="student-panel-sub">Loading quiz...</div>');
+
+    $.ajax({
+        url: '/api/student/course-content/modules/' + moduleId + '/quiz',
+        type: 'GET',
+        success: function (quiz) {
+            renderStudentCourseContentQuizForm(quiz, quizItem);
+        },
+        error: function (xhr) {
+            var message = getStudentCourseContentErrorMessage(
+                xhr,
+                'Quiz could not be loaded.'
+            );
+
+            dynamicArea.html(
+                '<div class="student-quiz-message error">' +
+                escapeHtml(message) +
+                '</div>'
+            );
+        }
+    });
+}
+
+function renderStudentCourseContentQuizForm(quiz, quizItem) {
+    var dynamicArea = quizItem.find('.js-quiz-dynamic-area');
+
+    if (quiz.isPassed) {
+        dynamicArea.html(
+            '<div class="student-quiz-message success">You have already passed this quiz. You can view your quiz review.</div>'
+        );
+        return;
+    }
+
+    if (quiz.isLocked) {
+        dynamicArea.html(
+            '<div class="student-quiz-message error">Quiz is locked until ' +
+            formatStudentCourseDateTime(quiz.lockedUntil) +
+            '.</div>'
+        );
+        return;
+    }
+
+    var questions = quiz.questions || [];
+
+    if (questions.length === 0) {
+        dynamicArea.html(
+            '<div class="student-quiz-message error">No questions are added in this quiz yet.</div>'
+        );
+        return;
+    }
+
+    var questionsHtml = questions.map(function (question, index) {
+        var optionsHtml = (question.options || []).map(function (option) {
+            return `
+                <label class="student-quiz-option">
+                    <input type="radio"
+                           name="quiz_${quiz.quizId}_question_${question.questionId}"
+                           value="${option.optionId}">
+                    <span>${escapeHtml(option.optionText)}</span>
+                </label>
+            `;
+        }).join('');
+
+        return `
+            <div class="student-quiz-question" data-question-id="${question.questionId}">
+                <p class="student-quiz-question-title">
+                    ${index + 1}. ${escapeHtml(question.questionText)}
+                </p>
+                <div class="student-quiz-options">
+                    ${optionsHtml}
+                </div>
+            </div>
+        `;
+    }).join('');
+
+    dynamicArea.html(`
+        <div class="student-quiz-form"
+             data-module-id="${quiz.moduleId}"
+             data-quiz-id="${quiz.quizId}">
+            <div class="student-quiz-small-meta">
+                Passing: ${quiz.passingPercentage}% • Attempts left: ${quiz.attemptsLeft}/${quiz.attemptsAllowed}
+            </div>
+
+            ${questionsHtml}
+
+            <div class="student-quiz-actions">
+                <button type="button"
+                        class="dashboard-btn dashboard-btn-primary js-submit-quiz"
+                        data-module-id="${quiz.moduleId}"
+                        data-quiz-id="${quiz.quizId}">
+                    <i class="bi bi-check2-circle"></i> Submit Quiz
+                </button>
+            </div>
+        </div>
+    `);
+}
+
+function submitStudentCourseContentQuiz(moduleId, quizId, quizItem) {
+    var resultBox = quizItem.find('.js-quiz-result');
+    var dynamicArea = quizItem.find('.js-quiz-dynamic-area');
+    var answers = [];
+    var allAnswered = true;
+
+    dynamicArea.find('.student-quiz-question').each(function () {
+        var question = $(this);
+        var questionId = parseInt(question.data('question-id'));
+        var selected = question.find('input[type="radio"]:checked');
+
+        question.removeClass('student-quiz-question-error');
+
+        if (selected.length === 0) {
+            allAnswered = false;
+            question.addClass('student-quiz-question-error');
+            return;
+        }
+
+        answers.push({
+            questionId: questionId,
+            selectedOptionId: parseInt(selected.val())
+        });
+    });
+
+    if (!allAnswered) {
+        resultBox
+            .removeClass('success')
+            .addClass('error')
+            .text('Please answer all questions first.');
+        return;
+    }
+
+    resultBox.removeClass('success error').text('Submitting quiz...');
+
+    $.ajax({
+        url: '/api/student/course-content/modules/' + moduleId + '/quiz/submit',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({
+            moduleId: moduleId,
+            quizId: quizId,
+            answers: answers
+        }),
+        success: function (result) {
+            resultBox
+                .removeClass('success error')
+                .addClass(result.isPassed ? 'success' : 'error')
+                .text(result.message || 'Quiz submitted.');
+
+            var actionHtml = `
+                <div class="student-quiz-actions mt-2">
+                    <button type="button"
+                            class="dashboard-btn dashboard-btn-outline js-view-quiz-review"
+                            data-quiz-id="${quizId}">
+                        <i class="bi bi-eye"></i> View Attempt
+                    </button>
+            `;
+
+            if (result.canRetake) {
+                actionHtml += `
+                    <button type="button"
+                            class="dashboard-btn dashboard-btn-primary js-start-quiz"
+                            data-module-id="${moduleId}"
+                            data-quiz-id="${quizId}">
+                        <i class="bi bi-arrow-repeat"></i> Retake Quiz
+                    </button>
+                `;
+            }
+
+            actionHtml += '</div>';
+
+            dynamicArea.html(actionHtml);
+
+            var courseId = getStudentCourseIdFromUrl();
+            loadStudentCourseContentModules(courseId);
+            loadStudentCourseContentHeader(courseId);
+            loadStudentCourseContentInfo(courseId);
+        },
+        error: function (xhr) {
+            var message = getStudentCourseContentErrorMessage(
+                xhr,
+                'Quiz could not be submitted.'
+            );
+
+            resultBox
+                .removeClass('success')
+                .addClass('error')
+                .text(message);
+        }
+    });
+}
+
+function loadStudentCourseContentQuizReview(quizId, quizItem) {
+    var dynamicArea = quizItem.find('.js-quiz-dynamic-area');
+    var resultBox = quizItem.find('.js-quiz-result');
+
+    resultBox.removeClass('success error').text('');
+    dynamicArea.html('<div class="student-panel-sub">Loading quiz review...</div>');
+
+    $.ajax({
+        url: '/api/student/course-content/quizzes/' + quizId + '/review',
+        type: 'GET',
+        success: function (review) {
+            renderStudentCourseContentQuizReview(review, quizItem);
+        },
+        error: function (xhr) {
+            var message = getStudentCourseContentErrorMessage(
+                xhr,
+                'Quiz review could not be loaded.'
+            );
+
+            dynamicArea.html(
+                '<div class="student-quiz-message error">' +
+                escapeHtml(message) +
+                '</div>'
+            );
+        }
+    });
+}
+
+function renderStudentCourseContentQuizReview(review, quizItem) {
+    var dynamicArea = quizItem.find('.js-quiz-dynamic-area');
+
+    var summaryClass = review.isPassed ? 'success' : 'error';
+    var summaryText = review.isPassed
+        ? 'Passed'
+        : 'Failed';
+
+    var questionsHtml = (review.questions || []).map(function (question, index) {
+        var optionsHtml = (question.options || []).map(function (option) {
+            var optionClass = '';
+
+            if (option.isSelected && option.isSelectedCorrect) {
+                optionClass = 'student-quiz-option-correct';
+            } else if (option.isSelected && !option.isSelectedCorrect) {
+                optionClass = 'student-quiz-option-wrong';
+            } else if (option.isCorrectAnswer) {
+                optionClass = 'student-quiz-option-correct-answer';
+            }
+
+            var label = '';
+
+            if (option.isSelected) {
+                label += '<span class="student-quiz-answer-label">Your answer</span>';
+            }
+
+            if (option.isCorrectAnswer && review.revealCorrectAnswers) {
+                label += '<span class="student-quiz-answer-label correct">Correct answer</span>';
+            }
+
+            return `
+                <div class="student-quiz-review-option ${optionClass}">
+                    <span>${escapeHtml(option.optionText)}</span>
+                    ${label}
+                </div>
+            `;
+        }).join('');
+
+        return `
+            <div class="student-quiz-review-question">
+                <p class="student-quiz-question-title">
+                    ${index + 1}. ${escapeHtml(question.questionText)}
+                </p>
+                <div class="student-quiz-options">
+                    ${optionsHtml}
+                </div>
+            </div>
+        `;
+    }).join('');
+
+    dynamicArea.html(`
+        <div class="student-quiz-review">
+            <div class="student-quiz-review-summary ${summaryClass}">
+                <strong>${summaryText}</strong>
+                <span>Score: ${review.scorePercentage}%</span>
+                <span>Correct: ${review.correctAnswers}/${review.totalQuestions}</span>
+                <span>Submitted: ${formatStudentCourseDateTime(review.submittedAt)}</span>
+            </div>
+
+            ${!review.revealCorrectAnswers ? `
+                <div class="student-quiz-message warning">
+                    Correct answers are hidden until you pass the quiz.
+                </div>
+            ` : ''}
+
+            ${questionsHtml}
+        </div>
+    `);
 }
 
 /* =========================
@@ -519,13 +919,9 @@ function getStudentCourseContentErrorMessage(xhr, fallbackMessage) {
 }
 
 function formatStudentCourseDate(value) {
-    if (!value) {
-        return 'N/A';
-    }
+    var date = parseStudentServerDate(value);
 
-    var date = new Date(value);
-
-    if (isNaN(date.getTime())) {
+    if (!date) {
         return 'N/A';
     }
 
@@ -533,6 +929,22 @@ function formatStudentCourseDate(value) {
         month: 'short',
         day: '2-digit',
         year: 'numeric'
+    });
+}
+
+function formatStudentCourseDateTime(value) {
+    var date = parseStudentServerDate(value);
+
+    if (!date) {
+        return 'N/A';
+    }
+
+    return date.toLocaleString('en-US', {
+        month: 'short',
+        day: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
     });
 }
 
@@ -551,4 +963,29 @@ function escapeHtml(value) {
 
 function escapeAttribute(value) {
     return escapeHtml(value).replace(/`/g, '&#096;');
+}
+function parseStudentServerDate(value) {
+    if (!value) {
+        return null;
+    }
+
+    var text = String(value);
+
+    // If backend sends UTC DateTime without Z, treat it as UTC.
+    // Example: 2026-06-16T20:28:00 -> 2026-06-16T20:28:00Z
+    if (
+        !text.endsWith('Z') &&
+        !text.includes('+') &&
+        !text.match(/-\d{2}:\d{2}$/)
+    ) {
+        text += 'Z';
+    }
+
+    var date = new Date(text);
+
+    if (isNaN(date.getTime())) {
+        return null;
+    }
+
+    return date;
 }

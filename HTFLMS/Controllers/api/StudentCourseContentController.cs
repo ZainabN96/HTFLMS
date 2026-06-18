@@ -3,6 +3,7 @@ using HTFLMS.Errors;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using HTFLMS.Dtos.StudentCourseContent;
 
 namespace HTFLMS.Controllers.api
 {
@@ -116,6 +117,67 @@ namespace HTFLMS.Controllers.api
                 success = true,
                 message = "Lesson marked as completed."
             });
+        }
+        [HttpGet("modules/{moduleId:int}/quiz")]
+        public async Task<IActionResult> GetQuiz(int moduleId)
+        {
+            var studentId = GetStudentId();
+
+            if (studentId == null)
+            {
+                return Unauthorized(new APIError(401, "Student session is invalid. Please login again."));
+            }
+
+            var result = await uow.StudentCourseContentService.GetQuizAsync(studentId.Value, moduleId);
+
+            if (result == null)
+            {
+                return NotFound(new APIError(404, "Quiz was not found or is not accessible."));
+            }
+
+            return Ok(result);
+        }
+
+        [HttpPost("modules/{moduleId:int}/quiz/submit")]
+        public async Task<IActionResult> SubmitQuiz(int moduleId, [FromBody] StudentCourseContentQuizSubmitDto dto)
+        {
+            var studentId = GetStudentId();
+
+            if (studentId == null)
+            {
+                return Unauthorized(new APIError(401, "Student session is invalid. Please login again."));
+            }
+
+            dto.ModuleId = moduleId;
+
+            var result = await uow.StudentCourseContentService.SubmitQuizAsync(studentId.Value, dto);
+
+            if (result == null)
+            {
+                return BadRequest(new APIError(400, "Quiz could not be submitted."));
+            }
+
+            return Ok(result);
+        }
+
+        [HttpGet("quizzes/{quizId:int}/review")]
+        public async Task<IActionResult> GetQuizReview(int quizId)
+        {
+            var studentId = GetStudentId();
+
+            if (studentId == null)
+            {
+                return Unauthorized(new APIError(401, "Student session is invalid. Please login again."));
+            }
+
+            var result = await uow.StudentCourseContentService.GetQuizReviewAsync(studentId.Value, quizId);
+
+            if (result == null)
+            {
+                return NotFound(new APIError(404, "Quiz review was not found."));
+            }
+
+            return Ok(result);
         }
     }
 }

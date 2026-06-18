@@ -1,4 +1,5 @@
-﻿using HTFLMS.Dtos.StudentCourseContent;
+﻿using System.Threading.Tasks;
+using HTFLMS.Dtos.StudentCourseContent;
 
 namespace HTFLMS.Data.IServices
 {
@@ -10,5 +11,12 @@ namespace HTFLMS.Data.IServices
         Task<StudentCourseContentModulesDto?> GetModulesAndLessonsAsync(int studentId, int courseId);
 
         Task<bool> MarkLessonDoneAsync(int studentId, int lessonId);
+        Task<StudentCourseContentQuizDto?> GetQuizAsync(int studentId, int moduleId);
+
+        Task<StudentCourseContentQuizResultDto?> SubmitQuizAsync(
+            int studentId,
+            StudentCourseContentQuizSubmitDto dto);
+
+        Task<StudentCourseContentQuizReviewDto?> GetQuizReviewAsync(int studentId, int quizId);
     }
 }
