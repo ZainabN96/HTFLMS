@@ -15,6 +15,7 @@ function initStudentCourseContentPage() {
     loadStudentCourseContentHeader(courseId);
     loadStudentCourseContentInfo(courseId);
     loadStudentCourseContentModules(courseId);
+    loadStudentCourseContentMaterialsAssignments(courseId);
 }
 
 function getStudentCourseIdFromUrl() {
@@ -537,6 +538,7 @@ function bindStudentCourseContentModuleEvents() {
                 loadStudentCourseContentModules(courseId);
                 loadStudentCourseContentHeader(courseId);
                 loadStudentCourseContentInfo(courseId);
+                loadStudentCourseContentMaterialsAssignments(courseId);
             },
             error: function (xhr) {
                 var message = getStudentCourseContentErrorMessage(
@@ -765,6 +767,7 @@ function submitStudentCourseContentQuiz(moduleId, quizId, quizItem) {
             loadStudentCourseContentModules(courseId);
             loadStudentCourseContentHeader(courseId);
             loadStudentCourseContentInfo(courseId);
+            loadStudentCourseContentMaterialsAssignments(courseId);
         },
         error: function (xhr) {
             var message = getStudentCourseContentErrorMessage(
@@ -879,6 +882,262 @@ function renderStudentCourseContentQuizReview(review, quizItem) {
 }
 
 /* =========================
+   SLIDES & ASSIGNMENTS TAB
+========================= */
+
+function loadStudentCourseContentMaterialsAssignments(courseId) {
+    $('#studentSlidesAssignmentsContainer').html(
+        '<div class="dashboard-panel text-center p-4">Loading slides and assignments...</div>'
+    );
+
+    $.ajax({
+        url: '/api/student/course-content/' + courseId + '/materials-assignments',
+        type: 'GET',
+        success: function (data) {
+            renderStudentCourseContentMaterialsAssignments(data);
+        },
+        error: function (xhr) {
+            var message = getStudentCourseContentErrorMessage(
+                xhr,
+                'Slides and assignments could not be loaded.'
+            );
+
+            $('#studentSlidesAssignmentsContainer').html(
+                '<div class="dashboard-panel text-center p-4 text-danger">' +
+                escapeHtml(message) +
+                '</div>'
+            );
+        }
+    });
+}
+
+function renderStudentCourseContentMaterialsAssignments(data) {
+    var container = $('#studentSlidesAssignmentsContainer');
+    var materials = data.materials || [];
+    var assignments = data.assignments || [];
+
+    container.empty();
+
+    if (!materials.length && !assignments.length) {
+        container.html(
+            '<div class="dashboard-panel text-center p-4">No materials or assignments added yet.</div>'
+        );
+        return;
+    }
+
+    container.append(`
+        <div class="dashboard-panel">
+            <div class="student-module-section-block">
+                <div class="dashboard-panel-head student-panel-head">
+                    <div>
+                        <h4 class="page-h2 student-panel-title">Slides &amp; Videos</h4>
+                        <p class="student-panel-sub">Students can view course material uploaded by the trainer.</p>
+                    </div>
+
+                    <div class="student-count-pill">Total: ${materials.length} files</div>
+                </div>
+
+                <div class="student-material-list">
+                    ${renderStudentCourseContentMaterialsList(materials)}
+                </div>
+            </div>
+        </div>
+
+        <div class="dashboard-panel">
+            <div class="student-module-section-block">
+                <div class="dashboard-panel-head student-panel-head">
+                    <div>
+                        <h4 class="page-h2 student-panel-title">Assignments</h4>
+                        <p class="student-panel-sub">Students can view assignments for this course.</p>
+                    </div>
+
+                    <div class="student-count-pill">Total: ${assignments.length} assignments</div>
+                </div>
+
+                <div class="student-assignment-list">
+                    ${renderStudentCourseContentAssignmentsList(assignments)}
+                </div>
+            </div>
+        </div>
+    `);
+}
+
+function renderStudentCourseContentMaterialsList(materials) {
+    if (!materials || !materials.length) {
+        return '<p class="student-panel-sub">No slides or videos added.</p>';
+    }
+
+    return materials.map(function (m) {
+        var isLocked = m.isLocked === true;
+        var moduleTitle = m.moduleTitle || 'Module not specified';
+        var iconClass = isLocked ? 'muted-lock' : getMaterialClass(m.contentType, m.filePath);
+        var icon = isLocked ? 'bi-lock' : getMaterialIcon(m.contentType, m.filePath);
+        var lockStatus = isLocked
+            ? '<span class="student-status-badge muted">Locked</span>'
+            : '';
+
+        return `
+            <div class="student-material-card ${isLocked ? 'locked' : ''}">
+                <div class="student-material-main">
+                    <div class="student-material-left">
+                        <div class="student-material-icon ${iconClass}">
+                            <i class="bi ${icon}"></i>
+                        </div>
+
+                        <div class="student-material-content">
+                            <h4 class="student-material-title">
+                                ${escapeHtml(m.title)}
+                                ${lockStatus}
+                            </h4>
+
+                            <div class="student-material-meta">
+                                <span>Module: ${escapeHtml(moduleTitle)}</span>
+                                <span>•</span>
+                                <span>Type: ${escapeHtml(m.contentType || getStudentFileExtension(m.filePath) || 'File')}</span>
+                                ${getMaterialExtra(m)}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="student-material-right">
+                        ${renderStudentMaterialActions(m)}
+                    </div>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+function renderStudentMaterialActions(m) {
+    if (m.isLocked) {
+        return `
+            <button type="button" class="student-material-btn" disabled>
+                <i class="bi bi-lock"></i> Locked
+            </button>
+        `;
+    }
+
+    var html = '';
+
+    if (m.filePath) {
+        if (isStudentFileViewable(m.filePath, m.contentType)) {
+            html += `
+                <a href="${escapeAttribute(m.filePath)}" target="_blank" class="student-material-btn">
+                    <i class="bi bi-eye"></i> View File
+                </a>
+
+                <a href="${escapeAttribute(m.filePath)}" download class="student-material-btn download">
+                    <i class="bi bi-download"></i> Download
+                </a>
+            `;
+        } else {
+            html += `
+                <a href="${escapeAttribute(m.filePath)}" download class="student-material-btn download">
+                    <i class="bi bi-download"></i> Download
+                </a>
+            `;
+        }
+    }
+
+    if (m.externalUrl) {
+        html += `
+            <a href="${escapeAttribute(m.externalUrl)}" target="_blank" class="student-material-btn">
+                <i class="bi bi-box-arrow-up-right"></i> Open Link
+            </a>
+        `;
+    }
+
+    if (!html) {
+        html = `
+            <button type="button" class="student-material-btn" disabled>
+                <i class="bi bi-file-earmark-x"></i> No file
+            </button>
+        `;
+    }
+
+    return html;
+}
+
+function renderStudentCourseContentAssignmentsList(assignments) {
+    if (!assignments || !assignments.length) {
+        return '<p class="student-panel-sub">No assignments added.</p>';
+    }
+
+    return assignments.map(function (a) {
+        var isLocked = a.isLocked === true;
+        var moduleTitle = a.moduleTitle || 'Module not specified';
+        var due = a.dueDateTime ? formatStudentAssignmentDateTime(a.dueDateTime) : 'No due date';
+        var statusClass = isLocked ? 'muted' : a.isGraded ? 'dark' : a.isSubmitted ? 'light' : 'pending';
+        var statusText = isLocked ? 'Locked' : (a.submissionStatus || 'Pending Submission');
+
+        return `
+            <div class="student-assignment-card ${isLocked ? 'locked' : ''}" data-assignment-id="${a.id}">
+                <div class="student-assignment-main">
+                    <div class="student-assignment-left">
+                        <h4 class="student-assignment-title">
+                            ${escapeHtml(a.title)}
+                        </h4>
+
+                        <div class="student-assignment-meta">
+                            <span>Module: ${escapeHtml(moduleTitle)}</span>
+                            <span>•</span>
+                            <span>Marks: ${a.marks || 0}</span>
+                            <span>•</span>
+                            <span>Due: ${due}</span>
+                        </div>
+
+                        <p class="student-panel-sub">${escapeHtml(a.description || '')}</p>
+
+                        ${a.isGraded ? `
+                            <p class="student-panel-sub">
+                                Marks: ${a.obtainedMarks ?? 0}/${a.marks || 0}
+                                ${a.feedback ? ` • Feedback: ${escapeHtml(a.feedback)}` : ''}
+                            </p>
+                        ` : ''}
+                    </div>
+
+                    <div class="student-assignment-right">
+                        <span class="student-assignment-status ${statusClass}">
+                            ${escapeHtml(statusText)}
+                        </span>
+
+                        ${renderStudentAssignmentAction(a)}
+                    </div>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+function renderStudentAssignmentAction(a) {
+    if (a.isLocked) {
+        return `
+            <button type="button" class="student-assignment-link" disabled>
+                <i class="bi bi-lock"></i> Locked
+            </button>
+        `;
+    }
+
+    if (!a.filePath) {
+        return '';
+    }
+
+    if (isStudentFileViewable(a.filePath, '')) {
+        return `
+            <a href="${escapeAttribute(a.filePath)}" target="_blank" class="student-assignment-link">
+                <i class="bi bi-eye"></i> View Assignment
+            </a>
+        `;
+    }
+
+    return `
+        <a href="${escapeAttribute(a.filePath)}" download class="student-assignment-link">
+            <i class="bi bi-download"></i> Download Assignment
+        </a>
+    `;
+}
+
+/* =========================
    TABS
 ========================= */
 
@@ -892,6 +1151,112 @@ function bindStudentCourseContentTabs() {
         $(this).addClass('active');
         $('#tab-' + target).addClass('active');
     });
+}
+
+/* =========================
+   MATERIAL HELPERS
+========================= */
+
+function getMaterialExtra(m) {
+    var parts = [];
+
+    if (m.pages) {
+        parts.push(m.pages + ' Pages');
+    }
+
+    if (m.slides) {
+        parts.push(m.slides + ' Slides');
+    }
+
+    if (m.minutes) {
+        parts.push(m.minutes + ' Min');
+    }
+
+    if (!parts.length) {
+        return '';
+    }
+
+    return '<span>•</span><span>' + escapeHtml(parts.join(' • ')) + '</span>';
+}
+
+function getMaterialClass(type, path) {
+    var value = String(type || '').toLowerCase();
+    var ext = getStudentFileExtension(path);
+
+    if (value.includes('pdf') || ext === 'pdf') {
+        return 'pdf';
+    }
+
+    if (value.includes('ppt') || value.includes('slide') || ext === 'ppt' || ext === 'pptx') {
+        return 'ppt';
+    }
+
+    if (value.includes('video') || ['mp4', 'mov', 'avi', 'mkv'].includes(ext)) {
+        return 'video';
+    }
+
+    return 'pdf';
+}
+
+function getMaterialIcon(type, path) {
+    var value = String(type || '').toLowerCase();
+    var ext = getStudentFileExtension(path);
+
+    if (value.includes('pdf') || ext === 'pdf') {
+        return 'bi-file-earmark-pdf';
+    }
+
+    if (value.includes('ppt') || value.includes('slide') || ext === 'ppt' || ext === 'pptx') {
+        return 'bi-file-earmark-slides';
+    }
+
+    if (value.includes('video') || ['mp4', 'mov', 'avi', 'mkv'].includes(ext)) {
+        return 'bi-play-btn';
+    }
+
+    if (value.includes('image') || ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'].includes(ext)) {
+        return 'bi-file-earmark-image';
+    }
+
+    if (['doc', 'docx'].includes(ext)) {
+        return 'bi-file-earmark-word';
+    }
+
+    if (['xls', 'xlsx', 'csv'].includes(ext)) {
+        return 'bi-file-earmark-excel';
+    }
+
+    return 'bi-file-earmark-text';
+}
+
+function getStudentFileExtension(path) {
+    if (!path) {
+        return '';
+    }
+
+    var cleanPath = String(path).split('?')[0].split('#')[0];
+    var parts = cleanPath.split('.');
+
+    if (parts.length < 2) {
+        return '';
+    }
+
+    return parts[parts.length - 1].toLowerCase();
+}
+
+function isStudentFileViewable(path, type) {
+    var value = String(type || '').toLowerCase();
+    var ext = getStudentFileExtension(path);
+
+    if (value.includes('pdf') || ext === 'pdf') {
+        return true;
+    }
+
+    if (value.includes('image') || ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'].includes(ext)) {
+        return true;
+    }
+
+    return false;
 }
 
 /* =========================
@@ -948,22 +1313,22 @@ function formatStudentCourseDateTime(value) {
     });
 }
 
-function escapeHtml(value) {
-    if (value === null || value === undefined) {
-        return '';
+function formatStudentAssignmentDateTime(value) {
+    var date = parseStudentLocalDate(value);
+
+    if (!date) {
+        return 'N/A';
     }
 
-    return String(value)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#039;');
+    return date.toLocaleString('en-US', {
+        month: 'short',
+        day: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+    });
 }
 
-function escapeAttribute(value) {
-    return escapeHtml(value).replace(/`/g, '&#096;');
-}
 function parseStudentServerDate(value) {
     if (!value) {
         return null;
@@ -971,8 +1336,6 @@ function parseStudentServerDate(value) {
 
     var text = String(value);
 
-    // If backend sends UTC DateTime without Z, treat it as UTC.
-    // Example: 2026-06-16T20:28:00 -> 2026-06-16T20:28:00Z
     if (
         !text.endsWith('Z') &&
         !text.includes('+') &&
@@ -988,4 +1351,35 @@ function parseStudentServerDate(value) {
     }
 
     return date;
+}
+
+function parseStudentLocalDate(value) {
+    if (!value) {
+        return null;
+    }
+
+    var date = new Date(String(value));
+
+    if (isNaN(date.getTime())) {
+        return null;
+    }
+
+    return date;
+}
+
+function escapeHtml(value) {
+    if (value === null || value === undefined) {
+        return '';
+    }
+
+    return String(value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+}
+
+function escapeAttribute(value) {
+    return escapeHtml(value).replace(/`/g, '&#096;');
 }

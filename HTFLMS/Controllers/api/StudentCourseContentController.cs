@@ -179,5 +179,26 @@ namespace HTFLMS.Controllers.api
 
             return Ok(result);
         }
+        //////////////////Slides And Assignments///////////////
+
+        [HttpGet("{courseId:int}/materials-assignments")]
+        public async Task<IActionResult> GetMaterialsAndAssignments(int courseId)
+        {
+            var studentId = GetStudentId();
+
+            if (studentId == null)
+            {
+                return Unauthorized(new APIError(401, "Student session is invalid. Please login again."));
+            }
+
+            var result = await uow.StudentCourseContentService.GetMaterialsAndAssignmentsAsync(studentId.Value, courseId);
+
+            if (result == null)
+            {
+                return NotFound(new APIError(404, "Course materials and assignments were not found or you are not enrolled in this course."));
+            }
+
+            return Ok(result);
+        }
     }
 }

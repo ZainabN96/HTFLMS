@@ -18,5 +18,6 @@ namespace HTFLMS.Data.IServices
             StudentCourseContentQuizSubmitDto dto);
 
         Task<StudentCourseContentQuizReviewDto?> GetQuizReviewAsync(int studentId, int quizId);
+        Task<StudentCourseContentMaterialsAssignmentsDto?> GetMaterialsAndAssignmentsAsync(int studentId, int courseId);
     }
 }

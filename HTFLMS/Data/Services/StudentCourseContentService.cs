@@ -668,6 +668,112 @@ namespace HTFLMS.Data.Services
             };
         }
 
+        public async Task<StudentCourseContentMaterialsAssignmentsDto?> GetMaterialsAndAssignmentsAsync(int studentId, int courseId)
+        {
+            var course = await GetAllowedCourseAsync(studentId, courseId);
+
+            if (course == null)
+            {
+                return null;
+            }
+
+            var moduleAccessMap = await GetModuleAccessMapAsync(studentId, courseId);
+
+            var activeModules = await context.Modules
+                .Where(x => x.CourseId == courseId && x.IsActive)
+                .Select(x => new
+                {
+                    x.Id,
+                    x.Title
+                })
+                .ToListAsync();
+
+            var activeModuleIds = activeModules.Select(x => x.Id).ToList();
+
+            var materials = await context.Materials
+                .Include(x => x.Module)
+                .Where(x =>
+                    x.CourseId == courseId &&
+                    x.IsActive &&
+                    (x.ModuleId == null || activeModuleIds.Contains(x.ModuleId.Value)))
+                .OrderBy(x => x.ModuleId == null ? 0 : 1)
+                .ThenBy(x => x.Module != null ? x.Module.DisplayOrder : 0)
+                .ThenBy(x => x.CreatedAt)
+                .ToListAsync();
+
+            var assignments = await context.Assignments
+                .Include(x => x.Module)
+                .Include(x => x.Submissions)
+                .Where(x =>
+                    x.CourseId == courseId &&
+                    x.IsActive &&
+                    (x.ModuleId == null || activeModuleIds.Contains(x.ModuleId.Value)))
+                .OrderBy(x => x.ModuleId == null ? 0 : 1)
+                .ThenBy(x => x.Module != null ? x.Module.DisplayOrder : 0)
+                .ThenBy(x => x.DueDateTime)
+                .ToListAsync();
+
+            return new StudentCourseContentMaterialsAssignmentsDto
+            {
+                CourseId = courseId,
+                Materials = materials.Select(material =>
+                {
+                    var isLocked = material.ModuleId.HasValue &&
+                        moduleAccessMap.ContainsKey(material.ModuleId.Value) &&
+                        moduleAccessMap[material.ModuleId.Value] == false;
+
+                    return new StudentCourseContentMaterialDto
+                    {
+                        Id = material.Id,
+                        ModuleId = material.ModuleId,
+                        ModuleTitle = material.Module?.Title ?? "Module not specified",
+                        IsLocked = isLocked,
+                        Title = material.Title,
+                        ContentType = material.ContentType,
+                        FilePath = material.FilePath,
+                        ExternalUrl = material.ExternalUrl,
+                        Pages = material.Pages,
+                        Slides = material.Slides,
+                        Minutes = material.Minutes
+                    };
+                }).ToList(),
+
+                Assignments = assignments.Select(assignment =>
+                {
+                    var latestSubmission = assignment.Submissions?
+                        .Where(x => x.StudentId == studentId)
+                        .OrderByDescending(x => x.SubmittedAt)
+                        .FirstOrDefault();
+
+                    var isLocked = assignment.ModuleId.HasValue &&
+                        moduleAccessMap.ContainsKey(assignment.ModuleId.Value) &&
+                        moduleAccessMap[assignment.ModuleId.Value] == false;
+
+                    return new StudentCourseContentAssignmentDto
+                    {
+                        Id = assignment.Id,
+                        ModuleId = assignment.ModuleId,
+                        ModuleTitle = assignment.Module?.Title ?? "Module not specified",
+                        IsLocked = isLocked,
+                        Title = assignment.Title,
+                        Description = assignment.Description,
+                        Marks = assignment.Marks,
+                        DueDateTime = assignment.DueDateTime,
+                        FilePath = assignment.FilePath,
+                        IsSubmitted = latestSubmission != null,
+                        IsGraded = latestSubmission?.IsGraded ?? false,
+                        ObtainedMarks = latestSubmission?.ObtainedMarks,
+                        Feedback = latestSubmission?.Feedback,
+                        SubmissionStatus = latestSubmission == null
+                            ? "Pending Submission"
+                            : latestSubmission.IsGraded
+                                ? "Graded"
+                                : "Submitted"
+                    };
+                }).ToList()
+            };
+        }
+
         private async Task<Course?> GetAllowedCourseAsync(int studentId, int courseId)
         {
             var isEnrolled = await context.CourseEnrollments
@@ -704,6 +810,29 @@ namespace HTFLMS.Data.Services
             return modules
                 .Where(x => x.Lessons != null && x.Lessons.Any(l => l.IsActive))
                 .ToList();
+        }
+
+        private async Task<Dictionary<int, bool>> GetModuleAccessMapAsync(int studentId, int courseId)
+        {
+            var modules = await GetVisibleModulesWithQuizAsync(courseId);
+
+            var lessonProgresses = await context.LessonProgresses
+                .Where(x => x.StudentId == studentId)
+                .ToListAsync();
+
+            var quizAttempts = await context.Set<StudentQuizAttempt>()
+                .Where(x => x.StudentId == studentId)
+                .ToListAsync();
+
+            var moduleDtos = modules.Select(module => new StudentCourseContentModuleDto
+            {
+                Id = module.Id,
+                IsCompleted = IsModuleCompleted(module, lessonProgresses, quizAttempts)
+            }).ToList();
+
+            ApplyModuleAccess(moduleDtos);
+
+            return moduleDtos.ToDictionary(x => x.Id, x => x.IsAccessible);
         }
 
         private async Task<int> CalculateCourseProgressAsync(int studentId, int courseId)
@@ -853,25 +982,9 @@ namespace HTFLMS.Data.Services
 
         private async Task<bool> IsModuleAccessibleAsync(int studentId, int courseId, int moduleId)
         {
-            var modules = await GetVisibleModulesWithQuizAsync(courseId);
+            var moduleAccessMap = await GetModuleAccessMapAsync(studentId, courseId);
 
-            var lessonProgresses = await context.LessonProgresses
-                .Where(x => x.StudentId == studentId)
-                .ToListAsync();
-
-            var quizAttempts = await context.Set<StudentQuizAttempt>()
-                .Where(x => x.StudentId == studentId)
-                .ToListAsync();
-
-            var moduleDtos = modules.Select(module => new StudentCourseContentModuleDto
-            {
-                Id = module.Id,
-                IsCompleted = IsModuleCompleted(module, lessonProgresses, quizAttempts)
-            }).ToList();
-
-            ApplyModuleAccess(moduleDtos);
-
-            return moduleDtos.Any(x => x.Id == moduleId && x.IsAccessible);
+            return moduleAccessMap.ContainsKey(moduleId) && moduleAccessMap[moduleId];
         }
 
         private async Task<List<StudentQuizAttempt>> GetStudentQuizAttemptsAsync(int studentId, int quizId)
