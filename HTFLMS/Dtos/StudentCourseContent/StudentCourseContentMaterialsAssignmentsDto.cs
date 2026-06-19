@@ -63,5 +63,31 @@
         public string? Feedback { get; set; }
 
         public string SubmissionStatus { get; set; } = "Pending Submission";
+
+        public string? SubmittedFilePath { get; set; }
+
+        public string? SubmittedText { get; set; }
+
+        public DateTime? SubmittedAt { get; set; }
+
+        public bool CanSubmit { get; set; }
+
+        public bool IsSubmissionClosed { get; set; }
+
+        public string SubmissionMessage { get; set; } = "";
+    }
+
+    public class StudentCourseContentAssignmentSubmitResultDto
+    {
+        public bool Success { get; set; }
+
+        public string Message { get; set; } = "";
+    }
+
+    public class StudentCourseContentAssignmentUnsubmitResultDto
+    {
+        public bool Success { get; set; }
+
+        public string Message { get; set; } = "";
     }
 }

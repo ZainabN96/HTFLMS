@@ -16,6 +16,7 @@
         IManageStudentService ManageStudentService { get; }
         IStudentGradesService StudentGradesService { get; }
         IStudentCourseContentService StudentCourseContentService { get; }
+        ITrainerAssignmentGradingService TrainerAssignmentGradingService { get; }
         Task<bool> SaveAsync();
     }
 }

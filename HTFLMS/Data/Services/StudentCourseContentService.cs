@@ -1,6 +1,12 @@
-﻿using HTFLMS.Data.IServices;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+using HTFLMS.Data.IServices;
 using HTFLMS.Dtos.StudentCourseContent;
 using HTFLMS.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
 namespace HTFLMS.Data.Services
@@ -12,6 +18,25 @@ namespace HTFLMS.Data.Services
         private const int QuizAttemptsAllowed = 3;
         private const int QuizPassingPercentage = 60;
         private const int QuizLockHours = 1;
+        private const long MaxSubmissionFileSize = 50 * 1024 * 1024;
+
+        private static readonly HashSet<string> AllowedSubmissionExtensions = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+        {
+            ".pdf",
+            ".doc",
+            ".docx",
+            ".ppt",
+            ".pptx",
+            ".xls",
+            ".xlsx",
+            ".jpg",
+            ".jpeg",
+            ".png",
+            ".zip",
+            ".rar",
+            ".mp4",
+            ".webm"
+        };
 
         public StudentCourseContentService(ApplicationDbContext context)
         {
@@ -245,8 +270,8 @@ namespace HTFLMS.Data.Services
                 .Include(x => x.Course)
                 .Include(x => x.Lessons)
                 .Include(x => x.Quiz!)
-                    .ThenInclude(q => q.Questions!)
-                    .ThenInclude(qn => qn.Options)
+                .ThenInclude(q => q.Questions!)
+                .ThenInclude(qn => qn.Options)
                 .FirstOrDefaultAsync(x =>
                     x.Id == moduleId &&
                     x.IsActive);
@@ -322,8 +347,8 @@ namespace HTFLMS.Data.Services
                 .Include(x => x.Course)
                 .Include(x => x.Lessons)
                 .Include(x => x.Quiz!)
-                    .ThenInclude(q => q.Questions!)
-                    .ThenInclude(qn => qn.Options)
+                .ThenInclude(q => q.Questions!)
+                .ThenInclude(qn => qn.Options)
                 .FirstOrDefaultAsync(x =>
                     x.Id == dto.ModuleId &&
                     x.IsActive);
@@ -393,7 +418,6 @@ namespace HTFLMS.Data.Services
 
             var attempts = await GetStudentQuizAttemptsAsync(studentId, quiz.Id);
             var resets = await GetStudentQuizResetsAsync(studentId, quiz.Id);
-
             var stateBeforeSubmit = GetQuizAttemptState(quiz.Id, attempts, resets);
 
             if (stateBeforeSubmit.AttemptsLeft <= 0)
@@ -515,10 +539,7 @@ namespace HTFLMS.Data.Services
             foreach (var question in questions)
             {
                 var submittedAnswer = dto.Answers.First(x => x.QuestionId == question.Id);
-
-                var selectedOption = question.Options!
-                    .First(x => x.Id == submittedAnswer.SelectedOptionId);
-
+                var selectedOption = question.Options!.First(x => x.Id == submittedAnswer.SelectedOptionId);
                 var isCorrect = selectedOption.IsCorrect;
 
                 if (isCorrect)
@@ -595,10 +616,10 @@ namespace HTFLMS.Data.Services
         {
             var attempt = await context.Set<StudentQuizAttempt>()
                 .Include(x => x.Quiz)
-                    .ThenInclude(q => q!.Module)
+                .ThenInclude(q => q!.Module)
                 .Include(x => x.Quiz)
-                    .ThenInclude(q => q!.Questions!)
-                    .ThenInclude(qn => qn.Options)
+                .ThenInclude(q => q!.Questions!)
+                .ThenInclude(qn => qn.Options)
                 .Include(x => x.Answers)
                 .Where(x =>
                     x.StudentId == studentId &&
@@ -625,6 +646,7 @@ namespace HTFLMS.Data.Services
                 .ToList() ?? new List<QuizQuestion>();
 
             var answers = attempt.Answers?.ToList() ?? new List<StudentQuizAttemptAnswer>();
+
             var revealCorrect = attempt.IsPassed;
 
             return new StudentCourseContentQuizReviewDto
@@ -737,7 +759,6 @@ namespace HTFLMS.Data.Services
                         Minutes = material.Minutes
                     };
                 }).ToList(),
-
                 Assignments = assignments.Select(assignment =>
                 {
                     var latestSubmission = assignment.Submissions?
@@ -748,6 +769,28 @@ namespace HTFLMS.Data.Services
                     var isLocked = assignment.ModuleId.HasValue &&
                         moduleAccessMap.ContainsKey(assignment.ModuleId.Value) &&
                         moduleAccessMap[assignment.ModuleId.Value] == false;
+
+                    var isSubmissionClosed = DateTime.Now > assignment.DueDateTime;
+                    var isSubmitted = latestSubmission != null;
+
+                    var message = "";
+
+                    if (isLocked)
+                    {
+                        message = "This assignment is locked until its module is unlocked.";
+                    }
+                    else if (isSubmissionClosed)
+                    {
+                        message = "Submission closed. Due date has passed.";
+                    }
+                    else if (isSubmitted)
+                    {
+                        message = "Assignment submitted. You can unsubmit before due date.";
+                    }
+                    else
+                    {
+                        message = "Submission is open.";
+                    }
 
                     return new StudentCourseContentAssignmentDto
                     {
@@ -760,7 +803,7 @@ namespace HTFLMS.Data.Services
                         Marks = assignment.Marks,
                         DueDateTime = assignment.DueDateTime,
                         FilePath = assignment.FilePath,
-                        IsSubmitted = latestSubmission != null,
+                        IsSubmitted = isSubmitted,
                         IsGraded = latestSubmission?.IsGraded ?? false,
                         ObtainedMarks = latestSubmission?.ObtainedMarks,
                         Feedback = latestSubmission?.Feedback,
@@ -768,9 +811,373 @@ namespace HTFLMS.Data.Services
                             ? "Pending Submission"
                             : latestSubmission.IsGraded
                                 ? "Graded"
-                                : "Submitted"
+                                : "Submitted",
+                        SubmittedFilePath = latestSubmission?.SubmittedFilePath,
+                        SubmittedText = latestSubmission?.SubmittedText,
+                        SubmittedAt = latestSubmission?.SubmittedAt,
+                        CanSubmit = !isLocked && !isSubmissionClosed && latestSubmission == null,
+                        IsSubmissionClosed = isSubmissionClosed,
+                        SubmissionMessage = message
                     };
                 }).ToList()
+            };
+        }
+
+        public async Task<StudentCourseContentAssignmentSubmitResultDto?> SubmitAssignmentAsync(
+            int studentId,
+            int assignmentId,
+            IFormFile? file,
+            string? solutionLink)
+        {
+            var assignment = await context.Assignments
+                .Include(x => x.Course)
+                .Include(x => x.Module)
+                .FirstOrDefaultAsync(x =>
+                    x.Id == assignmentId &&
+                    x.IsActive);
+
+            if (assignment == null || assignment.Course == null)
+            {
+                return null;
+            }
+
+            var course = await GetAllowedCourseAsync(studentId, assignment.CourseId);
+
+            if (course == null)
+            {
+                return null;
+            }
+
+            if (assignment.ModuleId.HasValue)
+            {
+                var isAccessible = await IsModuleAccessibleAsync(studentId, assignment.CourseId, assignment.ModuleId.Value);
+
+                if (!isAccessible)
+                {
+                    return new StudentCourseContentAssignmentSubmitResultDto
+                    {
+                        Success = false,
+                        Message = "This assignment is locked until its module is unlocked."
+                    };
+                }
+            }
+
+            if (DateTime.Now > assignment.DueDateTime)
+            {
+                return new StudentCourseContentAssignmentSubmitResultDto
+                {
+                    Success = false,
+                    Message = "Submission closed. Due date has passed."
+                };
+            }
+
+            var existingSubmission = await context.AssignmentSubmissions
+                .Where(x =>
+                    x.AssignmentId == assignmentId &&
+                    x.StudentId == studentId)
+                .OrderByDescending(x => x.SubmittedAt)
+                .FirstOrDefaultAsync();
+
+            if (existingSubmission != null)
+            {
+                return new StudentCourseContentAssignmentSubmitResultDto
+                {
+                    Success = false,
+                    Message = "You have already submitted this assignment. Please unsubmit first if you want to submit again."
+                };
+            }
+
+            var hasFile = file != null && file.Length > 0;
+            var hasLink = !string.IsNullOrWhiteSpace(solutionLink);
+
+            if (!hasFile && !hasLink)
+            {
+                return new StudentCourseContentAssignmentSubmitResultDto
+                {
+                    Success = false,
+                    Message = "Please upload a file or paste a solution link."
+                };
+            }
+
+            if (hasFile && hasLink)
+            {
+                return new StudentCourseContentAssignmentSubmitResultDto
+                {
+                    Success = false,
+                    Message = "Please submit either a file or a link, not both."
+                };
+            }
+
+            string? savedFilePath = null;
+            string? cleanedLink = null;
+
+            if (hasFile && file != null)
+            {
+                var fileValidationMessage = ValidateSubmissionFile(file);
+
+                if (!string.IsNullOrWhiteSpace(fileValidationMessage))
+                {
+                    return new StudentCourseContentAssignmentSubmitResultDto
+                    {
+                        Success = false,
+                        Message = fileValidationMessage
+                    };
+                }
+
+                savedFilePath = await SaveSubmissionFileAsync(file, assignmentId, studentId);
+            }
+
+            if (hasLink)
+            {
+                cleanedLink = solutionLink!.Trim();
+
+                if (!IsValidHttpUrl(cleanedLink))
+                {
+                    return new StudentCourseContentAssignmentSubmitResultDto
+                    {
+                        Success = false,
+                        Message = "Please enter a valid http or https link."
+                    };
+                }
+            }
+
+            var submission = new AssignmentSubmission
+            {
+                AssignmentId = assignmentId,
+                StudentId = studentId,
+                SubmittedFilePath = savedFilePath,
+                SubmittedText = cleanedLink,
+                SubmittedAt = DateTime.UtcNow,
+                IsGraded = false
+            };
+
+            context.AssignmentSubmissions.Add(submission);
+            await context.SaveChangesAsync();
+
+            return new StudentCourseContentAssignmentSubmitResultDto
+            {
+                Success = true,
+                Message = "Assignment solution submitted successfully."
+            };
+        }
+
+        public async Task<StudentCourseContentAssignmentUnsubmitResultDto?> UnsubmitAssignmentAsync(
+            int studentId,
+            int assignmentId)
+        {
+            var assignment = await context.Assignments
+                .FirstOrDefaultAsync(x =>
+                    x.Id == assignmentId &&
+                    x.IsActive);
+
+            if (assignment == null)
+            {
+                return null;
+            }
+
+            var course = await GetAllowedCourseAsync(studentId, assignment.CourseId);
+
+            if (course == null)
+            {
+                return null;
+            }
+
+            if (DateTime.Now > assignment.DueDateTime)
+            {
+                return new StudentCourseContentAssignmentUnsubmitResultDto
+                {
+                    Success = false,
+                    Message = "You cannot unsubmit this assignment because the due date has passed."
+                };
+            }
+
+            var submission = await context.AssignmentSubmissions
+                .Where(x =>
+                    x.AssignmentId == assignmentId &&
+                    x.StudentId == studentId)
+                .OrderByDescending(x => x.SubmittedAt)
+                .FirstOrDefaultAsync();
+
+            if (submission == null)
+            {
+                return new StudentCourseContentAssignmentUnsubmitResultDto
+                {
+                    Success = false,
+                    Message = "No submitted solution was found for this assignment."
+                };
+            }
+
+            if (submission.IsGraded)
+            {
+                return new StudentCourseContentAssignmentUnsubmitResultDto
+                {
+                    Success = false,
+                    Message = "This assignment is already graded, so it cannot be unsubmitted."
+                };
+            }
+
+            DeleteSubmittedFileIfExists(submission.SubmittedFilePath);
+
+            context.AssignmentSubmissions.Remove(submission);
+            await context.SaveChangesAsync();
+
+            return new StudentCourseContentAssignmentUnsubmitResultDto
+            {
+                Success = true,
+                Message = "Assignment solution removed successfully. You can submit again before the due date."
+            };
+        }
+
+        public async Task<StudentCourseContentNotesDto?> GetNotesAsync(int studentId, int courseId)
+        {
+            var course = await GetAllowedCourseAsync(studentId, courseId);
+
+            if (course == null)
+            {
+                return null;
+            }
+
+            var notes = await context.StudentCourseNotes
+                .Where(x =>
+                    x.StudentId == studentId &&
+                    x.CourseId == courseId)
+                .OrderByDescending(x => x.UpdatedAt ?? x.CreatedAt)
+                .ToListAsync();
+
+            var latestDate = notes
+                .Select(x => x.UpdatedAt ?? x.CreatedAt)
+                .OrderByDescending(x => x)
+                .FirstOrDefault();
+
+            return new StudentCourseContentNotesDto
+            {
+                CourseId = courseId,
+                TotalNotes = notes.Count,
+                RecentActivityText = notes.Count == 0 ? "No activity yet" : GetSimpleActivityText(latestDate),
+                LastUpdatedText = notes.Count == 0 ? "No notes yet" : GetSimpleActivityText(latestDate),
+                Notes = notes.Select(MapNoteDto).ToList()
+            };
+        }
+
+        public async Task<StudentCourseContentNoteActionResultDto?> CreateNoteAsync(
+            int studentId,
+            int courseId,
+            StudentCourseContentNoteSaveDto dto)
+        {
+            var course = await GetAllowedCourseAsync(studentId, courseId);
+
+            if (course == null)
+            {
+                return null;
+            }
+
+            var validationMessage = ValidateNoteDto(dto);
+
+            if (!string.IsNullOrWhiteSpace(validationMessage))
+            {
+                return new StudentCourseContentNoteActionResultDto
+                {
+                    Success = false,
+                    Message = validationMessage
+                };
+            }
+
+            var note = new StudentCourseNote
+            {
+                StudentId = studentId,
+                CourseId = courseId,
+                Title = dto.Title.Trim(),
+                Description = dto.Description.Trim(),
+                CreatedAt = DateTime.UtcNow
+            };
+
+            context.StudentCourseNotes.Add(note);
+            await context.SaveChangesAsync();
+
+            return new StudentCourseContentNoteActionResultDto
+            {
+                Success = true,
+                Message = "Note saved successfully.",
+                Note = MapNoteDto(note)
+            };
+        }
+
+        public async Task<StudentCourseContentNoteActionResultDto?> UpdateNoteAsync(
+            int studentId,
+            int noteId,
+            StudentCourseContentNoteSaveDto dto)
+        {
+            var note = await context.StudentCourseNotes
+                .FirstOrDefaultAsync(x =>
+                    x.Id == noteId &&
+                    x.StudentId == studentId);
+
+            if (note == null)
+            {
+                return null;
+            }
+
+            var course = await GetAllowedCourseAsync(studentId, note.CourseId);
+
+            if (course == null)
+            {
+                return null;
+            }
+
+            var validationMessage = ValidateNoteDto(dto);
+
+            if (!string.IsNullOrWhiteSpace(validationMessage))
+            {
+                return new StudentCourseContentNoteActionResultDto
+                {
+                    Success = false,
+                    Message = validationMessage
+                };
+            }
+
+            note.Title = dto.Title.Trim();
+            note.Description = dto.Description.Trim();
+            note.UpdatedAt = DateTime.UtcNow;
+
+            context.StudentCourseNotes.Update(note);
+            await context.SaveChangesAsync();
+
+            return new StudentCourseContentNoteActionResultDto
+            {
+                Success = true,
+                Message = "Note updated successfully.",
+                Note = MapNoteDto(note)
+            };
+        }
+
+        public async Task<StudentCourseContentNoteActionResultDto?> DeleteNoteAsync(
+            int studentId,
+            int noteId)
+        {
+            var note = await context.StudentCourseNotes
+                .FirstOrDefaultAsync(x =>
+                    x.Id == noteId &&
+                    x.StudentId == studentId);
+
+            if (note == null)
+            {
+                return null;
+            }
+
+            var course = await GetAllowedCourseAsync(studentId, note.CourseId);
+
+            if (course == null)
+            {
+                return null;
+            }
+
+            context.StudentCourseNotes.Remove(note);
+            await context.SaveChangesAsync();
+
+            return new StudentCourseContentNoteActionResultDto
+            {
+                Success = true,
+                Message = "Note deleted successfully."
             };
         }
 
@@ -800,7 +1207,7 @@ namespace HTFLMS.Data.Services
             var modules = await context.Modules
                 .Include(x => x.Lessons)
                 .Include(x => x.Quiz!)
-                    .ThenInclude(q => q.Questions)
+                .ThenInclude(q => q.Questions)
                 .Where(x =>
                     x.CourseId == courseId &&
                     x.IsActive == true)
@@ -1081,6 +1488,160 @@ namespace HTFLMS.Data.Services
                                 ? "Retake Quiz"
                                 : "Quiz Locked"
             };
+        }
+
+        private static string ValidateSubmissionFile(IFormFile file)
+        {
+            if (file.Length <= 0)
+            {
+                return "Please upload a valid file.";
+            }
+
+            if (file.Length > MaxSubmissionFileSize)
+            {
+                return "File size limit exceeded. Please upload your file/video to Google Drive, OneDrive, or any cloud storage and paste the link here.";
+            }
+
+            var extension = Path.GetExtension(file.FileName);
+
+            if (string.IsNullOrWhiteSpace(extension))
+            {
+                return "File type is not valid.";
+            }
+
+            if (!AllowedSubmissionExtensions.Contains(extension))
+            {
+                return "This file type is not allowed. Please upload PDF, Word, PPT, Excel, image, ZIP/RAR, MP4, WEBM, or paste a valid link.";
+            }
+
+            return "";
+        }
+
+        private static async Task<string> SaveSubmissionFileAsync(IFormFile file, int assignmentId, int studentId)
+        {
+            var webRootPath = GetWebRootPath();
+
+            var folderPath = Path.Combine(
+                webRootPath,
+                "uploads",
+                "assignments",
+                "submissions");
+
+            if (!Directory.Exists(folderPath))
+            {
+                Directory.CreateDirectory(folderPath);
+            }
+
+            var extension = Path.GetExtension(file.FileName);
+            var fileName = $"assignment_{assignmentId}_student_{studentId}_{Guid.NewGuid():N}{extension}";
+            var fullPath = Path.Combine(folderPath, fileName);
+
+            await using (var stream = new FileStream(fullPath, FileMode.Create))
+            {
+                await file.CopyToAsync(stream);
+            }
+
+            return $"/uploads/assignments/submissions/{fileName}";
+        }
+
+        private static void DeleteSubmittedFileIfExists(string? submittedFilePath)
+        {
+            if (string.IsNullOrWhiteSpace(submittedFilePath))
+            {
+                return;
+            }
+
+            var cleanPath = submittedFilePath.TrimStart('/').Replace('/', Path.DirectorySeparatorChar);
+
+            var allowedFolder = Path.Combine(
+                "uploads",
+                "assignments",
+                "submissions");
+
+            if (!cleanPath.StartsWith(allowedFolder, StringComparison.OrdinalIgnoreCase))
+            {
+                return;
+            }
+
+            var fullPath = Path.Combine(GetWebRootPath(), cleanPath);
+
+            if (File.Exists(fullPath))
+            {
+                File.Delete(fullPath);
+            }
+        }
+
+        private static string GetWebRootPath()
+        {
+            return Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
+        }
+
+        private static bool IsValidHttpUrl(string value)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                return false;
+            }
+
+            return Uri.TryCreate(value, UriKind.Absolute, out var uriResult) &&
+                (uriResult.Scheme == Uri.UriSchemeHttp ||
+                 uriResult.Scheme == Uri.UriSchemeHttps);
+        }
+
+        private static StudentCourseContentNoteDto MapNoteDto(StudentCourseNote note)
+        {
+            return new StudentCourseContentNoteDto
+            {
+                Id = note.Id,
+                CourseId = note.CourseId,
+                Title = note.Title,
+                Description = note.Description,
+                CreatedAt = note.CreatedAt,
+                UpdatedAt = note.UpdatedAt
+            };
+        }
+
+        private static string ValidateNoteDto(StudentCourseContentNoteSaveDto dto)
+        {
+            if (dto == null)
+            {
+                return "Note data is required.";
+            }
+
+            if (string.IsNullOrWhiteSpace(dto.Title))
+            {
+                return "Please enter note title.";
+            }
+
+            if (dto.Title.Trim().Length > 200)
+            {
+                return "Note title cannot be more than 200 characters.";
+            }
+
+            if (string.IsNullOrWhiteSpace(dto.Description))
+            {
+                return "Please write your note.";
+            }
+
+            return "";
+        }
+
+        private static string GetSimpleActivityText(DateTime date)
+        {
+            var localDate = date.ToLocalTime().Date;
+            var today = DateTime.Now.Date;
+
+            if (localDate == today)
+            {
+                return "Today";
+            }
+
+            if (localDate == today.AddDays(-1))
+            {
+                return "Yesterday";
+            }
+
+            return date.ToLocalTime().ToString("dd MMM, yyyy");
         }
 
         private class QuizAttemptStateDto

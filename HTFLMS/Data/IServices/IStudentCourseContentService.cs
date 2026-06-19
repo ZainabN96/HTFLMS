@@ -19,5 +19,31 @@ namespace HTFLMS.Data.IServices
 
         Task<StudentCourseContentQuizReviewDto?> GetQuizReviewAsync(int studentId, int quizId);
         Task<StudentCourseContentMaterialsAssignmentsDto?> GetMaterialsAndAssignmentsAsync(int studentId, int courseId);
+        Task<StudentCourseContentAssignmentSubmitResultDto?> SubmitAssignmentAsync(
+            int studentId,
+            int assignmentId,
+            IFormFile? file,
+            string? solutionLink);
+
+        Task<StudentCourseContentAssignmentUnsubmitResultDto?> UnsubmitAssignmentAsync(
+            int studentId,
+            int assignmentId);
+        Task<StudentCourseContentNotesDto?> GetNotesAsync(int studentId, int courseId);
+
+        Task<StudentCourseContentNoteActionResultDto?> CreateNoteAsync(
+            int studentId,
+            int courseId,
+            StudentCourseContentNoteSaveDto dto);
+
+        Task<StudentCourseContentNoteActionResultDto?> UpdateNoteAsync(
+            int studentId,
+            int noteId,
+            StudentCourseContentNoteSaveDto dto);
+
+        Task<StudentCourseContentNoteActionResultDto?> DeleteNoteAsync(
+            int studentId,
+            int noteId);
     }
 }
+
+

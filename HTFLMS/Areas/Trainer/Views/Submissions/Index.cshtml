@@ -18,7 +18,7 @@
                 <div class="dashboard-stat-title">Total Submissions</div>
                 <i class="bi bi-inbox"></i>
             </div>
-            <div class="dashboard-stat-value">186</div>
+            <div class="dashboard-stat-value" id="trainerSubmissionTotal">0</div>
             <div class="dashboard-stat-meta">Across all assigned courses</div>
         </div>
 
@@ -27,7 +27,7 @@
                 <div class="dashboard-stat-title">Graded</div>
                 <i class="bi bi-check2-circle"></i>
             </div>
-            <div class="dashboard-stat-value">140</div>
+            <div class="dashboard-stat-value" id="trainerSubmissionGraded">0</div>
             <div class="dashboard-stat-meta">Reviewed and graded</div>
         </div>
 
@@ -36,7 +36,7 @@
                 <div class="dashboard-stat-title">Pending</div>
                 <i class="bi bi-hourglass-split"></i>
             </div>
-            <div class="dashboard-stat-value">34</div>
+            <div class="dashboard-stat-value" id="trainerSubmissionPending">0</div>
             <div class="dashboard-stat-meta">Waiting for grading</div>
         </div>
 
@@ -45,14 +45,13 @@
                 <div class="dashboard-stat-title">Missing / Not Submitted</div>
                 <i class="bi bi-exclamation-circle"></i>
             </div>
-            <div class="dashboard-stat-value">12</div>
+            <div class="dashboard-stat-value" id="trainerSubmissionMissing">0</div>
             <div class="dashboard-stat-meta">No student submission yet</div>
         </div>
     </div>
 
     <!-- FILTERS -->
     <div class="dashboard-panel trainer-content-panel trainer-submissions-filter-panel">
-
         <div class="dashboard-panel-head trainer-content-panel-head trainer-submissions-filter-head">
             <div class="dashboard-panel-title">
                 Search & Filter
@@ -60,30 +59,29 @@
 
             <div class="courses-head-search trainer-submissions-search">
                 <i class="bi bi-search"></i>
-                <input type="text" placeholder="Search student or assignment..." />
+                <input type="text"
+                       id="trainerSubmissionSearch"
+                       placeholder="Search student or assignment..." />
             </div>
         </div>
 
         <div class="trainer-submissions-filter-row">
-            <select class="course-input trainer-inline-select trainer-submissions-select">
-                <option selected>All courses</option>
-                <option>React Advanced Patterns</option>
-                <option>Node.js Backend Development</option>
-                <option>Python for Data Science</option>
+            <select class="course-input trainer-inline-select trainer-submissions-select"
+                    id="trainerSubmissionCourseFilter">
+                <option value="">All courses</option>
             </select>
 
-            <select class="course-input trainer-inline-select trainer-submissions-select">
-                <option selected>All modules</option>
-                <option>Module 1</option>
-                <option>Module 2</option>
-                <option>Module 3</option>
+            <select class="course-input trainer-inline-select trainer-submissions-select"
+                    id="trainerSubmissionModuleFilter">
+                <option value="">All modules</option>
             </select>
 
-            <select class="course-input trainer-inline-select trainer-submissions-select">
-                <option selected>All statuses</option>
-                <option>Graded</option>
-                <option>Pending</option>
-                <option>Not Submitted</option>
+            <select class="course-input trainer-inline-select trainer-submissions-select"
+                    id="trainerSubmissionStatusFilter">
+                <option value="">All statuses</option>
+                <option value="Graded">Graded</option>
+                <option value="Pending">Pending</option>
+                <option value="Not Submitted">Not Submitted</option>
             </select>
         </div>
     </div>
@@ -94,8 +92,7 @@
             <div>
                 <div class="dashboard-panel-title">Submission Records</div>
             </div>
-
-            <div class="dashboard-muted-small">6 record(s)</div>
+            <div class="dashboard-muted-small" id="trainerSubmissionRecordCount">0 record(s)</div>
         </div>
 
         <div class="dashboard-table-wrap trainer-submissions-table-wrap">
@@ -110,114 +107,83 @@
                 <div>Action</div>
             </div>
 
-            <div class="dashboard-table-row trainer-submissions-table-row">
-                <div class="dashboard-cell-strong" title="daudrana400">daudrana400</div>
-                <div title="Rewrite the abstract">Rewrite the abstract</div>
-                <div title="Full Stack Web Dev">Full Stack Web Dev</div>
-                <div title="Module 1">Module 1</div>
-                <div title="10 Mar, 08:30">10 Mar, 08:30</div>
-                <div title="Graded"><span class="pill pill-green">Graded</span></div>
-                <div class="trainer-score-good" title="18/20">18/20</div>
-                <div class="trainer-courses-actions trainer-submissions-actions">
-                    <a asp-area="Trainer"
-                       asp-controller="Submissions"
-                       asp-action="Edit"
-                       asp-route-id="1"
-                       class="dashboard-btn dashboard-btn-outline trainer-course-action-btn">
-                        Edit
-                    </a>
+            <div id="trainerSubmissionRows">
+                <div class="dashboard-table-row trainer-submissions-table-row">
+                    <div class="dashboard-cell-strong">Loading...</div>
+                    <div>—</div>
+                    <div>—</div>
+                    <div>—</div>
+                    <div>—</div>
+                    <div>—</div>
+                    <div>—</div>
+                    <div>—</div>
                 </div>
             </div>
+        </div>
 
-            <div class="dashboard-table-row trainer-submissions-table-row">
-                <div class="dashboard-cell-strong" title="daudrana400">daudrana400</div>
-                <div title="Module 1 Assessment">Module 1 Assessment</div>
-                <div title="Full Stack Web Dev">Full Stack Web Dev</div>
-                <div title="Module 1">Module 1</div>
-                <div title="09 Mar, 06:15">09 Mar, 06:15</div>
-                <div title="Graded"><span class="pill pill-green">Graded</span></div>
-                <div class="trainer-score-warn" title="23/30">23/30</div>
-                <div class="trainer-courses-actions trainer-submissions-actions">
-                    <a asp-area="Trainer"
-                       asp-controller="Submissions"
-                       asp-action="Edit"
-                       asp-route-id="2"
-                       class="dashboard-btn dashboard-btn-outline trainer-course-action-btn">
-                        Edit
-                    </a>
-                </div>
+        <div class="dashboard-muted-small" id="trainerSubmissionEmpty" style="display:none; padding:16px;">
+            No submission records found.
+        </div>
+
+        <div class="error-box" id="trainerSubmissionError"></div>
+    </div>
+</div>
+
+<!-- CUSTOM TOAST -->
+<div class="dashboard-panel"
+     id="trainerSubmissionToast"
+     style="display:none; position:fixed; right:24px; top:88px; z-index:2000; max-width:360px; padding:16px 18px; box-shadow:0 12px 35px rgba(0,0,0,0.12);">
+    <div style="display:flex; align-items:flex-start; gap:12px;">
+        <div id="trainerSubmissionToastIcon"
+             style="width:34px; height:34px; border-radius:12px; display:flex; align-items:center; justify-content:center; background:#fce8eb; color:#d21f3c; flex-shrink:0;">
+            <i class="bi bi-check2-circle"></i>
+        </div>
+
+        <div style="flex:1;">
+            <div class="dashboard-panel-title" id="trainerSubmissionToastTitle" style="font-size:15px;">
+                Success
             </div>
-
-            <div class="dashboard-table-row trainer-submissions-table-row">
-                <div class="dashboard-cell-strong" title="daudrana400">daudrana400</div>
-                <div title="Analyze the reading passage">Analyze the reading passage</div>
-                <div title="Full Stack Web Dev">Full Stack Web Dev</div>
-                <div title="Module 2">Module 2</div>
-                <div title="18 Mar, 10:42">18 Mar, 10:42</div>
-                <div title="Pending"><span class="pill pill-yellow">Pending</span></div>
-                <div class="trainer-score-muted" title="--/15">--/15</div>
-                <div class="trainer-courses-actions trainer-submissions-actions">
-                    <a asp-area="Trainer"
-                       asp-controller="Submissions"
-                       asp-action="Grade"
-                       asp-route-id="3"
-                       class="dashboard-btn trainer-sub-soft-btn trainer-course-action-btn">
-                        Grade
-                    </a>
-                </div>
+            <div class="dashboard-sub" id="trainerSubmissionToastMessage" style="margin-top:2px;">
+                Action completed successfully.
             </div>
+        </div>
 
-            <div class="dashboard-table-row trainer-submissions-table-row">
-                <div class="dashboard-cell-strong" title="daudrana400">daudrana400</div>
-                <div title="Module 2 Assessment">Module 2 Assessment</div>
-                <div title="Full Stack Web Dev">Full Stack Web Dev</div>
-                <div title="Module 2">Module 2</div>
-                <div title="—">—</div>
-                <div title="Not Submitted"><span class="trainer-pill-danger">Not Submitted</span></div>
-                <div class="trainer-score-muted" title="--/25">--/25</div>
-                <div class="trainer-courses-actions trainer-submissions-actions">
-                    <span class="trainer-action-dash">—</span>
-                </div>
-            </div>
+        <button type="button"
+                id="trainerSubmissionToastClose"
+                style="border:0; background:transparent; font-size:20px; line-height:1; cursor:pointer;">
+            ×
+        </button>
+    </div>
+</div>
+<!-- MARK ZERO CONFIRM MODAL -->
+<div id="trainerMarkZeroModal"
+     style="display:none; position:fixed; inset:0; z-index:3000; background:rgba(0,0,0,0.35); align-items:center; justify-content:center; padding:20px;">
+    <div class="dashboard-panel"
+         style="width:100%; max-width:520px; padding:24px; box-shadow:0 18px 45px rgba(0,0,0,0.18);">
+        <div class="dashboard-panel-title mb-2" id="trainerMarkZeroModalLabel">
+            Mark Missing Submission as 0
+        </div>
 
-            <div class="dashboard-table-row trainer-submissions-table-row">
-                <div class="dashboard-cell-strong" title="Ali Hassan">Ali Hassan</div>
-                <div title="Rewrite the abstract">Rewrite the abstract</div>
-                <div title="Full Stack Web Dev">Full Stack Web Dev</div>
-                <div title="Module 1">Module 1</div>
-                <div title="11 Mar, 09:00">11 Mar, 09:00</div>
-                <div title="Graded"><span class="pill pill-green">Graded</span></div>
-                <div class="trainer-score-good" title="20/20">20/20</div>
-                <div class="trainer-courses-actions trainer-submissions-actions">
-                    <a asp-area="Trainer"
-                       asp-controller="Submissions"
-                       asp-action="Edit"
-                       asp-route-id="4"
-                       class="dashboard-btn dashboard-btn-outline trainer-course-action-btn">
-                        Edit
-                    </a>
-                </div>
-            </div>
+        <p class="dashboard-sub mb-4" id="trainerMarkZeroModalText">
+            This student did not submit the assignment before the due date. Do you want to assign 0 marks?
+        </p>
 
-            <div class="dashboard-table-row trainer-submissions-table-row">
-                <div class="dashboard-cell-strong" title="Sara Malik">Sara Malik</div>
-                <div title="Rewrite the abstract">Rewrite the abstract</div>
-                <div title="Full Stack Web Dev">Full Stack Web Dev</div>
-                <div title="Module 1">Module 1</div>
-                <div title="11 Mar, 14:20">11 Mar, 14:20</div>
-                <div title="Pending"><span class="pill pill-yellow">Pending</span></div>
-                <div class="trainer-score-muted" title="--/20">--/20</div>
-                <div class="trainer-courses-actions trainer-submissions-actions">
-                    <a asp-area="Trainer"
-                       asp-controller="Submissions"
-                       asp-action="Grade"
-                       asp-route-id="5"
-                       class="dashboard-btn trainer-sub-soft-btn trainer-course-action-btn">
-                        Grade
-                    </a>
-                </div>
-            </div>
+        <div class="trainer-form-actions" style="justify-content:flex-end;">
+            <button type="button"
+                    class="dashboard-btn dashboard-btn-outline"
+                    id="trainerMarkZeroCancelBtn">
+                Cancel
+            </button>
 
+            <button type="button"
+                    class="dashboard-btn add-course-btn"
+                    id="trainerMarkZeroConfirmBtn">
+                Confirm
+            </button>
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script src="~/js/trainer/trainer-assignment-grading-index.js" asp-append-version="true"></script>
+}

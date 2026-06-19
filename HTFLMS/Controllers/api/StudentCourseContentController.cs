@@ -200,5 +200,171 @@ namespace HTFLMS.Controllers.api
 
             return Ok(result);
         }
+        [HttpPost("assignments/{assignmentId:int}/submit")]
+        public async Task<IActionResult> SubmitAssignment(
+    int assignmentId,
+    [FromForm] IFormFile? file,
+    [FromForm] string? solutionLink)
+        {
+            var studentId = GetStudentId();
+
+            if (studentId == null)
+            {
+                return Unauthorized(new APIError(401, "Student session is invalid. Please login again."));
+            }
+
+            var result = await uow.StudentCourseContentService.SubmitAssignmentAsync(
+                studentId.Value,
+                assignmentId,
+                file,
+                solutionLink);
+
+            if (result == null)
+            {
+                return BadRequest(new APIError(400, "Assignment solution could not be submitted."));
+            }
+
+            if (!result.Success)
+            {
+                return BadRequest(new APIError(400, result.Message));
+            }
+
+            return Ok(result);
+        }
+
+        [HttpPost("assignments/{assignmentId:int}/unsubmit")]
+        public async Task<IActionResult> UnsubmitAssignment(int assignmentId)
+        {
+            var studentId = GetStudentId();
+
+            if (studentId == null)
+            {
+                return Unauthorized(new APIError(401, "Student session is invalid. Please login again."));
+            }
+
+            var result = await uow.StudentCourseContentService.UnsubmitAssignmentAsync(
+                studentId.Value,
+                assignmentId);
+
+            if (result == null)
+            {
+                return BadRequest(new APIError(400, "Assignment solution could not be removed."));
+            }
+
+            if (!result.Success)
+            {
+                return BadRequest(new APIError(400, result.Message));
+            }
+
+            return Ok(result);
+        }
+        ///////////////// Notes /////////////////
+
+        [HttpGet("{courseId:int}/notes")]
+        public async Task<IActionResult> GetNotes(int courseId)
+        {
+            var studentId = GetStudentId();
+
+            if (studentId == null)
+            {
+                return Unauthorized(new APIError(401, "Student session is invalid. Please login again."));
+            }
+
+            var result = await uow.StudentCourseContentService.GetNotesAsync(studentId.Value, courseId);
+
+            if (result == null)
+            {
+                return NotFound(new APIError(404, "Course notes were not found or you are not enrolled in this course."));
+            }
+
+            return Ok(result);
+        }
+
+        [HttpPost("{courseId:int}/notes")]
+        public async Task<IActionResult> CreateNote(
+            int courseId,
+            [FromBody] StudentCourseContentNoteSaveDto dto)
+        {
+            var studentId = GetStudentId();
+
+            if (studentId == null)
+            {
+                return Unauthorized(new APIError(401, "Student session is invalid. Please login again."));
+            }
+
+            var result = await uow.StudentCourseContentService.CreateNoteAsync(
+                studentId.Value,
+                courseId,
+                dto);
+
+            if (result == null)
+            {
+                return BadRequest(new APIError(400, "Note could not be saved."));
+            }
+
+            if (!result.Success)
+            {
+                return BadRequest(new APIError(400, result.Message));
+            }
+
+            return Ok(result);
+        }
+
+        [HttpPut("notes/{noteId:int}")]
+        public async Task<IActionResult> UpdateNote(
+            int noteId,
+            [FromBody] StudentCourseContentNoteSaveDto dto)
+        {
+            var studentId = GetStudentId();
+
+            if (studentId == null)
+            {
+                return Unauthorized(new APIError(401, "Student session is invalid. Please login again."));
+            }
+
+            var result = await uow.StudentCourseContentService.UpdateNoteAsync(
+                studentId.Value,
+                noteId,
+                dto);
+
+            if (result == null)
+            {
+                return BadRequest(new APIError(400, "Note could not be updated."));
+            }
+
+            if (!result.Success)
+            {
+                return BadRequest(new APIError(400, result.Message));
+            }
+
+            return Ok(result);
+        }
+
+        [HttpDelete("notes/{noteId:int}")]
+        public async Task<IActionResult> DeleteNote(int noteId)
+        {
+            var studentId = GetStudentId();
+
+            if (studentId == null)
+            {
+                return Unauthorized(new APIError(401, "Student session is invalid. Please login again."));
+            }
+
+            var result = await uow.StudentCourseContentService.DeleteNoteAsync(
+                studentId.Value,
+                noteId);
+
+            if (result == null)
+            {
+                return BadRequest(new APIError(400, "Note could not be deleted."));
+            }
+
+            if (!result.Success)
+            {
+                return BadRequest(new APIError(400, result.Message));
+            }
+
+            return Ok(result);
+        }
     }
 }

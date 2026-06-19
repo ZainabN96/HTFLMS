@@ -2,8 +2,20 @@
     initStudentCourseContentPage();
 });
 
+var studentCourseNotesCache = [];
+
 function initStudentCourseContentPage() {
     bindStudentCourseContentTabs();
+
+    ensureStudentAssignmentSubmissionModal();
+    ensureStudentAssignmentUnsubmitModal();
+    ensureStudentMessageModal();
+
+    ensureStudentNoteModal();
+    ensureStudentNoteDeleteModal();
+
+    bindStudentAssignmentSubmissionEvents();
+    bindStudentCourseNotesEvents();
 
     var courseId = getStudentCourseIdFromUrl();
 
@@ -16,6 +28,7 @@ function initStudentCourseContentPage() {
     loadStudentCourseContentInfo(courseId);
     loadStudentCourseContentModules(courseId);
     loadStudentCourseContentMaterialsAssignments(courseId);
+    loadStudentCourseContentNotes(courseId);
 }
 
 function getStudentCourseIdFromUrl() {
@@ -546,7 +559,7 @@ function bindStudentCourseContentModuleEvents() {
                     'Lesson could not be marked as completed.'
                 );
 
-                alert(message);
+                showStudentMessageModal('Error', message);
                 button.prop('disabled', false).text('Mark as done');
             }
         });
@@ -815,9 +828,7 @@ function renderStudentCourseContentQuizReview(review, quizItem) {
     var dynamicArea = quizItem.find('.js-quiz-dynamic-area');
 
     var summaryClass = review.isPassed ? 'success' : 'error';
-    var summaryText = review.isPassed
-        ? 'Passed'
-        : 'Failed';
+    var summaryText = review.isPassed ? 'Passed' : 'Failed';
 
     var questionsHtml = (review.questions || []).map(function (question, index) {
         var optionsHtml = (question.options || []).map(function (option) {
@@ -1067,8 +1078,7 @@ function renderStudentCourseContentAssignmentsList(assignments) {
         var isLocked = a.isLocked === true;
         var moduleTitle = a.moduleTitle || 'Module not specified';
         var due = a.dueDateTime ? formatStudentAssignmentDateTime(a.dueDateTime) : 'No due date';
-        var statusClass = isLocked ? 'muted' : a.isGraded ? 'dark' : a.isSubmitted ? 'light' : 'pending';
-        var statusText = isLocked ? 'Locked' : (a.submissionStatus || 'Pending Submission');
+        var status = getStudentAssignmentStatusInfo(a);
 
         return `
             <div class="student-assignment-card ${isLocked ? 'locked' : ''}" data-assignment-id="${a.id}">
@@ -1088,6 +1098,14 @@ function renderStudentCourseContentAssignmentsList(assignments) {
 
                         <p class="student-panel-sub">${escapeHtml(a.description || '')}</p>
 
+                        ${a.isSubmissionClosed ? `
+                            <p class="student-panel-sub">Submission closed. Due date has passed.</p>
+                        ` : ''}
+
+                        ${a.isSubmitted && a.submittedAt ? `
+                            <p class="student-panel-sub">Submitted: ${formatStudentCourseDateTime(a.submittedAt)}</p>
+                        ` : ''}
+
                         ${a.isGraded ? `
                             <p class="student-panel-sub">
                                 Marks: ${a.obtainedMarks ?? 0}/${a.marks || 0}
@@ -1097,9 +1115,17 @@ function renderStudentCourseContentAssignmentsList(assignments) {
                     </div>
 
                     <div class="student-assignment-right">
-                        <span class="student-assignment-status ${statusClass}">
-                            ${escapeHtml(statusText)}
+                        <span class="${status.className}">
+                            ${escapeHtml(status.text)}
                         </span>
+
+                        ${a.filePath ? `
+                            <a href="${escapeAttribute(a.filePath)}"
+                               target="_blank"
+                               class="student-assignment-link">
+                                <i class="bi bi-download"></i> View Assignment
+                            </a>
+                        ` : ''}
 
                         ${renderStudentAssignmentAction(a)}
                     </div>
@@ -1109,32 +1135,1036 @@ function renderStudentCourseContentAssignmentsList(assignments) {
     }).join('');
 }
 
+function getStudentAssignmentStatusInfo(a) {
+    if (a.isLocked) {
+        return {
+            text: 'Locked',
+            className: 'student-status-badge muted'
+        };
+    }
+
+    if (a.isSubmissionClosed && !a.isSubmitted) {
+        return {
+            text: 'Submission Closed',
+            className: 'student-status-badge muted'
+        };
+    }
+
+    if (a.isGraded) {
+        return {
+            text: 'Graded',
+            className: 'student-status-badge dark'
+        };
+    }
+
+    if (a.isSubmitted) {
+        return {
+            text: 'Submitted',
+            className: 'student-status-badge dark'
+        };
+    }
+
+    return {
+        text: 'Pending Submission',
+        className: 'student-assignment-status pending'
+    };
+}
+
 function renderStudentAssignmentAction(a) {
     if (a.isLocked) {
         return `
-            <button type="button" class="student-assignment-link" disabled>
+            <span class="student-assignment-link">
                 <i class="bi bi-lock"></i> Locked
-            </button>
+            </span>
         `;
     }
 
-    if (!a.filePath) {
-        return '';
+    if (a.isSubmitted) {
+        var viewButton = renderStudentSubmittedSolutionButton(a);
+        var unsubmitButton = '';
+
+        if (!a.isSubmissionClosed && !a.isGraded) {
+            unsubmitButton = `
+                <button type="button"
+                        class="student-assignment-link js-open-unsubmit-assignment"
+                        data-assignment-id="${a.id}"
+                        data-assignment-title="${escapeAttribute(a.title)}">
+                    <i class="bi bi-x-circle"></i> Unsubmit
+                </button>
+            `;
+        }
+
+        return viewButton + unsubmitButton;
     }
 
-    if (isStudentFileViewable(a.filePath, '')) {
+    if (a.isSubmissionClosed) {
         return `
-            <a href="${escapeAttribute(a.filePath)}" target="_blank" class="student-assignment-link">
-                <i class="bi bi-eye"></i> View Assignment
-            </a>
+            <span class="student-assignment-link">
+                <i class="bi bi-lock"></i> Submission Closed
+            </span>
         `;
     }
 
     return `
-        <a href="${escapeAttribute(a.filePath)}" download class="student-assignment-link">
-            <i class="bi bi-download"></i> Download Assignment
-        </a>
+        <button type="button"
+                class="dashboard-btn dashboard-btn-outline student-submit-btn js-open-assignment-submit"
+                data-assignment-id="${a.id}"
+                data-assignment-title="${escapeAttribute(a.title)}">
+            <i class="bi bi-upload"></i> Submit Work
+        </button>
     `;
+}
+
+function renderStudentSubmittedSolutionButton(a) {
+    if (a.submittedFilePath) {
+        if (isStudentFileViewable(a.submittedFilePath, '')) {
+            return `
+                <a href="${escapeAttribute(a.submittedFilePath)}"
+                   target="_blank"
+                   class="student-assignment-link">
+                    <i class="bi bi-eye"></i> View Submitted File
+                </a>
+            `;
+        }
+
+        return `
+            <a href="${escapeAttribute(a.submittedFilePath)}"
+               download
+               class="student-assignment-link">
+                <i class="bi bi-download"></i> View Submitted File
+            </a>
+        `;
+    }
+
+    if (a.submittedText) {
+        return `
+            <a href="${escapeAttribute(a.submittedText)}"
+               target="_blank"
+               class="student-assignment-link">
+                <i class="bi bi-box-arrow-up-right"></i> View Submitted Link
+            </a>
+        `;
+    }
+
+    return '';
+}
+
+/* =========================
+   ASSIGNMENT SUBMISSION
+========================= */
+
+function ensureStudentAssignmentSubmissionModal() {
+    $('#studentAssignmentSubmitModal').remove();
+    $('#studentAssignmentSubmitModalBackdrop').remove();
+
+    $('body').append(`
+        <div id="studentAssignmentSubmitModalBackdrop"
+             style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.45); z-index:1040;"></div>
+
+        <div id="studentAssignmentSubmitModal"
+             style="display:none; position:fixed; inset:0; z-index:1050; overflow:auto;">
+            <div style="min-height:100%; display:flex; align-items:center; justify-content:center; padding:20px;">
+                <div class="dashboard-panel" style="width:100%; max-width:560px;">
+                    <form id="studentAssignmentSubmitForm">
+                        <div class="dashboard-panel-head student-panel-head">
+                            <div>
+                                <h4 class="page-h2 student-panel-title">Submit Assignment</h4>
+                                <p class="student-panel-sub">Upload your solution file or paste a solution link.</p>
+                            </div>
+
+                            <button type="button"
+                                    class="dashboard-btn dashboard-btn-outline js-close-assignment-modal">
+                                <i class="bi bi-x-lg"></i>
+                            </button>
+                        </div>
+
+                        <input type="hidden" id="studentSubmitAssignmentId" />
+
+                        <div class="mb-3">
+                            <label class="form-label">Assignment</label>
+                            <input type="text" id="studentSubmitAssignmentTitle" class="form-control" readonly />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Upload solution file</label>
+                            <input type="file"
+                                   id="studentAssignmentSolutionFile"
+                                   class="form-control"
+                                   accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.jpg,.jpeg,.png,.zip,.rar,.mp4,.webm" />
+                            <div class="form-text">
+                                Max size: 50 MB. Allowed: PDF, Word, PPT, Excel, images, ZIP/RAR, MP4, WEBM.
+                            </div>
+                        </div>
+
+                        <div class="text-center text-muted mb-3">OR</div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Paste solution link</label>
+                            <input type="url"
+                                   id="studentAssignmentSolutionLink"
+                                   class="form-control"
+                                   placeholder="https://drive.google.com/..." />
+                            <div class="form-text">
+                                Use this option if file/video size exceeds 50 MB.
+                            </div>
+                        </div>
+
+                        <div id="studentAssignmentSubmitMessage"
+                             class="student-quiz-message error"
+                             style="display:none;"></div>
+
+                        <div class="student-quiz-actions mt-3">
+                            <button type="button"
+                                    class="dashboard-btn dashboard-btn-outline js-close-assignment-modal">
+                                Cancel
+                            </button>
+
+                            <button type="submit"
+                                    class="dashboard-btn dashboard-btn-primary"
+                                    id="studentAssignmentSubmitBtn">
+                                <i class="bi bi-upload"></i> Submit
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    `);
+}
+
+function ensureStudentAssignmentUnsubmitModal() {
+    $('#studentAssignmentUnsubmitModal').remove();
+    $('#studentAssignmentUnsubmitModalBackdrop').remove();
+
+    $('body').append(`
+        <div id="studentAssignmentUnsubmitModalBackdrop"
+             style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.45); z-index:1040;"></div>
+
+        <div id="studentAssignmentUnsubmitModal"
+             style="display:none; position:fixed; inset:0; z-index:1050; overflow:auto;">
+            <div style="min-height:100%; display:flex; align-items:center; justify-content:center; padding:20px;">
+                <div class="dashboard-panel" style="width:100%; max-width:520px;">
+                    <input type="hidden" id="studentUnsubmitAssignmentId" />
+
+                    <div class="dashboard-panel-head student-panel-head">
+                        <div>
+                            <h4 class="page-h2 student-panel-title">Unsubmit Assignment</h4>
+                            <p class="student-panel-sub" id="studentUnsubmitAssignmentTitleText">
+                                Are you sure you want to unsubmit this assignment solution?
+                            </p>
+                        </div>
+
+                        <button type="button"
+                                class="dashboard-btn dashboard-btn-outline js-close-unsubmit-modal">
+                            <i class="bi bi-x-lg"></i>
+                        </button>
+                    </div>
+
+                    <p class="student-panel-sub">
+                        Your submitted solution will be removed. You can submit again before the due date.
+                    </p>
+
+                    <div class="student-quiz-actions mt-3">
+                        <button type="button"
+                                class="dashboard-btn dashboard-btn-outline js-close-unsubmit-modal">
+                            Cancel
+                        </button>
+
+                        <button type="button"
+                                class="dashboard-btn dashboard-btn-primary"
+                                id="studentAssignmentUnsubmitConfirmBtn">
+                            <i class="bi bi-x-circle"></i> Unsubmit
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `);
+}
+
+function ensureStudentMessageModal() {
+    $('#studentMessageModal').remove();
+    $('#studentMessageModalBackdrop').remove();
+
+    $('body').append(`
+        <div id="studentMessageModalBackdrop"
+             style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.45); z-index:1060;"></div>
+
+        <div id="studentMessageModal"
+             style="display:none; position:fixed; inset:0; z-index:1070; overflow:auto;">
+            <div style="min-height:100%; display:flex; align-items:center; justify-content:center; padding:20px;">
+                <div class="dashboard-panel" style="width:100%; max-width:480px;">
+                    <div class="dashboard-panel-head student-panel-head">
+                        <div>
+                            <h4 class="page-h2 student-panel-title" id="studentMessageModalTitle">Message</h4>
+                            <p class="student-panel-sub" id="studentMessageModalText"></p>
+                        </div>
+                    </div>
+
+                    <div class="student-quiz-actions mt-3">
+                        <button type="button"
+                                class="dashboard-btn dashboard-btn-primary js-close-message-modal">
+                            OK
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `);
+}
+
+function bindStudentAssignmentSubmissionEvents() {
+    $(document).off('click', '.js-open-assignment-submit').on('click', '.js-open-assignment-submit', function () {
+        var assignmentId = $(this).data('assignment-id');
+        var title = $(this).data('assignment-title') || 'Assignment';
+
+        openStudentAssignmentSubmitModal(assignmentId, title);
+    });
+
+    $(document).off('click', '.js-close-assignment-modal').on('click', '.js-close-assignment-modal', function () {
+        closeStudentAssignmentSubmitModal();
+    });
+
+    $(document).off('click', '#studentAssignmentSubmitModalBackdrop').on('click', '#studentAssignmentSubmitModalBackdrop', function () {
+        closeStudentAssignmentSubmitModal();
+    });
+
+    $(document).off('submit', '#studentAssignmentSubmitForm').on('submit', '#studentAssignmentSubmitForm', function (e) {
+        e.preventDefault();
+        submitStudentAssignmentSolution();
+    });
+
+    $(document).off('click', '.js-open-unsubmit-assignment').on('click', '.js-open-unsubmit-assignment', function () {
+        var assignmentId = $(this).data('assignment-id');
+        var title = $(this).data('assignment-title') || 'this assignment';
+
+        openStudentAssignmentUnsubmitModal(assignmentId, title);
+    });
+
+    $(document).off('click', '.js-close-unsubmit-modal').on('click', '.js-close-unsubmit-modal', function () {
+        closeStudentAssignmentUnsubmitModal();
+    });
+
+    $(document).off('click', '#studentAssignmentUnsubmitModalBackdrop').on('click', '#studentAssignmentUnsubmitModalBackdrop', function () {
+        closeStudentAssignmentUnsubmitModal();
+    });
+
+    $(document).off('click', '#studentAssignmentUnsubmitConfirmBtn').on('click', '#studentAssignmentUnsubmitConfirmBtn', function () {
+        var assignmentId = $('#studentUnsubmitAssignmentId').val();
+
+        if (!assignmentId) {
+            return;
+        }
+
+        unsubmitStudentAssignmentSolution(assignmentId);
+    });
+
+    $(document).off('click', '.js-close-message-modal').on('click', '.js-close-message-modal', function () {
+        closeStudentMessageModal();
+    });
+
+    $(document).off('click', '#studentMessageModalBackdrop').on('click', '#studentMessageModalBackdrop', function () {
+        closeStudentMessageModal();
+    });
+
+    $(document).off('change', '#studentAssignmentSolutionFile').on('change', '#studentAssignmentSolutionFile', function () {
+        var file = this.files && this.files.length ? this.files[0] : null;
+
+        if (!file) {
+            return;
+        }
+
+        var message = validateStudentAssignmentFile(file);
+
+        if (message) {
+            showStudentAssignmentSubmitMessage(message);
+            $(this).val('');
+        } else {
+            hideStudentAssignmentSubmitMessage();
+        }
+    });
+}
+
+function openStudentAssignmentSubmitModal(assignmentId, title) {
+    $('#studentSubmitAssignmentId').val(assignmentId);
+    $('#studentSubmitAssignmentTitle').val(title);
+    $('#studentAssignmentSolutionFile').val('');
+    $('#studentAssignmentSolutionLink').val('');
+    hideStudentAssignmentSubmitMessage();
+
+    $('#studentAssignmentSubmitModalBackdrop').show();
+    $('#studentAssignmentSubmitModal').show();
+
+    $('body').css('overflow', 'hidden');
+}
+
+function closeStudentAssignmentSubmitModal() {
+    $('#studentAssignmentSubmitModal').hide();
+    $('#studentAssignmentSubmitModalBackdrop').hide();
+
+    $('body').css('overflow', '');
+}
+
+function openStudentAssignmentUnsubmitModal(assignmentId, title) {
+    $('#studentUnsubmitAssignmentId').val(assignmentId);
+    $('#studentUnsubmitAssignmentTitleText').text(
+        'Are you sure you want to unsubmit "' + title + '"?'
+    );
+
+    $('#studentAssignmentUnsubmitModalBackdrop').show();
+    $('#studentAssignmentUnsubmitModal').show();
+
+    $('body').css('overflow', 'hidden');
+}
+
+function closeStudentAssignmentUnsubmitModal() {
+    $('#studentAssignmentUnsubmitModal').hide();
+    $('#studentAssignmentUnsubmitModalBackdrop').hide();
+
+    $('body').css('overflow', '');
+}
+
+function showStudentMessageModal(title, message) {
+    $('#studentMessageModalTitle').text(title || 'Message');
+    $('#studentMessageModalText').text(message || '');
+
+    $('#studentMessageModalBackdrop').show();
+    $('#studentMessageModal').show();
+
+    $('body').css('overflow', 'hidden');
+}
+
+function closeStudentMessageModal() {
+    $('#studentMessageModal').hide();
+    $('#studentMessageModalBackdrop').hide();
+
+    $('body').css('overflow', '');
+}
+
+function submitStudentAssignmentSolution() {
+    var assignmentId = $('#studentSubmitAssignmentId').val();
+    var fileInput = document.getElementById('studentAssignmentSolutionFile');
+    var file = fileInput && fileInput.files && fileInput.files.length ? fileInput.files[0] : null;
+    var solutionLink = ($('#studentAssignmentSolutionLink').val() || '').trim();
+
+    hideStudentAssignmentSubmitMessage();
+
+    if (!assignmentId) {
+        showStudentAssignmentSubmitMessage('Invalid assignment selected.');
+        return;
+    }
+
+    if (!file && !solutionLink) {
+        showStudentAssignmentSubmitMessage('Please upload a file or paste a solution link.');
+        return;
+    }
+
+    if (file && solutionLink) {
+        showStudentAssignmentSubmitMessage('Please submit either a file or a link, not both.');
+        return;
+    }
+
+    if (file) {
+        var fileMessage = validateStudentAssignmentFile(file);
+
+        if (fileMessage) {
+            showStudentAssignmentSubmitMessage(fileMessage);
+            return;
+        }
+    }
+
+    if (solutionLink && !isValidStudentHttpUrl(solutionLink)) {
+        showStudentAssignmentSubmitMessage('Please enter a valid http or https link.');
+        return;
+    }
+
+    var formData = new FormData();
+
+    if (file) {
+        formData.append('file', file);
+    }
+
+    if (solutionLink) {
+        formData.append('solutionLink', solutionLink);
+    }
+
+    var button = $('#studentAssignmentSubmitBtn');
+    button.prop('disabled', true).html('<i class="bi bi-hourglass-split"></i> Submitting...');
+
+    $.ajax({
+        url: '/api/student/course-content/assignments/' + assignmentId + '/submit',
+        type: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function (result) {
+            closeStudentAssignmentSubmitModal();
+
+            var courseId = getStudentCourseIdFromUrl();
+            loadStudentCourseContentMaterialsAssignments(courseId);
+
+            showStudentMessageModal(
+                'Submitted',
+                result?.message || 'Assignment solution submitted successfully.'
+            );
+        },
+        error: function (xhr) {
+            var message = getStudentCourseContentErrorMessage(
+                xhr,
+                'Assignment solution could not be submitted.'
+            );
+
+            showStudentAssignmentSubmitMessage(message);
+        },
+        complete: function () {
+            button.prop('disabled', false).html('<i class="bi bi-upload"></i> Submit');
+        }
+    });
+}
+
+function unsubmitStudentAssignmentSolution(assignmentId) {
+    var button = $('#studentAssignmentUnsubmitConfirmBtn');
+    button.prop('disabled', true).html('<i class="bi bi-hourglass-split"></i> Removing...');
+
+    $.ajax({
+        url: '/api/student/course-content/assignments/' + assignmentId + '/unsubmit',
+        type: 'POST',
+        success: function (result) {
+            closeStudentAssignmentUnsubmitModal();
+
+            var courseId = getStudentCourseIdFromUrl();
+            loadStudentCourseContentMaterialsAssignments(courseId);
+
+            showStudentMessageModal(
+                'Removed',
+                result?.message || 'Assignment solution removed successfully.'
+            );
+        },
+        error: function (xhr) {
+            var message = getStudentCourseContentErrorMessage(
+                xhr,
+                'Assignment solution could not be removed.'
+            );
+
+            closeStudentAssignmentUnsubmitModal();
+            showStudentMessageModal('Error', message);
+        },
+        complete: function () {
+            button.prop('disabled', false).html('<i class="bi bi-x-circle"></i> Unsubmit');
+        }
+    });
+}
+
+function validateStudentAssignmentFile(file) {
+    var maxSize = 50 * 1024 * 1024;
+    var extension = getStudentFileExtension(file.name);
+    var allowed = [
+        'pdf',
+        'doc',
+        'docx',
+        'ppt',
+        'pptx',
+        'xls',
+        'xlsx',
+        'jpg',
+        'jpeg',
+        'png',
+        'zip',
+        'rar',
+        'mp4',
+        'webm'
+    ];
+
+    if (file.size > maxSize) {
+        return 'File size limit exceeded. Please upload your file/video to Google Drive, OneDrive, or any cloud storage and paste the link here.';
+    }
+
+    if (!extension || allowed.indexOf(extension) === -1) {
+        return 'This file type is not allowed. Please upload PDF, Word, PPT, Excel, image, ZIP/RAR, MP4, WEBM, or paste a valid link.';
+    }
+
+    return '';
+}
+
+function showStudentAssignmentSubmitMessage(message) {
+    $('#studentAssignmentSubmitMessage')
+        .show()
+        .text(message);
+}
+
+function hideStudentAssignmentSubmitMessage() {
+    $('#studentAssignmentSubmitMessage')
+        .hide()
+        .text('');
+}
+
+function isValidStudentHttpUrl(value) {
+    try {
+        var url = new URL(value);
+        return url.protocol === 'http:' || url.protocol === 'https:';
+    } catch (e) {
+        return false;
+    }
+}
+
+/* =========================
+   NOTES TAB
+========================= */
+
+function loadStudentCourseContentNotes(courseId) {
+    $('#studentNotesContainer').html(
+        '<div class="dashboard-panel text-center p-4">Loading notes...</div>'
+    );
+
+    $.ajax({
+        url: '/api/student/course-content/' + courseId + '/notes',
+        type: 'GET',
+        success: function (data) {
+            studentCourseNotesCache = data.notes || [];
+            renderStudentCourseContentNotes(data);
+        },
+        error: function (xhr) {
+            var message = getStudentCourseContentErrorMessage(
+                xhr,
+                'Notes could not be loaded.'
+            );
+
+            $('#studentNotesContainer').html(
+                '<div class="dashboard-panel text-center p-4 text-danger">' +
+                escapeHtml(message) +
+                '</div>'
+            );
+        }
+    });
+}
+
+function renderStudentCourseContentNotes(data) {
+    var notes = data.notes || [];
+
+    $('#studentNotesContainer').html(`
+        <div class="student-tab-stack">
+            <div class="dashboard-stats">
+                <div class="student-summary-card">
+                    <div class="dashboard-stat-title">Total Notes</div>
+                    <div class="dashboard-stat-value">${data.totalNotes || 0}</div>
+                    <div class="dashboard-stat-meta">Saved for this course</div>
+                </div>
+
+                <div class="student-summary-card">
+                    <div class="dashboard-stat-title">Course Notes</div>
+                    <div class="dashboard-stat-value">${data.totalNotes || 0}</div>
+                    <div class="dashboard-stat-meta">Course-level personal notes</div>
+                </div>
+
+                <div class="student-summary-card">
+                    <div class="dashboard-stat-title">Recent Activity</div>
+                    <div class="dashboard-stat-value">${escapeHtml(data.recentActivityText || 'No activity yet')}</div>
+                    <div class="dashboard-stat-meta">Last note activity</div>
+                </div>
+
+                <div class="student-summary-card">
+                    <div class="dashboard-stat-title">Last Updated</div>
+                    <div class="dashboard-stat-value">${escapeHtml(data.lastUpdatedText || 'No notes yet')}</div>
+                    <div class="dashboard-stat-meta">Latest note update</div>
+                </div>
+            </div>
+
+            <div class="dashboard-panel">
+                <div class="dashboard-panel-head student-panel-head">
+                    <div>
+                        <h3 class="page-h2">My Notes</h3>
+                        <p class="student-panel-sub">Save your personal notes while studying this course.</p>
+                    </div>
+
+                    <div class="student-notes-actions">
+                        <div class="dashboard-search student-notes-searchbar">
+                            <i class="bi bi-search"></i>
+                            <input type="text" id="studentNotesSearchInput" placeholder="Search notes..." />
+                        </div>
+
+                        <button type="button"
+                                class="dashboard-btn dashboard-btn-outline student-add-note-btn"
+                                id="openNoteFormBtn">
+                            <i class="bi bi-plus-circle"></i>
+                            <span>Add Note</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="student-note-list" id="studentNoteList">
+                    ${renderStudentCourseNotesList(notes)}
+                </div>
+            </div>
+        </div>
+    `);
+}
+
+function renderStudentCourseNotesList(notes) {
+    if (!notes || !notes.length) {
+        return `
+            <div class="student-note-card">
+                <div class="student-note-content">
+                    No notes saved yet. Click Add Note to create your first course note.
+                </div>
+            </div>
+        `;
+    }
+
+    return notes.map(function (note) {
+        var updatedText = note.updatedAt
+            ? 'Updated: ' + formatStudentCourseDateTime(note.updatedAt)
+            : 'Created: ' + formatStudentCourseDateTime(note.createdAt);
+
+        return `
+            <div class="student-note-card"
+                 data-note-id="${note.id}"
+                 data-title="${escapeAttribute(note.title)}"
+                 data-description="${escapeAttribute(note.description)}">
+                <div class="student-note-card-top">
+                    <div class="student-note-card-left">
+                        <div class="student-note-title-row">
+                            <h4 class="student-note-title">${escapeHtml(note.title)}</h4>
+                        </div>
+
+                        <div class="student-note-meta">
+                            <span>Course Note</span>
+                            <span>•</span>
+                            <span>${escapeHtml(updatedText)}</span>
+                        </div>
+                    </div>
+
+                    <div class="student-note-card-right">
+                        <button type="button"
+                                class="student-note-action-btn js-edit-note-btn"
+                                data-note-id="${note.id}">
+                            <i class="bi bi-pencil-square"></i> Edit
+                        </button>
+
+                        <button type="button"
+                                class="student-note-action-btn js-open-delete-note"
+                                data-note-id="${note.id}"
+                                data-note-title="${escapeAttribute(note.title)}">
+                            <i class="bi bi-trash"></i> Delete
+                        </button>
+                    </div>
+                </div>
+
+                <div class="student-note-content">
+                    ${escapeHtml(note.description)}
+                </div>
+
+                <div class="student-note-footer">
+                    <span class="student-note-tag">Course Note</span>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+function ensureStudentNoteModal() {
+    $('#studentNoteModal').remove();
+
+    $('body').append(`
+        <div id="studentNoteModal" class="student-note-modal" style="display:none;">
+            <div class="student-note-modal-backdrop js-close-note-modal"></div>
+
+            <div class="student-note-modal-dialog">
+                <div class="student-note-form-head">
+                    <h3 class="student-note-form-title" id="studentNoteModalTitle">Add Note</h3>
+
+                    <button type="button" class="student-note-form-close js-close-note-modal">
+                        <i class="bi bi-x-lg"></i>
+                    </button>
+                </div>
+
+                <form id="studentNoteForm" class="student-note-form">
+                    <input type="hidden" id="studentNoteId" />
+
+                    <div class="student-note-field">
+                        <label class="course-label">Note Title</label>
+                        <input type="text"
+                               id="studentNoteTitle"
+                               class="course-input"
+                               maxlength="200"
+                               placeholder="Enter note title" />
+                    </div>
+
+                    <div class="student-note-field">
+                        <label class="course-label">Your Note</label>
+                        <textarea id="studentNoteDescription"
+                                  class="course-input student-note-textarea"
+                                  placeholder="Write your note here..."></textarea>
+                    </div>
+
+                    <div id="studentNoteFormMessage"
+                         class="student-quiz-message error"
+                         style="display:none;"></div>
+
+                    <div class="student-note-form-actions">
+                        <button type="button"
+                                class="dashboard-btn dashboard-btn-outline js-close-note-modal">
+                            Cancel
+                        </button>
+
+                        <button type="submit"
+                                class="dashboard-btn dashboard-btn-primary add-course-btn"
+                                id="studentNoteSaveBtn">
+                            <i class="bi bi-save"></i> Save Note
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    `);
+}
+
+function ensureStudentNoteDeleteModal() {
+    $('#studentNoteDeleteModal').remove();
+
+    $('body').append(`
+        <div id="studentNoteDeleteModal" class="student-note-modal" style="display:none;">
+            <div class="student-note-modal-backdrop js-close-delete-note-modal"></div>
+
+            <div class="student-note-modal-dialog">
+                <input type="hidden" id="studentDeleteNoteId" />
+
+                <div class="student-note-form-head">
+                    <h3 class="student-note-form-title">Delete Note</h3>
+
+                    <button type="button" class="student-note-form-close js-close-delete-note-modal">
+                        <i class="bi bi-x-lg"></i>
+                    </button>
+                </div>
+
+                <p class="student-panel-sub" id="studentDeleteNoteText">
+                    Are you sure you want to delete this note?
+                </p>
+
+                <div class="student-note-form-actions">
+                    <button type="button"
+                            class="dashboard-btn dashboard-btn-outline js-close-delete-note-modal">
+                        Cancel
+                    </button>
+
+                    <button type="button"
+                            class="dashboard-btn dashboard-btn-primary add-course-btn"
+                            id="studentConfirmDeleteNoteBtn">
+                        <i class="bi bi-trash"></i> Delete
+                    </button>
+                </div>
+            </div>
+        </div>
+    `);
+}
+
+function bindStudentCourseNotesEvents() {
+    $(document).off('click', '#openNoteFormBtn').on('click', '#openNoteFormBtn', function () {
+        openStudentNoteModalForCreate();
+    });
+
+    $(document).off('click', '.js-close-note-modal').on('click', '.js-close-note-modal', function () {
+        closeStudentNoteModal();
+    });
+
+    $(document).off('submit', '#studentNoteForm').on('submit', '#studentNoteForm', function (e) {
+        e.preventDefault();
+        saveStudentCourseNote();
+    });
+
+    $(document).off('click', '.js-edit-note-btn').on('click', '.js-edit-note-btn', function () {
+        var noteId = parseInt($(this).data('note-id'));
+        openStudentNoteModalForEdit(noteId);
+    });
+
+    $(document).off('click', '.js-open-delete-note').on('click', '.js-open-delete-note', function () {
+        var noteId = parseInt($(this).data('note-id'));
+        var title = $(this).data('note-title') || 'this note';
+
+        openStudentNoteDeleteModal(noteId, title);
+    });
+
+    $(document).off('click', '.js-close-delete-note-modal').on('click', '.js-close-delete-note-modal', function () {
+        closeStudentNoteDeleteModal();
+    });
+
+    $(document).off('click', '#studentConfirmDeleteNoteBtn').on('click', '#studentConfirmDeleteNoteBtn', function () {
+        var noteId = parseInt($('#studentDeleteNoteId').val());
+
+        if (!noteId) {
+            return;
+        }
+
+        deleteStudentCourseNote(noteId);
+    });
+
+    $(document).off('input', '#studentNotesSearchInput').on('input', '#studentNotesSearchInput', function () {
+        var keyword = ($(this).val() || '').toLowerCase().trim();
+
+        var filteredNotes = studentCourseNotesCache.filter(function (note) {
+            return String(note.title || '').toLowerCase().includes(keyword) ||
+                String(note.description || '').toLowerCase().includes(keyword);
+        });
+
+        $('#studentNoteList').html(renderStudentCourseNotesList(filteredNotes));
+    });
+}
+
+function openStudentNoteModalForCreate() {
+    $('#studentNoteModalTitle').text('Add Note');
+    $('#studentNoteId').val('');
+    $('#studentNoteTitle').val('');
+    $('#studentNoteDescription').val('');
+    hideStudentNoteFormMessage();
+
+    $('#studentNoteModal').show();
+    $('body').css('overflow', 'hidden');
+}
+
+function openStudentNoteModalForEdit(noteId) {
+    var note = studentCourseNotesCache.find(function (item) {
+        return item.id === noteId;
+    });
+
+    if (!note) {
+        showStudentMessageModal('Error', 'Note was not found.');
+        return;
+    }
+
+    $('#studentNoteModalTitle').text('Edit Note');
+    $('#studentNoteId').val(note.id);
+    $('#studentNoteTitle').val(note.title || '');
+    $('#studentNoteDescription').val(note.description || '');
+    hideStudentNoteFormMessage();
+
+    $('#studentNoteModal').show();
+    $('body').css('overflow', 'hidden');
+}
+
+function closeStudentNoteModal() {
+    $('#studentNoteModal').hide();
+    $('body').css('overflow', '');
+}
+
+function openStudentNoteDeleteModal(noteId, title) {
+    $('#studentDeleteNoteId').val(noteId);
+    $('#studentDeleteNoteText').text('Are you sure you want to delete "' + title + '"?');
+
+    $('#studentNoteDeleteModal').show();
+    $('body').css('overflow', 'hidden');
+}
+
+function closeStudentNoteDeleteModal() {
+    $('#studentNoteDeleteModal').hide();
+    $('body').css('overflow', '');
+}
+
+function saveStudentCourseNote() {
+    var courseId = getStudentCourseIdFromUrl();
+    var noteId = $('#studentNoteId').val();
+    var title = ($('#studentNoteTitle').val() || '').trim();
+    var description = ($('#studentNoteDescription').val() || '').trim();
+
+    hideStudentNoteFormMessage();
+
+    if (!title) {
+        showStudentNoteFormMessage('Please enter note title.');
+        return;
+    }
+
+    if (title.length > 200) {
+        showStudentNoteFormMessage('Note title cannot be more than 200 characters.');
+        return;
+    }
+
+    if (!description) {
+        showStudentNoteFormMessage('Please write your note.');
+        return;
+    }
+
+    var button = $('#studentNoteSaveBtn');
+    button.prop('disabled', true).html('<i class="bi bi-hourglass-split"></i> Saving...');
+
+    var isEdit = noteId && parseInt(noteId) > 0;
+    var url = isEdit
+        ? '/api/student/course-content/notes/' + noteId
+        : '/api/student/course-content/' + courseId + '/notes';
+
+    var method = isEdit ? 'PUT' : 'POST';
+
+    $.ajax({
+        url: url,
+        type: method,
+        contentType: 'application/json',
+        data: JSON.stringify({
+            title: title,
+            description: description
+        }),
+        success: function (result) {
+            closeStudentNoteModal();
+            loadStudentCourseContentNotes(courseId);
+
+            showStudentMessageModal(
+                isEdit ? 'Updated' : 'Saved',
+                result?.message || (isEdit ? 'Note updated successfully.' : 'Note saved successfully.')
+            );
+        },
+        error: function (xhr) {
+            var message = getStudentCourseContentErrorMessage(
+                xhr,
+                'Note could not be saved.'
+            );
+
+            showStudentNoteFormMessage(message);
+        },
+        complete: function () {
+            button.prop('disabled', false).html('<i class="bi bi-save"></i> Save Note');
+        }
+    });
+}
+
+function deleteStudentCourseNote(noteId) {
+    var courseId = getStudentCourseIdFromUrl();
+    var button = $('#studentConfirmDeleteNoteBtn');
+
+    button.prop('disabled', true).html('<i class="bi bi-hourglass-split"></i> Deleting...');
+
+    $.ajax({
+        url: '/api/student/course-content/notes/' + noteId,
+        type: 'DELETE',
+        success: function (result) {
+            closeStudentNoteDeleteModal();
+            loadStudentCourseContentNotes(courseId);
+
+            showStudentMessageModal(
+                'Deleted',
+                result?.message || 'Note deleted successfully.'
+            );
+        },
+        error: function (xhr) {
+            var message = getStudentCourseContentErrorMessage(
+                xhr,
+                'Note could not be deleted.'
+            );
+
+            closeStudentNoteDeleteModal();
+            showStudentMessageModal('Error', message);
+        },
+        complete: function () {
+            button.prop('disabled', false).html('<i class="bi bi-trash"></i> Delete');
+        }
+    });
+}
+
+function showStudentNoteFormMessage(message) {
+    $('#studentNoteFormMessage')
+        .show()
+        .text(message);
+}
+
+function hideStudentNoteFormMessage() {
+    $('#studentNoteFormMessage')
+        .hide()
+        .text('');
 }
 
 /* =========================
@@ -1191,7 +2221,7 @@ function getMaterialClass(type, path) {
         return 'ppt';
     }
 
-    if (value.includes('video') || ['mp4', 'mov', 'avi', 'mkv'].includes(ext)) {
+    if (value.includes('video') || ['mp4', 'mov', 'avi', 'mkv', 'webm'].includes(ext)) {
         return 'video';
     }
 
@@ -1210,7 +2240,7 @@ function getMaterialIcon(type, path) {
         return 'bi-file-earmark-slides';
     }
 
-    if (value.includes('video') || ['mp4', 'mov', 'avi', 'mkv'].includes(ext)) {
+    if (value.includes('video') || ['mp4', 'mov', 'avi', 'mkv', 'webm'].includes(ext)) {
         return 'bi-play-btn';
     }
 
@@ -1253,6 +2283,10 @@ function isStudentFileViewable(path, type) {
     }
 
     if (value.includes('image') || ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'].includes(ext)) {
+        return true;
+    }
+
+    if (value.includes('video') || ['mp4', 'webm'].includes(ext)) {
         return true;
     }
 
