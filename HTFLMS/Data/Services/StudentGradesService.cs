@@ -42,23 +42,14 @@ namespace HTFLMS.Data.Services
                 .Distinct()
                 .ToList();
 
-            //var submissions = await context.AssignmentSubmissions
-            //    .Include(s => s.Assignment)
-            //        .ThenInclude(a => a!.Course)
-            //    .Where(s =>
-            //        s.StudentId == studentId &&
-            //        s.Assignment != null &&
-            //        s.Assignment.IsActive &&
-            //        courseIds.Contains(s.Assignment.CourseId))
-            //    .ToListAsync();
             var submissions = await context.AssignmentSubmissions
-    .Include(s => s.Assignment)
-        .ThenInclude(a => a!.Course)
-    .Where(s =>
-        s.StudentId == studentId &&
-        s.Assignment != null &&
-        s.Assignment.IsActive)
-    .ToListAsync();
+                .Include(s => s.Assignment)
+                    .ThenInclude(a => a!.Course)
+                .Where(s =>
+                    s.StudentId == studentId &&
+                    s.Assignment != null &&
+                    s.Assignment.IsActive)
+                .ToListAsync();
 
             submissions = submissions
                 .Where(s =>
@@ -171,6 +162,105 @@ namespace HTFLMS.Data.Services
             return response;
         }
 
+        public async Task<GradesTabDto?> GetGradesTabAsync(int studentId, int courseId)
+        {
+            var enrollment = await context.CourseEnrollments
+                .Include(e => e.Course)
+                    .ThenInclude(c => c!.Trainer)
+                .FirstOrDefaultAsync(e =>
+                    e.StudentId == studentId &&
+                    e.CourseId == courseId &&
+                    (e.Status == "Active" || e.Status == "Completed"));
+
+            if (enrollment == null || enrollment.Course == null)
+            {
+                return null;
+            }
+
+            var course = enrollment.Course;
+
+            if (!course.IsActive || !course.IsPublished)
+            {
+                return null;
+            }
+
+            var assignments = await context.Assignments
+                .Include(a => a.Module)
+                .Include(a => a.Submissions!)
+                    .ThenInclude(s => s.GradedByUser)
+                .Where(a =>
+                    a.CourseId == courseId &&
+                    a.IsActive)
+                .OrderBy(a => a.ModuleId == null ? 0 : 1)
+                .ThenBy(a => a.Module != null ? a.Module.DisplayOrder : 0)
+                .ThenBy(a => a.DueDateTime)
+                .ToListAsync();
+
+            var items = new List<GradesTabItemDto>();
+
+            foreach (var assignment in assignments)
+            {
+                var latestSubmission = assignment.Submissions?
+                    .Where(s => s.StudentId == studentId)
+                    .OrderByDescending(s => s.SubmittedAt)
+                    .FirstOrDefault();
+
+                items.Add(BuildGradesTabItem(course, assignment, latestSubmission));
+            }
+
+            var gradedItems = items
+                .Where(i =>
+                    i.IsGraded &&
+                    i.ObtainedMarks.HasValue &&
+                    i.TotalMarks > 0)
+                .ToList();
+
+            var totalObtainedMarks = gradedItems.Sum(i => i.ObtainedMarks ?? 0);
+            var totalMarks = gradedItems.Sum(i => i.TotalMarks);
+
+            var averagePercentage = totalMarks > 0
+                ? Math.Round(((decimal)totalObtainedMarks / totalMarks) * 100, 1)
+                : 0;
+
+            var highestItem = gradedItems
+                .OrderByDescending(i => i.Percentage ?? 0)
+                .FirstOrDefault();
+
+            var badge = GetGradeBadge(averagePercentage, gradedItems.Count);
+
+            return new GradesTabDto
+            {
+                CourseId = course.Id,
+                CourseTitle = course.Title,
+                Summary = new GradesTabSummaryDto
+                {
+                    OverallGradeValue = gradedItems.Count > 0
+                        ? FormatPercentage(averagePercentage)
+                        : "0%",
+                    OverallGradeMeta = "Based on graded submissions",
+
+                    GradedItemsValue = $"{gradedItems.Count}/{assignments.Count}",
+                    GradedItemsMeta = assignments.Count == 0
+                        ? "No assignments added yet"
+                        : $"{Math.Max(0, assignments.Count - gradedItems.Count)} items still pending review",
+
+                    HighestScoreValue = highestItem == null
+                        ? "N/A"
+                        : FormatPercentage(highestItem.Percentage ?? 0),
+                    HighestScoreMeta = highestItem == null
+                        ? "No graded assignment"
+                        : highestItem.AssignmentTitle,
+
+                    CurrentStandingValue = badge.Text,
+                    CurrentStandingMeta = GetStandingMeta(badge.Text)
+                },
+                Items = items,
+                EmptyMessage = assignments.Count == 0
+                    ? "No assignments found for this course yet."
+                    : "No grade record found yet."
+            };
+        }
+
         private GradesCardSummaryDto BuildSummary(
             List<CourseEnrollment> enrollments,
             List<CourseDetailDto> courseDetails,
@@ -219,6 +309,99 @@ namespace HTFLMS.Data.Services
             };
         }
 
+        private static GradesTabItemDto BuildGradesTabItem(
+            Course course,
+            Assignment assignment,
+            AssignmentSubmission? submission)
+        {
+            var trainerName = submission?.GradedByUser?.Name
+                ?? course.Trainer?.Name
+                ?? "Not assigned";
+
+            var moduleTitle = assignment.Module?.Title ?? "Course Level";
+
+            var item = new GradesTabItemDto
+            {
+                AssignmentId = assignment.Id,
+                AssignmentTitle = assignment.Title,
+                TypeText = "Assignment",
+                ModuleId = assignment.ModuleId,
+                ModuleTitle = moduleTitle,
+                DueDateTime = assignment.DueDateTime,
+                SubmittedAt = submission?.SubmittedAt,
+                GradedAt = submission?.GradedAt,
+                TrainerName = trainerName,
+                TotalMarks = assignment.Marks,
+                Feedback = submission?.Feedback ?? "",
+                IsSubmitted = submission != null,
+                IsGraded = submission != null &&
+                           submission.IsGraded &&
+                           submission.ObtainedMarks.HasValue &&
+                           assignment.Marks > 0
+            };
+
+            if (item.IsGraded && submission != null)
+            {
+                var percentage = Math.Round(((decimal)(submission.ObtainedMarks ?? 0) / assignment.Marks) * 100, 1);
+                var result = GetResultText(percentage);
+
+                item.ObtainedMarks = submission.ObtainedMarks;
+                item.Percentage = percentage;
+                item.CardClass = "graded";
+                item.StatusText = "Graded";
+                item.StatusClass = "graded";
+                item.ScoreText = $"{submission.ObtainedMarks ?? 0}/{assignment.Marks}";
+                item.ScorePercentageText = FormatPercentage(percentage);
+                item.ResultText = result.Text;
+                item.ResultClass = result.CssClass;
+                item.SubmissionStatusText = "Submitted Successfully";
+                item.ReviewStatusText = "Marked by trainer";
+
+                return item;
+            }
+
+            if (submission != null)
+            {
+                item.CardClass = "pending";
+                item.StatusText = "Pending Review";
+                item.StatusClass = "pending";
+                item.ScoreText = $"--/{assignment.Marks}";
+                item.ScorePercentageText = "Pending";
+                item.SubmissionStatusText = "Submitted Successfully";
+                item.ReviewStatusText = "Waiting for trainer review";
+                item.IsPending = true;
+
+                return item;
+            }
+
+            var isDuePassed = DateTime.Now > assignment.DueDateTime;
+
+            if (isDuePassed)
+            {
+                item.CardClass = "missing";
+                item.StatusText = "Not Submitted";
+                item.StatusClass = "missing";
+                item.ScoreText = $"--/{assignment.Marks}";
+                item.ScorePercentageText = "Missing";
+                item.SubmissionStatusText = "No submission found";
+                item.ReviewStatusText = "Submission missing";
+                item.IsMissing = true;
+
+                return item;
+            }
+
+            item.CardClass = "pending";
+            item.StatusText = "Awaiting Submission";
+            item.StatusClass = "pending";
+            item.ScoreText = $"--/{assignment.Marks}";
+            item.ScorePercentageText = "Upcoming";
+            item.SubmissionStatusText = "No submission yet";
+            item.ReviewStatusText = "Awaiting student submission";
+            item.IsAwaitingSubmission = true;
+
+            return item;
+        }
+
         private static (string Text, string CssClass) GetGradeBadge(decimal percentage, int gradedItems)
         {
             if (gradedItems <= 0)
@@ -237,6 +420,39 @@ namespace HTFLMS.Data.Services
             }
 
             return ("Fair", "fair");
+        }
+
+        private static (string Text, string CssClass) GetResultText(decimal percentage)
+        {
+            if (percentage >= 85)
+            {
+                return ("Excellent Work", "good");
+            }
+
+            if (percentage >= 70)
+            {
+                return ("Good Attempt", "average");
+            }
+
+            return ("Needs Improvement", "danger");
+        }
+
+        private static string GetStandingMeta(string standing)
+        {
+            return standing switch
+            {
+                "Excellent" => "Excellent progress in this course",
+                "Good" => "Keep completing upcoming work",
+                "Fair" => "Review feedback and improve submissions",
+                _ => "Grades will appear after your work is marked."
+            };
+        }
+
+        private static string FormatPercentage(decimal percentage)
+        {
+            return percentage % 1 == 0
+                ? $"{percentage:0}%"
+                : $"{percentage:0.0}%";
         }
     }
 }

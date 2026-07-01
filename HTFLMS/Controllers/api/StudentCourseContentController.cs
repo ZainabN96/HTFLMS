@@ -59,22 +59,6 @@ namespace HTFLMS.Controllers.api
             return Ok(result);
         }
 
-        private int? GetStudentId()
-        {
-            var studentIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            if (string.IsNullOrWhiteSpace(studentIdClaim))
-            {
-                return null;
-            }
-
-            if (!int.TryParse(studentIdClaim, out var studentId))
-            {
-                return null;
-            }
-
-            return studentId;
-        }
         [HttpGet("{courseId:int}/modules-lessons")]
         public async Task<IActionResult> GetModulesAndLessons(int courseId)
         {
@@ -118,6 +102,7 @@ namespace HTFLMS.Controllers.api
                 message = "Lesson marked as completed."
             });
         }
+
         [HttpGet("modules/{moduleId:int}/quiz")]
         public async Task<IActionResult> GetQuiz(int moduleId)
         {
@@ -179,7 +164,8 @@ namespace HTFLMS.Controllers.api
 
             return Ok(result);
         }
-        //////////////////Slides And Assignments///////////////
+
+        ////////////////// Slides And Assignments /////////////////
 
         [HttpGet("{courseId:int}/materials-assignments")]
         public async Task<IActionResult> GetMaterialsAndAssignments(int courseId)
@@ -200,11 +186,12 @@ namespace HTFLMS.Controllers.api
 
             return Ok(result);
         }
+
         [HttpPost("assignments/{assignmentId:int}/submit")]
         public async Task<IActionResult> SubmitAssignment(
-    int assignmentId,
-    [FromForm] IFormFile? file,
-    [FromForm] string? solutionLink)
+            int assignmentId,
+            [FromForm] IFormFile? file,
+            [FromForm] string? solutionLink)
         {
             var studentId = GetStudentId();
 
@@ -258,6 +245,29 @@ namespace HTFLMS.Controllers.api
 
             return Ok(result);
         }
+
+        ///////////////// Grades /////////////////
+
+        [HttpGet("{courseId:int}/grades")]
+        public async Task<IActionResult> GetGrades(int courseId)
+        {
+            var studentId = GetStudentId();
+
+            if (studentId == null)
+            {
+                return Unauthorized(new APIError(401, "Student session is invalid. Please login again."));
+            }
+
+            var result = await uow.StudentGradesService.GetGradesTabAsync(studentId.Value, courseId);
+
+            if (result == null)
+            {
+                return NotFound(new APIError(404, "Course grades were not found or you are not enrolled in this course."));
+            }
+
+            return Ok(result);
+        }
+
         ///////////////// Notes /////////////////
 
         [HttpGet("{courseId:int}/notes")]
@@ -365,6 +375,23 @@ namespace HTFLMS.Controllers.api
             }
 
             return Ok(result);
+        }
+
+        private int? GetStudentId()
+        {
+            var studentIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (string.IsNullOrWhiteSpace(studentIdClaim))
+            {
+                return null;
+            }
+
+            if (!int.TryParse(studentIdClaim, out var studentId))
+            {
+                return null;
+            }
+
+            return studentId;
         }
     }
 }

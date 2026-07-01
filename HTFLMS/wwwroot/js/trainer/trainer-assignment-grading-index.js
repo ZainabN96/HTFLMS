@@ -39,21 +39,8 @@
             searchTimer: null,
             selectedAssignmentId: 0,
             selectedStudentId: 0,
-            selectedButton: null,
-            markZeroModalInstance: null,
             toastTimer: null
         };
-
-        if (elements.modalElement) {
-            state.markZeroModalInstance = {
-                show: function () {
-                    elements.modalElement.style.display = 'flex';
-                },
-                hide: function () {
-                    elements.modalElement.style.display = 'none';
-                }
-            };
-        }
 
         bindTrainerSubmissionEvents();
         loadTrainerAssignmentSubmissions();
@@ -99,7 +86,7 @@
                     const assignmentId = parseInt(btn.getAttribute('data-assignment-id') || '0', 10);
                     const studentId = parseInt(btn.getAttribute('data-student-id') || '0', 10);
 
-                    openMarkZeroModal(assignmentId, studentId, btn);
+                    openMarkZeroModal(assignmentId, studentId);
                 });
             }
 
@@ -108,6 +95,7 @@
                     markMissingSubmissionZero();
                 });
             }
+
             if (elements.cancelBtn) {
                 elements.cancelBtn.addEventListener('click', function () {
                     closeMarkZeroModal();
@@ -115,22 +103,23 @@
                 });
             }
 
+            if (elements.modalElement) {
+                elements.modalElement.addEventListener('click', function (e) {
+                    if (e.target === elements.modalElement) {
+                        closeMarkZeroModal();
+                        resetMarkZeroState();
+                    }
+                });
+            }
+
             if (elements.toastClose) {
                 elements.toastClose.addEventListener('click', function () {
                     hideTrainerSubmissionToast();
                 });
-                if (elements.modalElement) {
-                    elements.modalElement.addEventListener('click', function (e) {
-                        if (e.target === elements.modalElement) {
-                            closeMarkZeroModal();
-                            resetMarkZeroState();
-                        }
-                    });
-                }
             }
         }
 
-        function openMarkZeroModal(assignmentId, studentId, btn) {
+        function openMarkZeroModal(assignmentId, studentId) {
             clearTrainerSubmissionError();
 
             if (!assignmentId || !studentId) {
@@ -144,23 +133,13 @@
 
             state.selectedAssignmentId = assignmentId;
             state.selectedStudentId = studentId;
-            state.selectedButton = btn || null;
 
             if (elements.modalText) {
                 elements.modalText.textContent =
                     'This student did not submit the assignment before the due date. Do you want to assign 0 marks?';
             }
 
-            if (state.markZeroModalInstance) {
-                state.markZeroModalInstance.show();
-                return;
-            }
-
-            showTrainerSubmissionToast(
-                'Unable to open confirmation',
-                'Confirmation modal is not available. Please refresh the page and try again.',
-                'error'
-            );
+            showElement(elements.modalElement);
         }
 
         function loadTrainerAssignmentSubmissions() {
@@ -460,15 +439,12 @@
         }
 
         function closeMarkZeroModal() {
-            if (state.markZeroModalInstance) {
-                state.markZeroModalInstance.hide();
-            }
+            hideElement(elements.modalElement);
         }
 
         function resetMarkZeroState() {
             state.selectedAssignmentId = 0;
             state.selectedStudentId = 0;
-            state.selectedButton = null;
         }
 
         function setMarkZeroButtonLoading(isLoading) {
@@ -504,7 +480,7 @@
                 }
             }
 
-            elements.toast.style.display = 'block';
+            showElement(elements.toast);
 
             state.toastTimer = setTimeout(function () {
                 hideTrainerSubmissionToast();
@@ -512,11 +488,7 @@
         }
 
         function hideTrainerSubmissionToast() {
-            if (!elements.toast) {
-                return;
-            }
-
-            elements.toast.style.display = 'none';
+            hideElement(elements.toast);
         }
 
         function setTrainerSubmissionLoading() {
@@ -573,13 +545,13 @@
 
         function showElement(element) {
             if (element) {
-                element.style.display = '';
+                element.classList.remove('trainer-hidden');
             }
         }
 
         function hideElement(element) {
             if (element) {
-                element.style.display = 'none';
+                element.classList.add('trainer-hidden');
             }
         }
 

@@ -28,6 +28,7 @@ function initStudentCourseContentPage() {
     loadStudentCourseContentInfo(courseId);
     loadStudentCourseContentModules(courseId);
     loadStudentCourseContentMaterialsAssignments(courseId);
+    loadStudentCourseContentGrades(courseId);
     loadStudentCourseContentNotes(courseId);
 }
 
@@ -1602,6 +1603,7 @@ function submitStudentAssignmentSolution() {
 
             var courseId = getStudentCourseIdFromUrl();
             loadStudentCourseContentMaterialsAssignments(courseId);
+            loadStudentCourseContentGrades(courseId);
 
             showStudentMessageModal(
                 'Submitted',
@@ -1634,6 +1636,7 @@ function unsubmitStudentAssignmentSolution(assignmentId) {
 
             var courseId = getStudentCourseIdFromUrl();
             loadStudentCourseContentMaterialsAssignments(courseId);
+            loadStudentCourseContentGrades(courseId);
 
             showStudentMessageModal(
                 'Removed',
@@ -1705,6 +1708,286 @@ function isValidStudentHttpUrl(value) {
     } catch (e) {
         return false;
     }
+}
+
+/* =========================
+   GRADES TAB
+========================= */
+
+function loadStudentCourseContentGrades(courseId) {
+    $('#studentGradesTabContainer').html(
+        '<div class="dashboard-panel text-center p-4">Loading grades...</div>'
+    );
+
+    $.ajax({
+        url: '/api/student/course-content/' + courseId + '/grades',
+        type: 'GET',
+        success: function (data) {
+            renderStudentCourseContentGrades(data);
+        },
+        error: function (xhr) {
+            var message = getStudentCourseContentErrorMessage(
+                xhr,
+                'Grades could not be loaded.'
+            );
+
+            $('#studentGradesTabContainer').html(
+                '<div class="dashboard-panel text-center p-4 text-danger">' +
+                escapeHtml(message) +
+                '</div>'
+            );
+        }
+    });
+}
+
+function renderStudentCourseContentGrades(data) {
+    var summary = data.summary || {};
+    var items = data.items || [];
+
+    $('#studentGradesTabContainer').html(`
+        <div class="student-tab-stack">
+            <div class="dashboard-stats">
+                <div class="student-summary-card">
+                    <div class="dashboard-stat-title">Overall Grade</div>
+                    <div class="dashboard-stat-value">${escapeHtml(summary.overallGradeValue || '0%')}</div>
+                    <div class="dashboard-stat-meta">${escapeHtml(summary.overallGradeMeta || 'Based on graded submissions')}</div>
+                </div>
+
+                <div class="student-summary-card">
+                    <div class="dashboard-stat-title">Graded Items</div>
+                    <div class="dashboard-stat-value">${escapeHtml(summary.gradedItemsValue || '0/0')}</div>
+                    <div class="dashboard-stat-meta">${escapeHtml(summary.gradedItemsMeta || 'No graded items yet')}</div>
+                </div>
+
+                <div class="student-summary-card">
+                    <div class="dashboard-stat-title">Highest Score</div>
+                    <div class="dashboard-stat-value">${escapeHtml(summary.highestScoreValue || 'N/A')}</div>
+                    <div class="dashboard-stat-meta">${escapeHtml(summary.highestScoreMeta || 'No graded assignment')}</div>
+                </div>
+
+                <div class="student-summary-card">
+                    <div class="dashboard-stat-title">Current Standing</div>
+                    <div class="dashboard-stat-value">${escapeHtml(summary.currentStandingValue || 'No Grade')}</div>
+                    <div class="dashboard-stat-meta">${escapeHtml(summary.currentStandingMeta || 'Grades will appear after your work is marked.')}</div>
+                </div>
+            </div>
+
+            <div class="dashboard-panel">
+                <div class="dashboard-panel-head student-panel-head">
+                    <div>
+                        <h3 class="page-h2">Grade Breakdown</h3>
+                        <p class="student-panel-sub">
+                            View your assignment and assessment results, grading status, and trainer feedback.
+                        </p>
+                    </div>
+
+                    <div class="student-grade-legend">
+                        <span class="student-grade-legend-item">
+                            <span class="student-grade-dot graded"></span> Graded
+                        </span>
+
+                        <span class="student-grade-legend-item">
+                            <span class="student-grade-dot pending"></span> Pending
+                        </span>
+
+                        <span class="student-grade-legend-item">
+                            <span class="student-grade-dot missing"></span> Missing
+                        </span>
+                    </div>
+                </div>
+
+                <div class="student-grade-list">
+                    ${renderStudentGradeItems(items, data.emptyMessage)}
+                </div>
+            </div>
+        </div>
+    `);
+}
+
+function renderStudentGradeItems(items, emptyMessage) {
+    if (!items || !items.length) {
+        return `
+            <div class="student-grade-card missing">
+                <div class="student-grade-card-top">
+                    <div class="student-grade-card-left">
+                        <div class="student-grade-item-title">${escapeHtml(emptyMessage || 'No grade record found yet.')}</div>
+                        <div class="student-grade-item-meta">
+                            <span>Grades will appear here once assignments are added and reviewed.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    return items.map(function (item) {
+        return renderStudentGradeItemCard(item);
+    }).join('');
+}
+
+function renderStudentGradeItemCard(item) {
+    var cardClass = item.cardClass || 'missing';
+    var statusClass = item.statusClass || cardClass;
+    var metaHtml = renderStudentGradeItemMeta(item);
+    var extraGridHtml = renderStudentGradeExtraGrid(item);
+    var feedbackHtml = renderStudentGradeFeedback(item);
+
+    return `
+        <div class="student-grade-card ${escapeAttribute(cardClass)}">
+            <div class="student-grade-card-top">
+                <div class="student-grade-card-left">
+                    <div class="student-grade-item-title">${escapeHtml(item.assignmentTitle || 'Untitled Assignment')}</div>
+
+                    <div class="student-grade-item-meta">
+                        ${metaHtml}
+                    </div>
+                </div>
+
+                <div class="student-grade-card-right">
+                    <span class="student-grade-status ${escapeAttribute(statusClass)}">
+                        ${escapeHtml(item.statusText || 'Not Submitted')}
+                    </span>
+
+                    <div class="student-grade-score-block">
+                        <span class="student-grade-score ${item.isGraded ? '' : 'muted-text'}">
+                            ${escapeHtml(item.scoreText || '--/0')}
+                        </span>
+
+                        <span class="student-grade-score-percent ${item.isGraded ? '' : 'muted-text'}">
+                            ${escapeHtml(item.scorePercentageText || 'Missing')}
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            ${extraGridHtml}
+
+            ${feedbackHtml}
+        </div>
+    `;
+}
+
+function renderStudentGradeItemMeta(item) {
+    var parts = [];
+
+    if (item.typeText) {
+        parts.push('Type: ' + item.typeText);
+    }
+
+    if (item.moduleTitle) {
+        parts.push(item.moduleTitle);
+    }
+
+    if (item.submittedAt) {
+        parts.push('Submitted: ' + formatStudentCourseDateTime(item.submittedAt));
+    } else if (item.dueDateTime) {
+        parts.push('Due: ' + formatStudentAssignmentDateTime(item.dueDateTime));
+    }
+
+    return parts.map(function (part, index) {
+        var separator = index === 0 ? '' : '<span>•</span>';
+
+        return `
+            ${separator}
+            <span>${escapeHtml(part)}</span>
+        `;
+    }).join('');
+}
+
+function renderStudentGradeExtraGrid(item) {
+    if (item.isGraded) {
+        return `
+            <div class="student-grade-extra-grid">
+                <div class="student-grade-extra-item">
+                    <span class="student-grade-extra-label">Trainer</span>
+                    <span class="student-grade-extra-value">${escapeHtml(item.trainerName || 'Not assigned')}</span>
+                </div>
+
+                <div class="student-grade-extra-item">
+                    <span class="student-grade-extra-label">Graded On</span>
+                    <span class="student-grade-extra-value">${formatStudentCourseDateTime(item.gradedAt)}</span>
+                </div>
+
+                <div class="student-grade-extra-item">
+                    <span class="student-grade-extra-label">Weight</span>
+                    <span class="student-grade-extra-value">${escapeHtml(String(item.totalMarks || 0))} Marks</span>
+                </div>
+
+                <div class="student-grade-extra-item">
+                    <span class="student-grade-extra-label">Result</span>
+                    <span class="student-grade-extra-value ${escapeAttribute(item.resultClass || '')}">
+                        ${escapeHtml(item.resultText || 'Result')}
+                    </span>
+                </div>
+            </div>
+        `;
+    }
+
+    if (item.isPending || item.isAwaitingSubmission) {
+        return `
+            <div class="student-grade-extra-grid">
+                <div class="student-grade-extra-item">
+                    <span class="student-grade-extra-label">Submission Status</span>
+                    <span class="student-grade-extra-value">${escapeHtml(item.submissionStatusText || 'Submitted Successfully')}</span>
+                </div>
+
+                <div class="student-grade-extra-item">
+                    <span class="student-grade-extra-label">Review Status</span>
+                    <span class="student-grade-extra-value">${escapeHtml(item.reviewStatusText || 'Waiting for trainer review')}</span>
+                </div>
+
+                <div class="student-grade-extra-item">
+                    <span class="student-grade-extra-label">Due Date</span>
+                    <span class="student-grade-extra-value">${formatStudentAssignmentDateTime(item.dueDateTime)}</span>
+                </div>
+
+                <div class="student-grade-extra-item">
+                    <span class="student-grade-extra-label">Marks</span>
+                    <span class="student-grade-extra-value">${escapeHtml(String(item.totalMarks || 0))} Marks</span>
+                </div>
+            </div>
+        `;
+    }
+
+    return `
+        <div class="student-grade-extra-grid">
+            <div class="student-grade-extra-item">
+                <span class="student-grade-extra-label">Submission</span>
+                <span class="student-grade-extra-value danger">${escapeHtml(item.submissionStatusText || 'No submission found')}</span>
+            </div>
+
+            <div class="student-grade-extra-item">
+                <span class="student-grade-extra-label">Status</span>
+                <span class="student-grade-extra-value">${escapeHtml(item.reviewStatusText || 'Awaiting student submission')}</span>
+            </div>
+
+            <div class="student-grade-extra-item">
+                <span class="student-grade-extra-label">Due Date</span>
+                <span class="student-grade-extra-value">${formatStudentAssignmentDateTime(item.dueDateTime)}</span>
+            </div>
+
+            <div class="student-grade-extra-item">
+                <span class="student-grade-extra-label">Marks</span>
+                <span class="student-grade-extra-value">${escapeHtml(String(item.totalMarks || 0))} Marks</span>
+            </div>
+        </div>
+    `;
+}
+
+function renderStudentGradeFeedback(item) {
+    if (!item.isGraded || !item.feedback) {
+        return '';
+    }
+
+    return `
+        <div class="student-grade-feedback-box">
+            <div class="student-grade-feedback-title">
+                <i class="bi bi-chat-left-text"></i> Trainer Feedback
+            </div>
+
+            <p>${escapeHtml(item.feedback)}</p>
+        </div>
+    `;
 }
 
 /* =========================
