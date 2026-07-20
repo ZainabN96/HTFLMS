@@ -1,0 +1,157 @@
+﻿@{
+    ViewData["Title"] = "Certificates";
+    Layout = "_TrainerLayout";
+}
+
+<div class="dashboard-page trainer-content-page trainer-gradebook-page">
+
+    <div class="dashboard-page-head trainer-content-head">
+        <div>
+            <h1 class="dashboard-h1">Certificates</h1>
+            <p class="dashboard-sub">Review student grades and certificate requests across your assigned courses.</p>
+        </div>
+    </div>
+
+    <!-- STATS -->
+    <div class="dashboard-stats trainer-content-stats">
+        <div class="dashboard-stat-card">
+            <div class="dashboard-stat-top">
+                <div class="dashboard-stat-title">Overall Class Avg</div>
+                <i class="bi bi-bar-chart-line"></i>
+            </div>
+            <div class="dashboard-stat-value trainer-grade-good" id="certificateClassAverage">0%</div>
+            <div class="dashboard-stat-meta">Across selected course</div>
+        </div>
+
+        <div class="dashboard-stat-card">
+            <div class="dashboard-stat-top">
+                <div class="dashboard-stat-title">Pending Requests</div>
+                <i class="bi bi-hourglass-split"></i>
+            </div>
+            <div class="dashboard-stat-value trainer-grade-warn" id="certificatePendingCount">0</div>
+            <div class="dashboard-stat-meta">Need review</div>
+        </div>
+
+        <div class="dashboard-stat-card">
+            <div class="dashboard-stat-top">
+                <div class="dashboard-stat-title">Approved</div>
+                <i class="bi bi-patch-check"></i>
+            </div>
+            <div class="dashboard-stat-value trainer-grade-good" id="certificateApprovedCount">0</div>
+            <div class="dashboard-stat-meta">Certificates approved</div>
+        </div>
+
+        <div class="dashboard-stat-card">
+            <div class="dashboard-stat-top">
+                <div class="dashboard-stat-title">At Risk Students</div>
+                <i class="bi bi-exclamation-triangle"></i>
+            </div>
+            <div class="dashboard-stat-value trainer-grade-warn" id="certificateAtRiskCount">0</div>
+            <div class="dashboard-stat-meta">Need attention soon</div>
+        </div>
+    </div>
+
+    <!-- COURSE OVERVIEW -->
+    <div class="dashboard-panel trainer-content-panel trainer-gradebook-filter-panel">
+        <div class="dashboard-panel-head trainer-content-panel-head trainer-gradebook-filter-head">
+            <div class="dashboard-panel-title">
+                Course Overview
+            </div>
+
+            <div class="courses-head-search trainer-gradebook-search">
+                <i class="bi bi-search"></i>
+                <input type="text" id="trainerCertificateSearch" placeholder="Search student..." />
+            </div>
+        </div>
+
+        <div class="trainer-gradebook-filter-row">
+            <select class="course-input trainer-inline-select trainer-gradebook-select" id="trainerCertificateCourseSelect">
+                <option value="">Loading courses...</option>
+            </select>
+
+            <select class="course-input trainer-inline-select trainer-gradebook-select" id="trainerCertificateStatusSelect">
+                <option value="All">All statuses</option>
+            </select>
+
+            <button type="button" class="dashboard-btn dashboard-btn-outline trainer-gradebook-export-btn" id="trainerCertificateRefreshBtn">
+                <i class="bi bi-arrow-clockwise"></i>
+                Refresh
+            </button>
+        </div>
+    </div>
+
+    <!-- TABLE -->
+    <div class="dashboard-panel trainer-content-panel trainer-gradebook-panel">
+        <div class="dashboard-panel-head trainer-content-panel-head">
+            <div>
+                <div class="dashboard-panel-title">Certificate Records</div>
+                <div class="dashboard-muted-small" id="trainerCertificateCourseMeta">Select a course to view records</div>
+            </div>
+
+            <div class="dashboard-muted-small" id="trainerCertificateStudentCount">0 student(s)</div>
+        </div>
+
+        <div class="dashboard-table-wrap trainer-gradebook-table-wrap" id="trainerCertificateTableWrap">
+            <div class="dashboard-table-row dashboard-table-head trainer-gradebook-table-row trainer-gradebook-table-head" id="trainerCertificateTableHead">
+                <div title="Student">Student</div>
+                <div title="Overall Percentage">Overall %</div>
+                <div title="Student Standing">Standing</div>
+                <div title="Certificate Status">Certificate</div>
+            </div>
+
+            <div id="trainerCertificateTableBody">
+                <div class="dashboard-table-row trainer-gradebook-table-row">
+                    <div class="dashboard-cell-strong">Loading...</div>
+                    <div>—</div>
+                    <div>—</div>
+                    <div>—</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="certificate-empty-state" id="trainerCertificateEmptyState" hidden>
+            <div class="certificate-empty-inner">
+                <div class="certificate-empty-icon">
+                    <i class="bi bi-patch-check"></i>
+                </div>
+                <h3>No records found</h3>
+                <p>No students or certificate records found for the selected course.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- CONFIRM MODAL -->
+    <div class="certificate-modal-backdrop" id="trainerCertificateConfirmModal" hidden>
+        <div class="certificate-modal-card" role="dialog" aria-modal="true">
+            <div class="certificate-modal-icon">
+                <i class="bi bi-patch-question"></i>
+            </div>
+
+            <h3 id="trainerCertificateConfirmTitle">Confirm Action</h3>
+            <p id="trainerCertificateConfirmMessage">Are you sure?</p>
+
+            <div class="certificate-modal-actions">
+                <button type="button" class="dashboard-btn dashboard-btn-outline" id="trainerCertificateCancelBtn">
+                    Cancel
+                </button>
+
+                <button type="button" class="dashboard-btn" id="trainerCertificateConfirmBtn">
+                    Confirm
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST -->
+    <div class="certificate-toast" id="trainerCertificateToast" hidden>
+        <div class="certificate-toast-icon">
+            <i class="bi bi-info-circle"></i>
+        </div>
+        <div id="trainerCertificateToastMessage"></div>
+    </div>
+
+</div>
+
+@section Scripts {
+    <script src="~/js/trainer/trainer-certificate.js" asp-append-version="true"></script>
+}

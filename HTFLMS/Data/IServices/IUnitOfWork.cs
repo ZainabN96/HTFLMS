@@ -17,6 +17,9 @@
         IStudentGradesService StudentGradesService { get; }
         IStudentCourseContentService StudentCourseContentService { get; }
         ITrainerAssignmentGradingService TrainerAssignmentGradingService { get; }
+        IStudentCertificateService StudentCertificateService { get; }
+        ITrainerCertificateService TrainerCertificateService { get; }
+        IAdminCertificateService AdminCertificateService { get; }
         Task<bool> SaveAsync();
     }
 }

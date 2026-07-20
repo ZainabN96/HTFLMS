@@ -148,10 +148,16 @@
 
                 <div class="dashboard-nav-section">Grading</div>
 
-                <a asp-area="Admin" asp-controller="Gradebook" asp-action="Index"
+              @*   <a asp-area="Admin" asp-controller="Gradebook" asp-action="Index"
                    class="dashboard-nav-item @(ViewContext.RouteData.Values["controller"]?.ToString() == "Gradebook" ? "active" : "")">
                     <i class="bi bi-award"></i>
                     <span>Gradebook</span>
+                </a> *@
+
+                <a asp-area="Admin" asp-controller="Certificates" asp-action="Index"
+                   class="dashboard-nav-item @(ViewContext.RouteData.Values["controller"]?.ToString() == "Certificates" ? "active" : "")">
+                    <i class="bi bi-award"></i>
+                    <span>Certificates</span>
                 </a>
 
               @*   <div class="dashboard-nav-divider"></div>

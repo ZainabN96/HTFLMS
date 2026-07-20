@@ -7813,3 +7813,243 @@
     max-height: 520px;
     border-radius: 14px;
 }
+
+/* //////////////////// Student Certificate /////////////////// */
+
+.certificate-status-line,
+.certificate-status-line i,
+.certificate-status-line span {
+    color: #db291b;
+}
+
+.certificate-status-line {
+    font-weight: 600;
+}
+
+.certificate-status-message {
+    color: #db291b;
+}
+
+.certificate-card .certificate-actions {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.certificate-modal-open {
+    overflow: hidden;
+}
+
+.certificate-modal-backdrop[hidden],
+.certificate-toast[hidden] {
+    display: none !important;
+}
+
+.certificate-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: rgba(17, 24, 39, 0.45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+}
+
+.certificate-modal-card {
+    width: 100%;
+    max-width: 430px;
+    background: #ffffff;
+    border: 1px solid #f3c5c9;
+    border-radius: 22px;
+    padding: 28px;
+    text-align: center;
+    box-shadow: 0 24px 70px rgba(17, 24, 39, 0.18);
+}
+
+.certificate-modal-icon {
+    width: 56px;
+    height: 56px;
+    margin: 0 auto 16px;
+    border-radius: 50%;
+    background: #fff1f2;
+    color: #db291b;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+}
+
+.certificate-modal-card h3 {
+    margin: 0 0 10px;
+    font-size: 22px;
+    font-weight: 700;
+    color: #111827;
+}
+
+.certificate-modal-card p {
+    margin: 0;
+    color: #5f6673;
+    font-size: 15px;
+    line-height: 1.6;
+}
+
+.certificate-modal-actions {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 24px;
+    flex-wrap: wrap;
+}
+
+.certificate-toast {
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    z-index: 10000;
+    transform: translate(-50%, -50%) scale(0.96);
+    min-width: 280px;
+    max-width: 420px;
+    background: #ffffff;
+    border: 1px solid #f3c5c9;
+    border-radius: 18px;
+    padding: 16px 18px;
+    box-shadow: 0 20px 60px rgba(17, 24, 39, 0.18);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+    .certificate-toast.show {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+
+.certificate-toast-icon {
+    color: #db291b;
+    font-size: 22px;
+    display: flex;
+    align-items: center;
+}
+
+#certificateToastMessage,
+#trainerCertificateToastMessage {
+    color: #111827;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+/* //////////////////// Certificate Review Table - Trainer/Admin /////////////////// */
+
+#trainerCertificateTableWrap,
+#adminCertificateTableWrap {
+    overflow-x: auto;
+}
+
+    #trainerCertificateTableWrap .trainer-gradebook-table-row,
+    #adminCertificateTableWrap .trainer-gradebook-table-row {
+        display: grid;
+        align-items: center;
+        width: max-content;
+        min-width: 100%;
+        column-gap: 0;
+    }
+
+    #trainerCertificateTableWrap.certificate-review-cols-0 .trainer-gradebook-table-row,
+    #adminCertificateTableWrap.certificate-review-cols-0 .trainer-gradebook-table-row {
+        grid-template-columns: 200px 90px 120px 150px;
+    }
+
+    #trainerCertificateTableWrap.certificate-review-cols-1 .trainer-gradebook-table-row,
+    #adminCertificateTableWrap.certificate-review-cols-1 .trainer-gradebook-table-row {
+        grid-template-columns: 200px repeat(1, 95px) 90px 120px 150px;
+    }
+
+    #trainerCertificateTableWrap.certificate-review-cols-2 .trainer-gradebook-table-row,
+    #adminCertificateTableWrap.certificate-review-cols-2 .trainer-gradebook-table-row {
+        grid-template-columns: 200px repeat(2, 95px) 90px 120px 150px;
+    }
+
+    #trainerCertificateTableWrap.certificate-review-cols-3 .trainer-gradebook-table-row,
+    #adminCertificateTableWrap.certificate-review-cols-3 .trainer-gradebook-table-row {
+        grid-template-columns: 200px repeat(3, 95px) 90px 120px 150px;
+    }
+
+    #trainerCertificateTableWrap.certificate-review-cols-4 .trainer-gradebook-table-row,
+    #adminCertificateTableWrap.certificate-review-cols-4 .trainer-gradebook-table-row {
+        grid-template-columns: 200px repeat(4, 95px) 90px 120px 150px;
+    }
+
+    #trainerCertificateTableWrap.certificate-review-cols-5 .trainer-gradebook-table-row,
+    #adminCertificateTableWrap.certificate-review-cols-5 .trainer-gradebook-table-row {
+        grid-template-columns: 200px repeat(5, 95px) 90px 120px 150px;
+    }
+
+    #trainerCertificateTableWrap.certificate-review-cols-6 .trainer-gradebook-table-row,
+    #adminCertificateTableWrap.certificate-review-cols-6 .trainer-gradebook-table-row {
+        grid-template-columns: 200px repeat(6, 95px) 90px 120px 150px;
+    }
+
+    #trainerCertificateTableWrap.certificate-review-cols-7 .trainer-gradebook-table-row,
+    #adminCertificateTableWrap.certificate-review-cols-7 .trainer-gradebook-table-row {
+        grid-template-columns: 200px repeat(7, 95px) 90px 120px 150px;
+    }
+
+    #trainerCertificateTableWrap.certificate-review-cols-8 .trainer-gradebook-table-row,
+    #adminCertificateTableWrap.certificate-review-cols-8 .trainer-gradebook-table-row {
+        grid-template-columns: 200px repeat(8, 95px) 90px 120px 150px;
+    }
+
+    #trainerCertificateTableWrap.certificate-review-cols-9 .trainer-gradebook-table-row,
+    #adminCertificateTableWrap.certificate-review-cols-9 .trainer-gradebook-table-row {
+        grid-template-columns: 200px repeat(9, 95px) 90px 120px 150px;
+    }
+
+    #trainerCertificateTableWrap.certificate-review-cols-10 .trainer-gradebook-table-row,
+    #adminCertificateTableWrap.certificate-review-cols-10 .trainer-gradebook-table-row {
+        grid-template-columns: 200px repeat(10, 95px) 90px 120px 150px;
+    }
+
+    #trainerCertificateTableWrap.certificate-review-cols-11 .trainer-gradebook-table-row,
+    #adminCertificateTableWrap.certificate-review-cols-11 .trainer-gradebook-table-row {
+        grid-template-columns: 200px repeat(11, 95px) 90px 120px 150px;
+    }
+
+    #trainerCertificateTableWrap.certificate-review-cols-12 .trainer-gradebook-table-row,
+    #adminCertificateTableWrap.certificate-review-cols-12 .trainer-gradebook-table-row {
+        grid-template-columns: 200px repeat(12, 95px) 90px 120px 150px;
+    }
+
+    #trainerCertificateTableWrap .trainer-gradebook-table-row > div,
+    #adminCertificateTableWrap .trainer-gradebook-table-row > div {
+        min-width: 0;
+    }
+
+    #trainerCertificateTableWrap .trainer-gradebook-table-head > div,
+    #adminCertificateTableWrap .trainer-gradebook-table-head > div {
+        line-height: 1.25;
+        word-break: normal;
+        overflow-wrap: normal;
+    }
+
+    #trainerCertificateTableWrap .trainer-gradebook-sub,
+    #adminCertificateTableWrap .trainer-gradebook-sub {
+        display: inline-block;
+        margin-top: 4px;
+    }
+
+.trainer-gradebook-certificate-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.trainer-certificate-approve-btn,
+.trainer-certificate-reject-btn {
+    justify-content: center;
+}
+

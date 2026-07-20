@@ -1,6 +1,99 @@
 ﻿@{
     ViewData["Title"] = "View Certificate";
     Layout = "_StudentLayout";
+    var certificateRequestId = ViewBag.CertificateRequestId ?? 0;
+}
+
+<div class="dashboard-page certificate-view-page" data-certificate-request-id="@certificateRequestId">
+
+    <div class="dashboard-page-head">
+        <div>
+            <h1 class="dashboard-h1">Certificate</h1>
+            <p class="dashboard-sub">Verify and download your achievement</p>
+        </div>
+
+        <a asp-area="Student"
+           asp-controller="Certificates"
+           asp-action="Index"
+           class="dashboard-btn dashboard-btn-outline">
+            <i class="bi bi-arrow-left"></i>
+            Back
+        </a>
+    </div>
+
+    <div class="certificate-view-wrap" id="certificateDetailWrap">
+
+        <div class="certificate-preview-card">
+            <img src="~/img/course/certificate.png"
+                 class="certificate-preview-img"
+                 alt="certificate" />
+        </div>
+
+        <div class="certificate-info-card">
+
+            <div class="certificate-info-row">
+                <div class="certificate-info-item">
+                    <label>Student</label>
+                    <div id="certificateStudentName">Loading...</div>
+                </div>
+
+                <div class="certificate-info-item">
+                    <label>Course</label>
+                    <div id="certificateCourseTitle">Loading...</div>
+                </div>
+
+                <div class="certificate-info-item">
+                    <label>Issue Date</label>
+                    <div id="certificateIssueDate">Loading...</div>
+                </div>
+
+                <div class="certificate-info-item">
+                    <label>Certificate ID</label>
+                    <div id="certificateId">Loading...</div>
+                </div>
+
+                <div class="certificate-info-item">
+                    <label>Batch Number</label>
+                    <div id="certificateBatchNumber">-</div>
+                </div>
+
+                <div class="certificate-info-item">
+                    <label>Duration</label>
+                    <div id="certificateDuration">-</div>
+                </div>
+            </div>
+
+            <div class="certificate-actions" id="certificateDownloadWrap">
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="certificate-empty-state" id="certificateDetailEmpty" hidden>
+        <div class="dashboard-panel">
+            <div class="certificate-empty-inner">
+                <div class="certificate-empty-icon">
+                    <i class="bi bi-patch-check"></i>
+                </div>
+                <h3>Certificate not available</h3>
+                <p>This certificate is not approved or could not be found.</p>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+@section Scripts {
+    <script src="~/js/student/student-certificate.js" asp-append-version="true"></script>
+}
+
+
+
+
+@* @{
+    ViewData["Title"] = "View Certificate";
+    Layout = "_StudentLayout";
 }
 
 <div class="dashboard-page certificate-view-page">
@@ -65,4 +158,4 @@
 
     </div>
 
-</div>
+</div> *@
