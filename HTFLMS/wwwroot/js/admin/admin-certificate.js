@@ -35,6 +35,7 @@
         const statusSelect = document.getElementById('adminCertificateStatusSelect');
         const searchInput = document.getElementById('adminCertificateSearch');
         const refreshBtn = document.getElementById('adminCertificateRefreshBtn');
+        const generateBtn = document.getElementById('adminGenerateCertificatesBtn');
 
         if (courseSelect) {
             courseSelect.addEventListener('change', function () {
@@ -64,6 +65,11 @@
         if (refreshBtn) {
             refreshBtn.addEventListener('click', function () {
                 loadReview();
+            });
+        }
+        if (generateBtn) {
+            generateBtn.addEventListener('click', function () {
+                generateCertificates(generateBtn);
             });
         }
     }
@@ -169,6 +175,7 @@
 
             statusSelect.value = currentStatus;
         }
+     
     }
 
     function renderSummary(summary) {
@@ -227,7 +234,9 @@
         }
 
         tableBody.innerHTML = students.map(student => renderStudentRow(student, assignments)).join('');
+
         bindActionButtons();
+        bindDeliveryModeSelects();
     }
 
     function renderTableHead(assignments) {
@@ -246,6 +255,7 @@
             ${assignmentHeaders}
             <div title="Overall Percentage">Overall %</div>
             <div title="Student Standing">Standing</div>
+            <div title="Delivery Mode">Mode</div>
             <div title="Certificate Status">Certificate</div>
         `;
     }
@@ -270,6 +280,10 @@
                     <span class="${escapeHtml(student.standingCssClass || 'pill trainer-grade-pill-warn')}">
                         ${escapeHtml(student.standingText)}
                     </span>
+                </div>
+
+                <div title="Delivery Mode">
+                    ${renderDeliveryMode(student)}
                 </div>
 
                 <div title="${escapeHtml(student.certificateStatusText)}">
@@ -317,6 +331,31 @@
                 </span>
             </div>
         `;
+    }
+
+    function renderDeliveryMode(student) {
+        const deliveryMode = student.deliveryMode || 'Onsite';
+        const enrollmentId = student.enrollmentId || 0;
+        const canUpdate = student.canUpdateDeliveryMode === true;
+
+        if (!canUpdate) {
+            return `
+            <span class="pill trainer-grade-pill-warn" title="Delivery mode is locked because certificate has been generated">
+                ${escapeHtml(deliveryMode)}
+            </span>
+        `;
+        }
+
+        return `
+        <select class="course-input"
+                data-delivery-mode-select="true"
+                data-enrollment-id="${enrollmentId}"
+                data-current-mode="${escapeHtml(deliveryMode)}"
+                title="Change delivery mode">
+            <option value="Onsite" ${deliveryMode === 'Onsite' ? 'selected' : ''}>Onsite</option>
+            <option value="Online" ${deliveryMode === 'Online' ? 'selected' : ''}>Online</option>
+        </select>
+    `;
     }
 
     function renderCertificateAction(student) {
@@ -388,6 +427,69 @@
         });
     }
 
+    function bindDeliveryModeSelects() {
+        const selects = document.querySelectorAll('select[data-delivery-mode-select="true"]');
+
+        selects.forEach(select => {
+            select.addEventListener('change', function () {
+                const enrollmentId = this.getAttribute('data-enrollment-id');
+                const oldMode = this.getAttribute('data-current-mode') || 'Onsite';
+                const newMode = this.value;
+
+                updateDeliveryMode(this, enrollmentId, oldMode, newMode);
+            });
+        });
+    }
+
+    async function updateDeliveryMode(selectElement, enrollmentId, oldMode, newMode) {
+        if (!enrollmentId || oldMode === newMode) {
+            return;
+        }
+
+        const confirmed = await showConfirmModal({
+            title: 'Update Delivery Mode',
+            message: `Are you sure you want to change delivery mode from ${oldMode} to ${newMode}?`,
+            confirmText: 'Update',
+            icon: 'bi-arrow-repeat'
+        });
+
+        if (!confirmed) {
+            selectElement.value = oldMode;
+            return;
+        }
+
+        selectElement.disabled = true;
+
+        try {
+            const response = await fetch(`${apiBaseUrl}/enrollment/${enrollmentId}/delivery-mode`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    deliveryMode: newMode
+                })
+            });
+
+            const result = await response.json();
+
+            if (!response.ok || !result.success) {
+                selectElement.value = oldMode;
+                showToast(result.message || 'Unable to update delivery mode.');
+                return;
+            }
+
+            showToast(result.message || 'Delivery mode updated successfully.');
+            await loadReview();
+
+        } catch (error) {
+            selectElement.value = oldMode;
+            showToast('Unable to update delivery mode.');
+        } finally {
+            selectElement.disabled = false;
+        }
+    }
+
     async function confirmAndSubmit(options) {
         if (!options.requestId) return;
 
@@ -419,7 +521,127 @@
             showToast('Unable to update certificate request.');
         }
     }
+    async function generateCertificates(button) {
+        const courseSelect = document.getElementById('adminCertificateCourseSelect');
+        const courseId = state.selectedCourseId || (courseSelect ? courseSelect.value : '');
 
+        if (!courseId) {
+            showToast('Please select a course first.');
+            return;
+        }
+
+        const confirmed = await showConfirmModal({
+            title: 'Generate Certificates',
+            message: 'This will generate certificate numbers for approved students of the selected course. Continue?',
+            confirmText: 'Generate',
+            icon: 'bi-patch-check'
+        });
+
+        if (!confirmed) return;
+
+        const oldText = button.innerHTML;
+        button.disabled = true;
+        button.innerHTML = '<i class="bi bi-hourglass-split"></i> Generating...';
+
+        try {
+            const response = await fetch(`${apiBaseUrl}/course/${courseId}/generate`, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json'
+                }
+            });
+
+            const rawText = await response.text();
+
+            let result = null;
+
+            try {
+                result = rawText ? JSON.parse(rawText) : null;
+            } catch (jsonError) {
+                console.error('Generate certificates raw response:', rawText);
+                showToast('Generate request failed. Backend returned an invalid response.');
+                return;
+            }
+
+            if (!response.ok || !result || !result.success) {
+                let message = result && result.message
+                    ? result.message
+                    : 'Unable to generate certificates.';
+
+                if (result && result.errors && result.errors.length > 0) {
+                    message += ' ' + result.errors.join(' ');
+                }
+
+                console.error('Generate certificates failed:', {
+                    status: response.status,
+                    result: result
+                });
+
+                showToast(message);
+                return;
+            }
+
+            showToast(result.message || 'Certificates generated successfully.');
+            await loadReview();
+
+        } catch (error) {
+            console.error('Generate certificates request error:', error);
+            showToast('Unable to generate certificates. Please check console.');
+        } finally {
+            button.disabled = false;
+            button.innerHTML = oldText;
+        }
+    }
+    //async function generateCertificates(button) {
+    //    const courseId = state.selectedCourseId;
+
+    //    if (!courseId) {
+    //        showToast('Please select a course first.');
+    //        return;
+    //    }
+
+    //    const confirmed = await showConfirmModal({
+    //        title: 'Generate Certificates',
+    //        message: 'This will generate certificate numbers for approved students of the selected course. Continue?',
+    //        confirmText: 'Generate',
+    //        icon: 'bi-patch-check'
+    //    });
+
+    //    if (!confirmed) return;
+
+    //    const oldText = button.innerHTML;
+    //    button.disabled = true;
+    //    button.innerHTML = '<i class="bi bi-hourglass-split"></i> Generating...';
+
+    //    try {
+    //        const response = await fetch(`${apiBaseUrl}/course/${courseId}/generate`, {
+    //            method: 'POST'
+    //        });
+
+    //        const result = await response.json();
+
+    //        if (!response.ok || !result.success) {
+    //            let message = result.message || 'Unable to generate certificates.';
+
+    //            if (result.errors && result.errors.length > 0) {
+    //                message += ' ' + result.errors.join(' ');
+    //            }
+
+    //            showToast(message);
+    //            return;
+    //        }
+
+    //        showToast(result.message || 'Certificates generated successfully.');
+    //        await loadReview();
+
+    //    } catch (error) {
+    //        showToast('Unable to generate certificates.');
+    //    } finally {
+    //        button.disabled = false;
+    //        button.innerHTML = oldText;
+    //    }
+    //}
+    
     function showConfirmModal(options) {
         return new Promise(resolve => {
             const modal = document.getElementById('adminCertificateConfirmModal');
@@ -511,6 +733,7 @@
         return `
             <div class="dashboard-table-row trainer-gradebook-table-row">
                 <div class="dashboard-cell-strong">Loading...</div>
+                <div>—</div>
                 <div>—</div>
                 <div>—</div>
                 <div>—</div>

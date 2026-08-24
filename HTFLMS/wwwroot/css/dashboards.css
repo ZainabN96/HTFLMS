@@ -8053,3 +8053,80 @@
     justify-content: center;
 }
 
+/*///////////////////Onsite dropdown trainer and admin ////////////////////////*/
+
+/* Certificate table delivery mode fix */
+#adminCertificateTableWrap select[data-delivery-mode-select="true"],
+#trainerCertificateTableWrap select[data-delivery-mode-select="true"] {
+    width: 96px !important;
+    min-width: 96px !important;
+    max-width: 96px !important;
+    height: 38px;
+    padding: 6px 10px;
+    font-size: 13px;
+}
+
+#adminCertificateTableWrap.certificate-review-cols-0 .trainer-gradebook-table-row,
+#trainerCertificateTableWrap.certificate-review-cols-0 .trainer-gradebook-table-row {
+    grid-template-columns: 200px 90px 120px 105px 150px !important;
+}
+
+#adminCertificateTableWrap.certificate-review-cols-1 .trainer-gradebook-table-row,
+#trainerCertificateTableWrap.certificate-review-cols-1 .trainer-gradebook-table-row {
+    grid-template-columns: 200px repeat(1, 95px) 90px 120px 105px 150px !important;
+}
+
+#adminCertificateTableWrap.certificate-review-cols-2 .trainer-gradebook-table-row,
+#trainerCertificateTableWrap.certificate-review-cols-2 .trainer-gradebook-table-row {
+    grid-template-columns: 200px repeat(2, 95px) 90px 120px 105px 150px !important;
+}
+
+#adminCertificateTableWrap.certificate-review-cols-3 .trainer-gradebook-table-row,
+#trainerCertificateTableWrap.certificate-review-cols-3 .trainer-gradebook-table-row {
+    grid-template-columns: 200px repeat(3, 95px) 90px 120px 105px 150px !important;
+}
+
+#adminCertificateTableWrap.certificate-review-cols-4 .trainer-gradebook-table-row,
+#trainerCertificateTableWrap.certificate-review-cols-4 .trainer-gradebook-table-row {
+    grid-template-columns: 200px repeat(4, 95px) 90px 120px 105px 150px !important;
+}
+
+#adminCertificateTableWrap.certificate-review-cols-5 .trainer-gradebook-table-row,
+#trainerCertificateTableWrap.certificate-review-cols-5 .trainer-gradebook-table-row {
+    grid-template-columns: 200px repeat(5, 95px) 90px 120px 105px 150px !important;
+}
+
+#adminCertificateTableWrap.certificate-review-cols-6 .trainer-gradebook-table-row,
+#trainerCertificateTableWrap.certificate-review-cols-6 .trainer-gradebook-table-row {
+    grid-template-columns: 200px repeat(6, 95px) 90px 120px 105px 150px !important;
+}
+
+#adminCertificateTableWrap.certificate-review-cols-7 .trainer-gradebook-table-row,
+#trainerCertificateTableWrap.certificate-review-cols-7 .trainer-gradebook-table-row {
+    grid-template-columns: 200px repeat(7, 95px) 90px 120px 105px 150px !important;
+}
+
+#adminCertificateTableWrap.certificate-review-cols-8 .trainer-gradebook-table-row,
+#trainerCertificateTableWrap.certificate-review-cols-8 .trainer-gradebook-table-row {
+    grid-template-columns: 200px repeat(8, 95px) 90px 120px 105px 150px !important;
+}
+
+#adminCertificateTableWrap.certificate-review-cols-9 .trainer-gradebook-table-row,
+#trainerCertificateTableWrap.certificate-review-cols-9 .trainer-gradebook-table-row {
+    grid-template-columns: 200px repeat(9, 95px) 90px 120px 105px 150px !important;
+}
+
+#adminCertificateTableWrap.certificate-review-cols-10 .trainer-gradebook-table-row,
+#trainerCertificateTableWrap.certificate-review-cols-10 .trainer-gradebook-table-row {
+    grid-template-columns: 200px repeat(10, 95px) 90px 120px 105px 150px !important;
+}
+
+#adminCertificateTableWrap.certificate-review-cols-11 .trainer-gradebook-table-row,
+#trainerCertificateTableWrap.certificate-review-cols-11 .trainer-gradebook-table-row {
+    grid-template-columns: 200px repeat(11, 95px) 90px 120px 105px 150px !important;
+}
+
+#adminCertificateTableWrap.certificate-review-cols-12 .trainer-gradebook-table-row,
+#trainerCertificateTableWrap.certificate-review-cols-12 .trainer-gradebook-table-row {
+    grid-template-columns: 200px repeat(12, 95px) 90px 120px 105px 150px !important;
+}

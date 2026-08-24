@@ -1,4 +1,6 @@
-﻿namespace HTFLMS.Dtos.CertificateReview
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace HTFLMS.Dtos.CertificateReview
 {
     public class CertificateReviewListDto
     {
@@ -70,6 +72,11 @@
         public int CourseId { get; set; }
         public string CourseTitle { get; set; } = "";
 
+        public int EnrollmentId { get; set; }
+        public string DeliveryMode { get; set; } = "Onsite";
+        public string DeliveryModeText { get; set; } = "Onsite";
+        public bool CanUpdateDeliveryMode { get; set; } = true;
+
         public List<CertificateReviewAssignmentCellDto> AssignmentCells { get; set; } = new();
 
         public int TotalMarks { get; set; }
@@ -109,6 +116,13 @@
         public bool IsGraded { get; set; }
         public bool IsMissing { get; set; }
         public bool IsPending { get; set; }
+    }
+
+    public class CertificateReviewDeliveryModeUpdateDto
+    {
+        [Required(ErrorMessage = "Delivery mode is required.")]
+        [RegularExpression("^(Online|Onsite)$", ErrorMessage = "Delivery mode must be Online or Onsite.")]
+        public string DeliveryMode { get; set; } = "";
     }
 
     public class CertificateReviewActionResultDto

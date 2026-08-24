@@ -27,6 +27,7 @@ namespace HTFLMS.Data.Services
         public IStudentCertificateService StudentCertificateService { get; }
         public ITrainerCertificateService TrainerCertificateService { get; }
         public IAdminCertificateService AdminCertificateService { get; }
+        public ICertificateGenerationService CertificateGenerationService { get; }
 
         public UnitOfWork(ApplicationDbContext context)
         {
@@ -51,6 +52,7 @@ namespace HTFLMS.Data.Services
             StudentCertificateService = new StudentCertificateService(context);
             TrainerCertificateService = new TrainerCertificateService(context);
             AdminCertificateService = new AdminCertificateService(context);
+            CertificateGenerationService = new CertificateGenerationService(context);
         }
 
         public async Task<bool> SaveAsync()

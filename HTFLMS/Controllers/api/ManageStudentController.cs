@@ -54,11 +54,13 @@ namespace HTFLMS.Controllers.api
                 return BadRequest(new APIError(400, "Please select at least one course."));
 
             var courseAccessError = await ValidateCourseAccessAsync(dto.CourseIds);
-
             if (courseAccessError != null)
                 return courseAccessError;
 
-            var existingUser = await uow.ManageStudentService.GetAnyUserByEmailAsync(dto.Email);
+            var email = dto.Email.Trim();
+            var titlePrefix = dto.TitlePrefix.Trim();
+
+            var existingUser = await uow.ManageStudentService.GetAnyUserByEmailAsync(email);
 
             if (existingUser != null &&
                 !string.Equals(existingUser.MemberType, "Student", StringComparison.OrdinalIgnoreCase))
@@ -66,7 +68,7 @@ namespace HTFLMS.Controllers.api
                 return BadRequest(new APIError(400, "This email already belongs to another user type."));
             }
 
-            var student = await uow.ManageStudentService.GetStudentByEmailAsync(dto.Email);
+            var student = await uow.ManageStudentService.GetStudentByEmailAsync(email);
 
             if (student == null)
             {
@@ -78,12 +80,12 @@ namespace HTFLMS.Controllers.api
                 student = new User
                 {
                     UserId = GenerateUserId(nextNumber),
+                    TitlePrefix = titlePrefix,
                     Name = dto.Name.Trim(),
-                    Email = dto.Email.Trim(),
+                    Email = email,
                     MemberType = "Student",
                     IsActive = dto.Status == "Active",
                     CreatedAt = dto.JoinDate ?? DateTime.UtcNow,
-
                     CNIC = "N/A",
                     MobileNumber = "N/A",
                     Gender = "",
@@ -102,7 +104,9 @@ namespace HTFLMS.Controllers.api
             }
             else
             {
+                student.TitlePrefix = titlePrefix;
                 student.Name = dto.Name.Trim();
+                student.Email = email;
                 student.IsActive = dto.Status == "Active";
 
                 if (dto.JoinDate.HasValue)
@@ -136,22 +140,25 @@ namespace HTFLMS.Controllers.api
                 return BadRequest(new APIError(400, "Please select at least one course."));
 
             var courseAccessError = await ValidateCourseAccessAsync(dto.CourseIds);
-
             if (courseAccessError != null)
                 return courseAccessError;
+
+            var email = dto.Email.Trim();
+            var titlePrefix = dto.TitlePrefix.Trim();
 
             var student = await uow.ManageStudentService.GetStudentByIdAsync(id);
 
             if (student == null)
                 return NotFound(new APIError(404, "Student not found."));
 
-            var existingUser = await uow.ManageStudentService.GetAnyUserByEmailAsync(dto.Email);
+            var existingUser = await uow.ManageStudentService.GetAnyUserByEmailAsync(email);
 
             if (existingUser != null && existingUser.Id != id)
                 return BadRequest(new APIError(400, "Email already belongs to another user."));
 
+            student.TitlePrefix = titlePrefix;
             student.Name = dto.Name.Trim();
-            student.Email = dto.Email.Trim();
+            student.Email = email;
             student.IsActive = dto.Status == "Active";
 
             if (dto.JoinDate.HasValue)

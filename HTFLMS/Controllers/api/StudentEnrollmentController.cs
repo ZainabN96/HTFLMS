@@ -84,7 +84,8 @@ namespace HTFLMS.Controllers.api
                 StudentId = student.Id,
                 CourseId = dto.CourseId,
                 EnrolledAt = DateTime.UtcNow,
-                Status = "Active"
+                Status = "Active",
+                DeliveryMode = GetDefaultDeliveryMode(student.City)
             };
 
             uow.CourseEnrollmentService.Add(enrollment);
@@ -101,6 +102,16 @@ namespace HTFLMS.Controllers.api
                 message = "Enrollment completed successfully.",
                 courseId = dto.CourseId
             });
+        }
+
+        private static string GetDefaultDeliveryMode(string? city)
+        {
+            if (string.IsNullOrWhiteSpace(city))
+                return "Onsite";
+
+            return string.Equals(city.Trim(), "Lahore", StringComparison.OrdinalIgnoreCase)
+                ? "Onsite"
+                : "Online";
         }
     }
 }

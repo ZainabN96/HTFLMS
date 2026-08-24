@@ -15,6 +15,14 @@ $(document).ready(function () {
         e.preventDefault();
         saveStudent(studentId, isEdit);
     });
+
+    $('#titlePrefix, #name, #email, #password, #status, #joinDate').on('input change', function () {
+        clearError();
+    });
+
+    $(document).on('change', '.student-course-checkbox', function () {
+        clearError();
+    });
 });
 
 function setupEditMode() {
@@ -40,8 +48,9 @@ function loadStudent(studentId) {
 }
 
 function populateStudentForm(student) {
-    $('#name').val(student.name);
-    $('#email').val(student.email);
+    $('#titlePrefix').val(student.titlePrefix || '');
+    $('#name').val(student.name || '');
+    $('#email').val(student.email || '');
     $('#status').val(student.status || 'Active');
     $('#joinDate').val(formatDate(student.joinDate));
 
@@ -99,7 +108,7 @@ function renderCourseCheckboxes(courses) {
         list.append(`
             <label class="course-select-item">
                 <input type="checkbox" class="student-course-checkbox" value="${course.id}" />
-                <span>${course.title}</span>
+                <span>${escapeHtml(course.title)}</span>
             </label>
         `);
     });
@@ -128,9 +137,14 @@ function getAreaBaseUrl() {
         ? '/Trainer/Students'
         : '/Admin/Students';
 }
+
 function saveStudent(studentId, isEdit) {
     var btn = $('#saveStudentBtn');
     var payload = buildStudentPayload();
+
+    if (!validateStudentPayload(payload, isEdit)) {
+        return;
+    }
 
     setButtonLoading(btn, isEdit);
 
@@ -160,6 +174,7 @@ function saveStudent(studentId, isEdit) {
 
 function buildStudentPayload() {
     return {
+        titlePrefix: $('#titlePrefix').val(),
         name: $('#name').val(),
         email: $('#email').val(),
         password: $('#password').val(),
@@ -167,6 +182,47 @@ function buildStudentPayload() {
         joinDate: $('#joinDate').val() || null,
         courseIds: getSelectedCourseIds()
     };
+}
+
+function validateStudentPayload(payload, isEdit) {
+    clearError();
+
+    if (!payload.titlePrefix || (payload.titlePrefix !== 'Mr.' && payload.titlePrefix !== 'Ms.')) {
+        showError('Please select title prefix.');
+        $('#titlePrefix').focus();
+        return false;
+    }
+
+    if (!payload.name || !payload.name.trim()) {
+        showError('Please enter student name.');
+        $('#name').focus();
+        return false;
+    }
+
+    if (!payload.email || !payload.email.trim()) {
+        showError('Please enter email address.');
+        $('#email').focus();
+        return false;
+    }
+
+    if (!isEdit && (!payload.password || !payload.password.trim())) {
+        showError('Password is required for new student.');
+        $('#password').focus();
+        return false;
+    }
+
+    if (!payload.status || !payload.status.trim()) {
+        showError('Please select status.');
+        $('#status').focus();
+        return false;
+    }
+
+    if (!payload.courseIds || payload.courseIds.length === 0) {
+        showError('Please select at least one course.');
+        return false;
+    }
+
+    return true;
 }
 
 function getSelectedCourseIds() {
@@ -208,9 +264,42 @@ function getErrorMessage(xhr) {
         return 'Something went wrong. Please try again.';
     }
 
+    if (err.errors) {
+        var messages = [];
+
+        Object.keys(err.errors).forEach(function (key) {
+            var fieldErrors = err.errors[key];
+
+            if (Array.isArray(fieldErrors)) {
+                fieldErrors.forEach(function (item) {
+                    messages.push(item);
+                });
+            }
+        });
+
+        if (messages.length > 0) {
+            return messages.join(' ');
+        }
+    }
+
     return err.errorMessage || err.message || err.title || 'Something went wrong. Please try again.';
 }
 
 function showError(message) {
-    $('.error-box').html('<div>' + message + '</div>');
+    $('.error-box')
+        .empty()
+        .append($('<div>').text(message || 'Something went wrong. Please try again.'));
+}
+
+function clearError() {
+    $('.error-box').empty();
+}
+
+function escapeHtml(value) {
+    return String(value ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
 }

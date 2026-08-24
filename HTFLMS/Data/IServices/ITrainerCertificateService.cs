@@ -1,4 +1,5 @@
-﻿using HTFLMS.Dtos.CertificateReview;
+﻿using HTFLMS.Dtos.CertificateGeneration;
+using HTFLMS.Dtos.CertificateReview;
 
 namespace HTFLMS.Data.IServices
 {
@@ -17,5 +18,14 @@ namespace HTFLMS.Data.IServices
         Task<CertificateReviewActionResultDto> RejectRequestAsync(
             int trainerId,
             int certificateRequestId);
+
+        Task<CertificateReviewActionResultDto> UpdateDeliveryModeAsync(
+            int trainerId,
+            int enrollmentId,
+            string deliveryMode);
+
+        Task<CertificateGenerationResultDto> GenerateCertificatesAsync(
+            int trainerId,
+            int courseId);
     }
 }

@@ -20,6 +20,7 @@
         IStudentCertificateService StudentCertificateService { get; }
         ITrainerCertificateService TrainerCertificateService { get; }
         IAdminCertificateService AdminCertificateService { get; }
+        ICertificateGenerationService CertificateGenerationService { get; }
         Task<bool> SaveAsync();
     }
 }

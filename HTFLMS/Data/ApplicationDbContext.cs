@@ -1,7 +1,5 @@
 ﻿using HTFLMS.Models;
 using HTFLMS.Models.Auth;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace HTFLMS.Data
@@ -15,7 +13,6 @@ namespace HTFLMS.Data
         public DbSet<PasswordResetOtp> PasswordResetOtps { get; set; }
 
         public DbSet<Course> Courses => Set<Course>();
-
         public DbSet<Module> Modules => Set<Module>();
         public DbSet<Lesson> Lessons => Set<Lesson>();
         public DbSet<Material> Materials => Set<Material>();
@@ -33,6 +30,8 @@ namespace HTFLMS.Data
         public DbSet<CertificateRequest> CertificateRequests => Set<CertificateRequest>();
         public DbSet<StudentCourseNote> StudentCourseNotes => Set<StudentCourseNote>();
         public DbSet<QuizAttemptsReset> QuizAttemptsResets => Set<QuizAttemptsReset>();
+        public DbSet<StudentCertificateNumber> StudentCertificateNumbers => Set<StudentCertificateNumber>();
+        public DbSet<Certificate> Certificates => Set<Certificate>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -46,6 +45,10 @@ namespace HTFLMS.Data
             modelBuilder.Entity<User>()
                 .HasIndex(u => u.UserId)
                 .IsUnique();
+
+            modelBuilder.Entity<User>()
+                .Property(u => u.TitlePrefix)
+                .HasMaxLength(10);
 
             // Course -> Trainer (User)
             modelBuilder.Entity<Course>()
@@ -132,6 +135,17 @@ namespace HTFLMS.Data
                 .HasForeignKey(e => e.CourseId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            modelBuilder.Entity<CourseEnrollment>()
+                .Property(e => e.DeliveryMode)
+                .HasMaxLength(20)
+                .HasDefaultValue("Onsite");
+
+            modelBuilder.Entity<CourseEnrollment>()
+                .HasOne(e => e.DeliveryModeUpdatedByUser)
+                .WithMany()
+                .HasForeignKey(e => e.DeliveryModeUpdatedByUserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
             // LessonProgress relations
             modelBuilder.Entity<LessonProgress>()
                 .HasOne(lp => lp.Student)
@@ -158,7 +172,7 @@ namespace HTFLMS.Data
                 .HasForeignKey(mp => mp.ModuleId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // Quiz -> Module (1 to 1)
+            // Quiz -> Module
             modelBuilder.Entity<Quiz>()
                 .HasOne(q => q.Module)
                 .WithOne(m => m.Quiz)
@@ -236,9 +250,70 @@ namespace HTFLMS.Data
                 .WithMany(u => u.ApprovedCertificates)
                 .HasForeignKey(cr => cr.ApprovedByUserId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            // StudentCertificateNumber relations
+            modelBuilder.Entity<StudentCertificateNumber>()
+                .HasOne(x => x.Student)
+                .WithMany()
+                .HasForeignKey(x => x.StudentId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<StudentCertificateNumber>()
+                .HasOne(x => x.AssignedByUser)
+                .WithMany()
+                .HasForeignKey(x => x.AssignedByUserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<StudentCertificateNumber>()
+                .HasIndex(x => new { x.StudentId, x.DeliveryMode })
+                .IsUnique();
+
+            modelBuilder.Entity<StudentCertificateNumber>()
+                .HasIndex(x => new { x.DeliveryMode, x.BaseNumber })
+                .IsUnique();
+
+            // Certificate relations
+            modelBuilder.Entity<Certificate>()
+                .HasOne(x => x.CertificateRequest)
+                .WithMany()
+                .HasForeignKey(x => x.CertificateRequestId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Certificate>()
+                .HasOne(x => x.Student)
+                .WithMany()
+                .HasForeignKey(x => x.StudentId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Certificate>()
+                .HasOne(x => x.Course)
+                .WithMany()
+                .HasForeignKey(x => x.CourseId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Certificate>()
+                .HasOne(x => x.StudentCertificateNumber)
+                .WithMany(x => x.Certificates)
+                .HasForeignKey(x => x.StudentCertificateNumberId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Certificate>()
+                .HasOne(x => x.GeneratedByUser)
+                .WithMany()
+                .HasForeignKey(x => x.GeneratedByUserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Certificate>()
+                .HasIndex(x => x.CertificateRequestId)
+                .IsUnique();
+
+            modelBuilder.Entity<Certificate>()
+                .HasIndex(x => new { x.DeliveryMode, x.CertificateId })
+                .IsUnique();
+
+            modelBuilder.Entity<Certificate>()
+                .HasIndex(x => new { x.DeliveryMode, x.CertificateYear, x.BaseNumber, x.Suffix })
+                .IsUnique();
         }
     }
 }
-
-
-

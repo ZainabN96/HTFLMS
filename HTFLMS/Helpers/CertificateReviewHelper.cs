@@ -73,6 +73,17 @@ namespace HTFLMS.Helper
                 .Distinct()
                 .ToList();
 
+            var generatedCertificateStudentIds = await context.Certificates
+                .AsNoTracking()
+                .Where(x =>
+                    x.CourseId == courseId &&
+                    studentIds.Contains(x.StudentId))
+                .Select(x => x.StudentId)
+                .Distinct()
+                .ToListAsync();
+
+            var generatedCertificateStudentSet = new HashSet<int>(generatedCertificateStudentIds);
+
             var submissions = await context.AssignmentSubmissions
                 .AsNoTracking()
                 .Where(x =>
@@ -122,11 +133,12 @@ namespace HTFLMS.Helper
 
                 var row = BuildStudentRow(
                     course,
-                    enrollment.Student,
+                    enrollment,
                     assignments,
                     submissionLookup,
                     latestRequest,
-                    isCourseEnded);
+                    isCourseEnded,
+                    generatedCertificateStudentSet.Contains(enrollment.StudentId));
 
                 rows.Add(row);
             }
@@ -254,14 +266,74 @@ namespace HTFLMS.Helper
             };
         }
 
-        private CertificateReviewStudentRowDto BuildStudentRow(
-     Course course,
-     User student,
-     List<Assignment> assignments,
-     Dictionary<string, AssignmentSubmission> submissionLookup,
-     CertificateRequest? latestRequest,
-     bool isCourseEnded)
+        public async Task<CertificateReviewActionResultDto> UpdateDeliveryModeAsync(
+            int updatedByUserId,
+            int enrollmentId,
+            string deliveryMode)
         {
+            var normalizedDeliveryMode = NormalizeDeliveryModeForUpdate(deliveryMode);
+
+            if (normalizedDeliveryMode == null)
+            {
+                return new CertificateReviewActionResultDto
+                {
+                    Success = false,
+                    Message = "Delivery mode must be Online or Onsite."
+                };
+            }
+
+            var enrollment = await context.CourseEnrollments
+                .Include(x => x.Course)
+                .FirstOrDefaultAsync(x => x.Id == enrollmentId);
+
+            if (enrollment == null || enrollment.Course == null)
+            {
+                return new CertificateReviewActionResultDto
+                {
+                    Success = false,
+                    Message = "Enrollment record was not found."
+                };
+            }
+
+            var certificateAlreadyGenerated = await context.Certificates
+                .AnyAsync(x =>
+                    x.StudentId == enrollment.StudentId &&
+                    x.CourseId == enrollment.CourseId);
+
+            if (certificateAlreadyGenerated)
+            {
+                return new CertificateReviewActionResultDto
+                {
+                    Success = false,
+                    Message = "Delivery mode cannot be changed because certificate has already been generated."
+                };
+            }
+
+            enrollment.DeliveryMode = normalizedDeliveryMode;
+            enrollment.DeliveryModeUpdatedByUserId = updatedByUserId;
+            enrollment.DeliveryModeUpdatedAt = DateTime.UtcNow;
+
+            context.CourseEnrollments.Update(enrollment);
+            await context.SaveChangesAsync();
+
+            return new CertificateReviewActionResultDto
+            {
+                Success = true,
+                Message = "Delivery mode updated successfully."
+            };
+        }
+
+        private CertificateReviewStudentRowDto BuildStudentRow(
+            Course course,
+            CourseEnrollment enrollment,
+            List<Assignment> assignments,
+            Dictionary<string, AssignmentSubmission> submissionLookup,
+            CertificateRequest? latestRequest,
+            bool isCourseEnded,
+            bool certificateAlreadyGenerated)
+        {
+            var student = enrollment.Student!;
+
             var cells = new List<CertificateReviewAssignmentCellDto>();
 
             foreach (var assignment in assignments)
@@ -283,12 +355,20 @@ namespace HTFLMS.Helper
                 ? Math.Round((obtainedMarks * 100m) / totalMarks, 1)
                 : 0m;
 
+            var deliveryMode = NormalizeDeliveryMode(enrollment.DeliveryMode);
+
             var row = new CertificateReviewStudentRowDto
             {
                 StudentId = student.Id,
                 StudentName = student.Name,
                 CourseId = course.Id,
                 CourseTitle = course.Title,
+
+                EnrollmentId = enrollment.Id,
+                DeliveryMode = deliveryMode,
+                DeliveryModeText = deliveryMode,
+                CanUpdateDeliveryMode = !certificateAlreadyGenerated,
+
                 AssignmentCells = cells,
                 TotalMarks = totalMarks,
                 ObtainedMarks = obtainedMarks,
@@ -304,8 +384,8 @@ namespace HTFLMS.Helper
         }
 
         private CertificateReviewAssignmentCellDto BuildAssignmentCell(
-      Assignment assignment,
-      AssignmentSubmission? submission)
+            Assignment assignment,
+            AssignmentSubmission? submission)
         {
             if (submission == null)
             {
@@ -581,17 +661,7 @@ namespace HTFLMS.Helper
 
         private string GetShortAssignmentTitle(string title, int index)
         {
-            var prefix = $"A{index + 1}";
-
-            if (string.IsNullOrWhiteSpace(title))
-                return prefix;
-
-            var cleanTitle = title.Trim();
-
-            if (cleanTitle.Length <= 12)
-                return $"{prefix}: {cleanTitle}";
-
-            return $"{prefix}: {cleanTitle.Substring(0, 12)}...";
+            return $"A{index + 1}";
         }
 
         private string NormalizeStatus(string value)
@@ -599,6 +669,24 @@ namespace HTFLMS.Helper
             return string.IsNullOrWhiteSpace(value)
                 ? ""
                 : value.Trim().Replace(" ", "").ToLower();
+        }
+
+        private static string NormalizeDeliveryMode(string? deliveryMode)
+        {
+            return string.Equals(deliveryMode?.Trim(), "Online", StringComparison.OrdinalIgnoreCase)
+                ? "Online"
+                : "Onsite";
+        }
+
+        private static string? NormalizeDeliveryModeForUpdate(string? deliveryMode)
+        {
+            if (string.Equals(deliveryMode?.Trim(), "Online", StringComparison.OrdinalIgnoreCase))
+                return "Online";
+
+            if (string.Equals(deliveryMode?.Trim(), "Onsite", StringComparison.OrdinalIgnoreCase))
+                return "Onsite";
+
+            return null;
         }
     }
 }

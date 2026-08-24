@@ -29,9 +29,17 @@
                 <div class="admin-student-form-main">
                     <div class="admin-student-form-grid">
 
-                        <div class="admin-student-form-group admin-student-form-group-full">
-                            <label class="admin-student-label">Student Name</label>
+                        <div class="admin-student-form-group">
+                            <label class="admin-student-label">Title Prefix</label>
+                            <select id="titlePrefix" class="course-input" required>
+                                <option value="">Select Title</option>
+                                <option value="Mr.">Mr.</option>
+                                <option value="Ms.">Ms.</option>
+                            </select>
+                        </div>
 
+                        <div class="admin-student-form-group">
+                            <label class="admin-student-label">Student Name</label>
                             <input type="text"
                                    id="name"
                                    class="course-input"
@@ -41,12 +49,19 @@
 
                         <div class="admin-student-form-group">
                             <label class="admin-student-label">Email Address</label>
-                            <input type="email" id="email" class="course-input" placeholder="Enter email address" required />
+                            <input type="email"
+                                   id="email"
+                                   class="course-input"
+                                   placeholder="Enter email address"
+                                   required />
                         </div>
 
                         <div class="admin-student-form-group">
                             <label class="admin-student-label">Password</label>
-                            <input type="password" id="password" class="course-input" placeholder="Required for new student" />
+                            <input type="password"
+                                   id="password"
+                                   class="course-input"
+                                   placeholder="Required for new student" />
                         </div>
 
                         <div class="admin-student-form-group">

@@ -2,6 +2,7 @@
 using HTFLMS.Dtos.CertificateReview;
 using HTFLMS.Helper;
 using Microsoft.EntityFrameworkCore;
+using HTFLMS.Dtos.CertificateGeneration;
 
 namespace HTFLMS.Data.Services
 {
@@ -9,11 +10,13 @@ namespace HTFLMS.Data.Services
     {
         private readonly ApplicationDbContext context;
         private readonly CertificateReviewHelper certificateReviewHelper;
+        private readonly CertificateGenerationService certificateGenerationService;
 
         public TrainerCertificateService(ApplicationDbContext context)
         {
             this.context = context;
             certificateReviewHelper = new CertificateReviewHelper(context);
+            certificateGenerationService = new CertificateGenerationService(context);
         }
 
         public async Task<CertificateReviewListDto?> GetReviewAsync(
@@ -110,6 +113,55 @@ namespace HTFLMS.Data.Services
                 certificateRequestId);
         }
 
+        public async Task<CertificateReviewActionResultDto> UpdateDeliveryModeAsync(
+            int trainerId,
+            int enrollmentId,
+            string deliveryMode)
+        {
+            var isAllowed = await IsTrainerAllowedForEnrollmentAsync(
+                trainerId,
+                enrollmentId);
+
+            if (!isAllowed)
+            {
+                return new CertificateReviewActionResultDto
+                {
+                    Success = false,
+                    Message = "Enrollment record was not found or you are not allowed to update it."
+                };
+            }
+
+
+            return await certificateReviewHelper.UpdateDeliveryModeAsync(
+                trainerId,
+                enrollmentId,
+                deliveryMode);
+        }
+        public async Task<CertificateGenerationResultDto> GenerateCertificatesAsync(
+    int trainerId,
+    int courseId)
+        {
+            var isAllowed = await context.Courses
+                .AsNoTracking()
+                .AnyAsync(x =>
+                    x.Id == courseId &&
+                    x.TrainerId == trainerId &&
+                    x.IsActive &&
+                    x.CertificateIncluded);
+
+            if (!isAllowed)
+            {
+                return new CertificateGenerationResultDto
+                {
+                    Success = false,
+                    Message = "Course was not found or you are not allowed to generate certificates for this course."
+                };
+            }
+
+            return await certificateGenerationService.GenerateForCourseAsync(
+                trainerId,
+                courseId);
+        }
         private async Task<bool> IsTrainerAllowedForRequestAsync(
             int trainerId,
             int certificateRequestId)
@@ -118,6 +170,21 @@ namespace HTFLMS.Data.Services
                 .AsNoTracking()
                 .AnyAsync(x =>
                     x.Id == certificateRequestId &&
+                    x.Course != null &&
+                    x.Course.TrainerId == trainerId &&
+                    x.Course.IsActive &&
+                    x.Course.CertificateIncluded);
+        }
+
+        private async Task<bool> IsTrainerAllowedForEnrollmentAsync(
+            int trainerId,
+            int enrollmentId)
+        {
+            return await context.CourseEnrollments
+                .AsNoTracking()
+                .AnyAsync(x =>
+                    x.Id == enrollmentId &&
+                    x.Status == "Active" &&
                     x.Course != null &&
                     x.Course.TrainerId == trainerId &&
                     x.Course.IsActive &&

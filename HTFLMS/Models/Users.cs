@@ -22,6 +22,8 @@ namespace HTFLMS.Models
 
         [Required]
         public string Name { get; set; } = "";
+        [StringLength(10)]
+        public string? TitlePrefix { get; set; }
 
         // optional
         public string? Qualification { get; set; }

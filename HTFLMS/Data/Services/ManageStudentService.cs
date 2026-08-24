@@ -78,11 +78,10 @@ namespace HTFLMS.Data.Services
             if (student == null)
                 return null;
 
-            var nameParts = student.Name.Split(' ', 2);
-
             return new ManageStudentDto
             {
                 Id = student.Id,
+                TitlePrefix = student.TitlePrefix ?? "",
                 Name = student.Name,
                 Email = student.Email,
                 Password = "",
@@ -113,6 +112,8 @@ namespace HTFLMS.Data.Services
             if (courseIds == null || courseIds.Count == 0)
                 return;
 
+            var deliveryMode = await GetDefaultDeliveryModeForStudentAsync(studentId);
+
             var validCourseIds = await context.Courses
                 .Where(x =>
                     courseIds.Contains(x.Id) &&
@@ -135,6 +136,11 @@ namespace HTFLMS.Data.Services
                     existing.Status = "Active";
                     existing.DroppedAt = null;
                     existing.CompletedAt = null;
+
+                    if (string.IsNullOrWhiteSpace(existing.DeliveryMode))
+                    {
+                        existing.DeliveryMode = deliveryMode;
+                    }
                 }
                 else
                 {
@@ -143,11 +149,13 @@ namespace HTFLMS.Data.Services
                         StudentId = studentId,
                         CourseId = courseId,
                         EnrolledAt = DateTime.UtcNow,
-                        Status = "Active"
+                        Status = "Active",
+                        DeliveryMode = deliveryMode
                     });
                 }
             }
         }
+
         public async Task<List<int>> GetAllowedCourseIdsForUserAsync(string email)
         {
             var user = await context.Users
@@ -177,6 +185,7 @@ namespace HTFLMS.Data.Services
 
             return new List<int>();
         }
+
         public async Task<int> GetNextStudentNumberAsync()
         {
             var count = await context.Users
@@ -246,6 +255,8 @@ namespace HTFLMS.Data.Services
         {
             selectedCourseIds ??= new List<int>();
 
+            var deliveryMode = await GetDefaultDeliveryModeForStudentAsync(studentId);
+
             var existingEnrollments = await context.CourseEnrollments
                 .Where(x => x.StudentId == studentId)
                 .ToListAsync();
@@ -254,14 +265,12 @@ namespace HTFLMS.Data.Services
                 .Select(x => x.CourseId)
                 .ToList();
 
-            // Unenroll unchecked courses
             var enrollmentsToRemove = existingEnrollments
                 .Where(x => !selectedCourseIds.Contains(x.CourseId))
                 .ToList();
 
             context.CourseEnrollments.RemoveRange(enrollmentsToRemove);
 
-            // Enroll newly checked courses
             var courseIdsToAdd = selectedCourseIds
                 .Where(courseId => !existingCourseIds.Contains(courseId))
                 .ToList();
@@ -273,9 +282,42 @@ namespace HTFLMS.Data.Services
                     StudentId = studentId,
                     CourseId = courseId,
                     EnrolledAt = DateTime.UtcNow,
-                    Status = "Active"
+                    Status = "Active",
+                    DeliveryMode = deliveryMode
                 });
             }
+
+            var selectedExistingEnrollments = existingEnrollments
+                .Where(x => selectedCourseIds.Contains(x.CourseId))
+                .ToList();
+
+            foreach (var enrollment in selectedExistingEnrollments)
+            {
+                if (string.IsNullOrWhiteSpace(enrollment.DeliveryMode))
+                {
+                    enrollment.DeliveryMode = deliveryMode;
+                }
+            }
+        }
+
+        private async Task<string> GetDefaultDeliveryModeForStudentAsync(int studentId)
+        {
+            var city = await context.Users
+                .Where(x => x.Id == studentId)
+                .Select(x => x.City)
+                .FirstOrDefaultAsync();
+
+            return GetDefaultDeliveryMode(city);
+        }
+
+        private static string GetDefaultDeliveryMode(string? city)
+        {
+            if (string.IsNullOrWhiteSpace(city))
+                return "Onsite";
+
+            return string.Equals(city.Trim(), "Lahore", StringComparison.OrdinalIgnoreCase)
+                ? "Onsite"
+                : "Online";
         }
     }
 }
