@@ -3,16 +3,19 @@ using HTFLMS.Dtos.CertificateGeneration;
 using HTFLMS.Helper;
 using HTFLMS.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Globalization;
 
 namespace HTFLMS.Data.Services
 {
     public class CertificateGenerationService : ICertificateGenerationService
     {
         private readonly ApplicationDbContext context;
+        private readonly CertificatePdfService certificatePdfService;
 
         public CertificateGenerationService(ApplicationDbContext context)
         {
             this.context = context;
+            certificatePdfService = new CertificatePdfService();
         }
 
         public async Task<CertificateGenerationResultDto> GenerateForCourseAsync(
@@ -36,138 +39,163 @@ namespace HTFLMS.Data.Services
                 return Fail("Certificates can only be generated after the course end date.");
             }
 
-            var approvedRequests = await context.CertificateRequests
-                .Include(x => x.Student)
-                .Include(x => x.Course)
-                .Where(x =>
-                    x.CourseId == courseId &&
-                    x.Status == "Approved" &&
-                    x.Student != null &&
-                    x.Course != null)
-                .OrderBy(x => x.Student!.Name)
-                .ThenByDescending(x => x.RequestedAt)
-                .ThenByDescending(x => x.Id)
-                .ToListAsync();
-
-            if (!approvedRequests.Any())
-            {
-                return Fail("No approved certificate requests found for this course.");
-            }
-
-            approvedRequests = approvedRequests
-                .GroupBy(x => x.StudentId)
-                .Select(g => g
-                    .OrderByDescending(x => x.RequestedAt)
-                    .ThenByDescending(x => x.Id)
-                    .First())
-                .ToList();
-
-            var requestIds = approvedRequests
-                .Select(x => x.Id)
-                .ToList();
-
-            var studentIds = approvedRequests
-                .Select(x => x.StudentId)
-                .Distinct()
-                .ToList();
-
-            var alreadyGeneratedRequestIds = await context.Certificates
-                .AsNoTracking()
-                .Where(x => requestIds.Contains(x.CertificateRequestId))
-                .Select(x => x.CertificateRequestId)
-                .ToListAsync();
-
-            var alreadyGeneratedStudentIdsForCourse = await context.Certificates
-                .AsNoTracking()
-                .Where(x =>
-                    x.CourseId == courseId &&
-                    studentIds.Contains(x.StudentId))
-                .Select(x => x.StudentId)
-                .ToListAsync();
-
-            var alreadyGeneratedRequestSet = alreadyGeneratedRequestIds.ToHashSet();
-            var alreadyGeneratedStudentSet = alreadyGeneratedStudentIdsForCourse.ToHashSet();
-
-            var enrollments = await context.CourseEnrollments
-                .AsNoTracking()
-                .Where(x =>
-                    x.CourseId == courseId &&
-                    studentIds.Contains(x.StudentId) &&
-                    x.Status == "Active")
-                .ToListAsync();
-
-            var enrollmentLookup = enrollments
-                .GroupBy(x => x.StudentId)
-                .ToDictionary(g => g.Key, g => g.First());
-
-            var candidates = new List<CertificateGenerationCandidate>();
-            var skippedCount = 0;
-            var validationErrors = new List<string>();
-
-            foreach (var request in approvedRequests)
-            {
-                if (request.Student == null || request.Course == null)
-                    continue;
-
-                if (alreadyGeneratedRequestSet.Contains(request.Id) ||
-                    alreadyGeneratedStudentSet.Contains(request.StudentId))
-                {
-                    skippedCount++;
-                    continue;
-                }
-
-                if (!enrollmentLookup.TryGetValue(request.StudentId, out var enrollment))
-                {
-                    validationErrors.Add($"{request.Student.Name} does not have an active enrollment for this course.");
-                    continue;
-                }
-
-                if (!CertificateGenerationHelper.HasValidTitlePrefix(request.Student.TitlePrefix))
-                {
-                    validationErrors.Add($"Please update title prefix for {request.Student.Name} before generating certificate.");
-                    continue;
-                }
-
-                var deliveryMode = CertificateGenerationHelper.NormalizeDeliveryMode(enrollment.DeliveryMode);
-
-                candidates.Add(new CertificateGenerationCandidate
-                {
-                    Request = request,
-                    Student = request.Student,
-                    Course = request.Course,
-                    Enrollment = enrollment,
-                    DeliveryMode = deliveryMode
-                });
-            }
-
-            if (validationErrors.Any())
-            {
-                return new CertificateGenerationResultDto
-                {
-                    Success = false,
-                    Message = "Certificate generation stopped. Please fix the listed issues first.",
-                    SkippedCount = skippedCount,
-                    Errors = validationErrors
-                };
-            }
-
-            if (!candidates.Any())
-            {
-                return new CertificateGenerationResultDto
-                {
-                    Success = false,
-                    Message = "No approved requests are pending certificate generation.",
-                    SkippedCount = skippedCount
-                };
-            }
-
-            var generatedItems = new List<CertificateGenerationItemDto>();
-            var nextBaseNumberTracker = new Dictionary<string, int>();
+            var createdPhysicalFiles = new List<string>();
 
             await using var transaction = await context.Database.BeginTransactionAsync();
 
             try
             {
+                var pdfGeneratedCount = await GenerateMissingPdfFilesForCourseAsync(
+                    courseId,
+                    createdPhysicalFiles);
+
+                var approvedRequests = await context.CertificateRequests
+                    .Include(x => x.Student)
+                    .Include(x => x.Course)
+                    .Where(x =>
+                        x.CourseId == courseId &&
+                        x.Status == "Approved" &&
+                        x.Student != null &&
+                        x.Course != null)
+                    .OrderBy(x => x.Student!.Name)
+                    .ThenByDescending(x => x.RequestedAt)
+                    .ThenByDescending(x => x.Id)
+                    .ToListAsync();
+
+                if (!approvedRequests.Any())
+                {
+                    await context.SaveChangesAsync();
+                    await transaction.CommitAsync();
+
+                    return new CertificateGenerationResultDto
+                    {
+                        Success = pdfGeneratedCount > 0,
+                        Message = pdfGeneratedCount > 0
+                            ? $"{pdfGeneratedCount} certificate PDF file(s) generated successfully."
+                            : "No approved certificate requests found for this course.",
+                        PdfGeneratedCount = pdfGeneratedCount
+                    };
+                }
+
+                approvedRequests = approvedRequests
+                    .GroupBy(x => x.StudentId)
+                    .Select(g => g
+                        .OrderByDescending(x => x.RequestedAt)
+                        .ThenByDescending(x => x.Id)
+                        .First())
+                    .ToList();
+
+                var requestIds = approvedRequests
+                    .Select(x => x.Id)
+                    .ToList();
+
+                var studentIds = approvedRequests
+                    .Select(x => x.StudentId)
+                    .Distinct()
+                    .ToList();
+
+                var alreadyGeneratedRequestIds = await context.Certificates
+                    .AsNoTracking()
+                    .Where(x => requestIds.Contains(x.CertificateRequestId))
+                    .Select(x => x.CertificateRequestId)
+                    .ToListAsync();
+
+                var alreadyGeneratedStudentIdsForCourse = await context.Certificates
+                    .AsNoTracking()
+                    .Where(x =>
+                        x.CourseId == courseId &&
+                        studentIds.Contains(x.StudentId))
+                    .Select(x => x.StudentId)
+                    .ToListAsync();
+
+                var alreadyGeneratedRequestSet = alreadyGeneratedRequestIds.ToHashSet();
+                var alreadyGeneratedStudentSet = alreadyGeneratedStudentIdsForCourse.ToHashSet();
+
+                var enrollments = await context.CourseEnrollments
+                    .AsNoTracking()
+                    .Where(x =>
+                        x.CourseId == courseId &&
+                        studentIds.Contains(x.StudentId) &&
+                        x.Status == "Active")
+                    .ToListAsync();
+
+                var enrollmentLookup = enrollments
+                    .GroupBy(x => x.StudentId)
+                    .ToDictionary(g => g.Key, g => g.First());
+
+                var candidates = new List<CertificateGenerationCandidate>();
+                var skippedCount = 0;
+                var validationErrors = new List<string>();
+
+                foreach (var request in approvedRequests)
+                {
+                    if (request.Student == null || request.Course == null)
+                        continue;
+
+                    if (alreadyGeneratedRequestSet.Contains(request.Id) ||
+                        alreadyGeneratedStudentSet.Contains(request.StudentId))
+                    {
+                        skippedCount++;
+                        continue;
+                    }
+
+                    if (!enrollmentLookup.TryGetValue(request.StudentId, out var enrollment))
+                    {
+                        validationErrors.Add($"{request.Student.Name} does not have an active enrollment for this course.");
+                        continue;
+                    }
+
+                    if (!CertificateGenerationHelper.HasValidTitlePrefix(request.Student.TitlePrefix))
+                    {
+                        validationErrors.Add($"Please update title prefix for {request.Student.Name} before generating certificate.");
+                        continue;
+                    }
+
+                    var deliveryMode = CertificateGenerationHelper.NormalizeDeliveryMode(enrollment.DeliveryMode);
+
+                    candidates.Add(new CertificateGenerationCandidate
+                    {
+                        Request = request,
+                        Student = request.Student,
+                        Course = request.Course,
+                        Enrollment = enrollment,
+                        DeliveryMode = deliveryMode
+                    });
+                }
+
+                if (validationErrors.Any())
+                {
+                    await transaction.RollbackAsync();
+                    DeleteCreatedFiles(createdPhysicalFiles);
+
+                    return new CertificateGenerationResultDto
+                    {
+                        Success = false,
+                        Message = "Certificate generation stopped. Please fix the listed issues first.",
+                        SkippedCount = skippedCount,
+                        Errors = validationErrors
+                    };
+                }
+
+                if (!candidates.Any())
+                {
+                    await context.SaveChangesAsync();
+                    await transaction.CommitAsync();
+
+                    return new CertificateGenerationResultDto
+                    {
+                        Success = pdfGeneratedCount > 0,
+                        Message = pdfGeneratedCount > 0
+                            ? $"{pdfGeneratedCount} certificate PDF file(s) generated successfully."
+                            : "No approved requests are pending certificate generation.",
+                        PdfGeneratedCount = pdfGeneratedCount,
+                        SkippedCount = skippedCount
+                    };
+                }
+
+                var generatedItems = new List<CertificateGenerationItemDto>();
+                var nextBaseNumberTracker = new Dictionary<string, int>();
+
                 var orderedCandidates = candidates
                     .OrderBy(x => x.DeliveryMode)
                     .ThenBy(x => x.Student.Name)
@@ -214,7 +242,6 @@ namespace HTFLMS.Data.Services
                         CertificateId = certificateNumber,
 
                         IssueDate = issueDate,
-                        CertificateFilePath = "",
 
                         StudentNameSnapshot = candidate.Student.Name.Trim(),
                         TitlePrefixSnapshot = candidate.Student.TitlePrefix?.Trim(),
@@ -231,6 +258,16 @@ namespace HTFLMS.Data.Services
                         GeneratedByUserId = generatedByUserId
                     };
 
+                    var pdfData = BuildPdfData(certificate);
+                    var pdfOutput = certificatePdfService.GeneratePdf(pdfData);
+
+                    createdPhysicalFiles.Add(pdfOutput.PhysicalPath);
+
+                    certificate.CertificateFilePath = pdfOutput.RelativePath;
+
+                    candidate.Request.CertificateFilePath = pdfOutput.RelativePath;
+                    candidate.Request.UploadedAt = issueDate;
+
                     context.Certificates.Add(certificate);
 
                     generatedItems.Add(new CertificateGenerationItemDto
@@ -241,7 +278,8 @@ namespace HTFLMS.Data.Services
                         CourseId = candidate.Course.Id,
                         CourseTitle = candidate.Course.Title,
                         DeliveryMode = candidate.DeliveryMode,
-                        CertificateNumber = certificateNumber
+                        CertificateNumber = certificateNumber,
+                        CertificateFilePath = pdfOutput.RelativePath
                     });
                 }
 
@@ -279,8 +317,9 @@ namespace HTFLMS.Data.Services
                 return new CertificateGenerationResultDto
                 {
                     Success = true,
-                    Message = $"{generatedItems.Count} certificate record(s) generated successfully.",
+                    Message = $"{generatedItems.Count} certificate record(s) and {generatedItems.Count + pdfGeneratedCount} PDF file(s) generated successfully.",
                     GeneratedCount = generatedItems.Count,
+                    PdfGeneratedCount = generatedItems.Count + pdfGeneratedCount,
                     SkippedCount = skippedCount,
                     GeneratedCertificates = generatedItems
                 };
@@ -288,9 +327,48 @@ namespace HTFLMS.Data.Services
             catch
             {
                 await transaction.RollbackAsync();
+                DeleteCreatedFiles(createdPhysicalFiles);
 
-                return Fail("Certificate generation failed. Please try again.");
+                return Fail("Certificate PDF generation failed. Please check template image path and try again.");
             }
+        }
+
+        private async Task<int> GenerateMissingPdfFilesForCourseAsync(
+            int courseId,
+            List<string> createdPhysicalFiles)
+        {
+            var certificates = await context.Certificates
+                .Include(x => x.CertificateRequest)
+                .Where(x =>
+                    x.CourseId == courseId &&
+                    (x.CertificateFilePath == null || x.CertificateFilePath == ""))
+                .OrderBy(x => x.StudentNameSnapshot)
+                .ToListAsync();
+
+            if (!certificates.Any())
+                return 0;
+
+            var generatedCount = 0;
+
+            foreach (var certificate in certificates)
+            {
+                var pdfData = BuildPdfData(certificate);
+                var pdfOutput = certificatePdfService.GeneratePdf(pdfData);
+
+                createdPhysicalFiles.Add(pdfOutput.PhysicalPath);
+
+                certificate.CertificateFilePath = pdfOutput.RelativePath;
+
+                if (certificate.CertificateRequest != null)
+                {
+                    certificate.CertificateRequest.CertificateFilePath = pdfOutput.RelativePath;
+                    certificate.CertificateRequest.UploadedAt = DateTime.UtcNow;
+                }
+
+                generatedCount++;
+            }
+
+            return generatedCount;
         }
 
         private async Task<StudentCertificateNumber> GetOrCreateStudentCertificateNumberAsync(
@@ -340,6 +418,69 @@ namespace HTFLMS.Data.Services
             nextBaseNumberTracker[deliveryMode] = currentMax;
 
             return currentMax;
+        }
+
+        private static CertificatePdfDataDto BuildPdfData(Certificate certificate)
+        {
+            return new CertificatePdfDataDto
+            {
+                StudentId = certificate.StudentId,
+                CourseId = certificate.CourseId,
+                CertificateNumber = certificate.CertificateId,
+
+                StudentFullName = CertificateGenerationHelper.BuildStudentDisplayName(
+                    certificate.TitlePrefixSnapshot,
+                    certificate.StudentNameSnapshot),
+
+                CourseTitle = certificate.CourseTitleSnapshot,
+                IssueDateText = FormatPdfIssueDate(certificate.IssueDate),
+
+                PeriodText = BuildPeriodText(
+                    certificate.BatchStartDateSnapshot,
+                    certificate.BatchEndDateSnapshot),
+
+                DeliveryMode = certificate.DeliveryMode
+            };
+        }
+
+        private static string BuildPeriodText(
+            DateTime startDate,
+            DateTime? endDate)
+        {
+            if (!endDate.HasValue)
+            {
+                return FormatPdfPeriodDate(startDate);
+            }
+
+            return $"{FormatPdfPeriodDate(startDate)} - {FormatPdfPeriodDate(endDate.Value)}";
+        }
+
+        private static string FormatPdfIssueDate(DateTime date)
+        {
+            return date.ToString("dd-MM-yyyy", CultureInfo.InvariantCulture);
+        }
+
+        private static string FormatPdfPeriodDate(DateTime date)
+        {
+            return date.ToString("MMM yyyy", CultureInfo.InvariantCulture).ToUpperInvariant();
+        }
+
+        private static void DeleteCreatedFiles(List<string> filePaths)
+        {
+            foreach (var filePath in filePaths)
+            {
+                try
+                {
+                    if (File.Exists(filePath))
+                    {
+                        File.Delete(filePath);
+                    }
+                }
+                catch
+                {
+                    // ignore cleanup errors
+                }
+            }
         }
 
         private static CertificateGenerationResultDto Fail(string message)

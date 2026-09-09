@@ -1,5 +1,6 @@
 ﻿using HTFLMS.Data.IServices;
 using HTFLMS.Dtos.StudentCertificate;
+using HTFLMS.Helper;
 using HTFLMS.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -27,16 +28,34 @@ namespace HTFLMS.Data.Services
                 .OrderByDescending(e => e.Course!.BatchEndDate ?? e.Course.BatchStartDate)
                 .ToListAsync();
 
-            var courseIds = enrollments.Select(e => e.CourseId).Distinct().ToList();
+            var courseIds = enrollments
+                .Select(e => e.CourseId)
+                .Distinct()
+                .ToList();
 
             var requests = await context.CertificateRequests
-                .Where(r => r.StudentId == studentId && courseIds.Contains(r.CourseId))
+                .Where(r =>
+                    r.StudentId == studentId &&
+                    courseIds.Contains(r.CourseId))
                 .OrderByDescending(r => r.RequestedAt)
                 .ThenByDescending(r => r.Id)
                 .ToListAsync();
 
             var latestRequests = requests
                 .GroupBy(r => r.CourseId)
+                .ToDictionary(g => g.Key, g => g.First());
+
+            var generatedCertificates = await context.Certificates
+                .AsNoTracking()
+                .Where(c =>
+                    c.StudentId == studentId &&
+                    courseIds.Contains(c.CourseId))
+                .OrderByDescending(c => c.GeneratedAt)
+                .ThenByDescending(c => c.Id)
+                .ToListAsync();
+
+            var generatedCertificateLookup = generatedCertificates
+                .GroupBy(c => c.CourseId)
                 .ToDictionary(g => g.Key, g => g.First());
 
             var result = new List<StudentCertificateDto>();
@@ -48,18 +67,26 @@ namespace HTFLMS.Data.Services
                 if (course == null) continue;
 
                 latestRequests.TryGetValue(course.Id, out var latestRequest);
+                generatedCertificateLookup.TryGetValue(course.Id, out var generatedCertificate);
 
                 var isCourseEnded = course.BatchEndDate.HasValue &&
                                     course.BatchEndDate.Value.Date <= today;
 
-                var dto = BuildCertificateDto(enrollment, latestRequest, isCourseEnded);
+                var dto = BuildCertificateDto(
+                    enrollment,
+                    latestRequest,
+                    generatedCertificate,
+                    isCourseEnded);
+
                 result.Add(dto);
             }
 
             return result;
         }
 
-        public async Task<StudentCertificateApplyResultDto> ApplyAsync(int studentId, int courseId)
+        public async Task<StudentCertificateApplyResultDto> ApplyAsync(
+            int studentId,
+            int courseId)
         {
             var enrollment = await context.CourseEnrollments
                 .Include(e => e.Course)
@@ -107,8 +134,25 @@ namespace HTFLMS.Data.Services
                 };
             }
 
+            var generatedCertificateExists = await context.Certificates
+                .AsNoTracking()
+                .AnyAsync(c =>
+                    c.StudentId == studentId &&
+                    c.CourseId == courseId);
+
+            if (generatedCertificateExists)
+            {
+                return new StudentCertificateApplyResultDto
+                {
+                    Success = false,
+                    Message = "Your certificate has already been generated."
+                };
+            }
+
             var latestRequest = await context.CertificateRequests
-                .Where(r => r.StudentId == studentId && r.CourseId == courseId)
+                .Where(r =>
+                    r.StudentId == studentId &&
+                    r.CourseId == courseId)
                 .OrderByDescending(r => r.RequestedAt)
                 .ThenByDescending(r => r.Id)
                 .FirstOrDefaultAsync();
@@ -129,7 +173,7 @@ namespace HTFLMS.Data.Services
                 return new StudentCertificateApplyResultDto
                 {
                     Success = false,
-                    Message = "Your certificate has already been approved."
+                    Message = "Your certificate has already been approved and is being prepared."
                 };
             }
 
@@ -165,38 +209,44 @@ namespace HTFLMS.Data.Services
             int studentId,
             int certificateRequestId)
         {
-            var request = await context.CertificateRequests
-                .Include(r => r.Course)
-                .Include(r => r.Student)
-                .FirstOrDefaultAsync(r =>
-                    r.Id == certificateRequestId &&
-                    r.StudentId == studentId &&
-                    r.Status == "Approved");
+            var certificate = await context.Certificates
+                .AsNoTracking()
+                .FirstOrDefaultAsync(c =>
+                    c.CertificateRequestId == certificateRequestId &&
+                    c.StudentId == studentId &&
+                    !string.IsNullOrWhiteSpace(c.CertificateFilePath));
 
-            if (request == null || request.Course == null)
+            if (certificate == null)
                 return null;
-
-            var issueDate = request.ApprovedAt ?? request.RequestedAt;
 
             return new StudentCertificateDetailDto
             {
-                CertificateRequestId = request.Id,
-                CertificateId = $"HCC-{issueDate.Year}-{request.Id:D4}",
-                StudentName = GetStudentName(request.Student),
-                CourseTitle = request.Course.Title,
-                BatchNumber = request.Course.BatchNumber,
-                DurationText = request.Course.DurationText,
-                BatchStartDateText = FormatDate(request.Course.BatchStartDate),
-                BatchEndDateText = FormatDate(request.Course.BatchEndDate),
-                IssueDateText = FormatDate(issueDate),
-                Status = request.Status,
-                DownloadUrl = request.CertificateFilePath
+                CertificateRequestId = certificate.CertificateRequestId,
+                CertificateRecordId = certificate.Id,
+
+                CertificateId = certificate.CertificateId,
+                StudentName = CertificateGenerationHelper.BuildStudentDisplayName(
+                    certificate.TitlePrefixSnapshot,
+                    certificate.StudentNameSnapshot),
+
+                CourseTitle = certificate.CourseTitleSnapshot,
+                BatchNumber = certificate.BatchNumberSnapshot,
+                DurationText = certificate.DurationSnapshot,
+                BatchStartDateText = FormatDate(certificate.BatchStartDateSnapshot),
+                BatchEndDateText = FormatDate(certificate.BatchEndDateSnapshot),
+
+                IssueDateText = FormatDate(certificate.IssueDate),
+                Status = "Generated",
+                DeliveryMode = certificate.DeliveryMode,
+                DownloadUrl = certificate.CertificateFilePath,
+                CertificateFilePath = certificate.CertificateFilePath
             };
         }
 
         private StudentCertificateDto BuildCertificateDto(
             CourseEnrollment enrollment,
             CertificateRequest? latestRequest,
+            Certificate? generatedCertificate,
             bool isCourseEnded)
         {
             var course = enrollment.Course!;
@@ -212,6 +262,35 @@ namespace HTFLMS.Data.Services
                 BatchStartDateText = FormatDate(course.BatchStartDate),
                 BatchEndDateText = FormatDate(course.BatchEndDate)
             };
+
+            if (generatedCertificate != null &&
+                !string.IsNullOrWhiteSpace(generatedCertificate.CertificateFilePath))
+            {
+                dto.CertificateRequestId = generatedCertificate.CertificateRequestId;
+                dto.CertificateRecordId = generatedCertificate.Id;
+
+                dto.Status = "Generated";
+                dto.StatusText = "Certificate Ready";
+                dto.StatusCssClass = "student-course-tag";
+
+                dto.IsCertificateGenerated = true;
+                dto.CertificateNumber = generatedCertificate.CertificateId;
+                dto.CertificateFilePath = generatedCertificate.CertificateFilePath;
+
+                dto.CanApply = false;
+                dto.CanView = true;
+                dto.CanDownload = true;
+
+                dto.ButtonText = "View Certificate";
+                dto.IssueDateText = FormatDate(generatedCertificate.IssueDate);
+                dto.ApprovedAtText = FormatDate(generatedCertificate.IssueDate);
+
+                dto.ViewUrl = $"/Student/Certificates/ViewCertificate/{generatedCertificate.CertificateRequestId}";
+                dto.DownloadUrl = generatedCertificate.CertificateFilePath;
+
+                dto.Message = $"Your certificate is ready. Certificate ID: {generatedCertificate.CertificateId}";
+                return dto;
+            }
 
             if (!isCourseEnded && latestRequest == null)
             {
@@ -245,7 +324,7 @@ namespace HTFLMS.Data.Services
                 dto.StatusCssClass = "student-course-tag";
                 dto.CanApply = false;
                 dto.ButtonText = "Pending Approval";
-                dto.Message = "Your certificate request is under trainer review.";
+                dto.Message = "Your certificate request is under trainer/admin review.";
                 return dto;
             }
 
@@ -262,17 +341,15 @@ namespace HTFLMS.Data.Services
 
             if (latestRequest.Status.Equals("Approved", StringComparison.OrdinalIgnoreCase))
             {
-                dto.Status = "Approved";
-                dto.StatusText = "Certificate Ready";
+                dto.Status = "Processing";
+                dto.StatusText = "Certificate Processing";
                 dto.StatusCssClass = "student-course-tag";
                 dto.CanApply = false;
-                dto.CanView = true;
-                dto.CanDownload = !string.IsNullOrWhiteSpace(latestRequest.CertificateFilePath);
-                dto.ButtonText = "Certificate Ready";
+                dto.CanView = false;
+                dto.CanDownload = false;
+                dto.ButtonText = "Certificate Processing";
                 dto.ApprovedAtText = FormatDate(latestRequest.ApprovedAt ?? latestRequest.RequestedAt);
-                dto.ViewUrl = $"/Student/Certificates/ViewCertificate/{latestRequest.Id}";
-                dto.DownloadUrl = latestRequest.CertificateFilePath;
-                dto.Message = "Your certificate has been approved.";
+                dto.Message = "Your certificate has been approved and is being prepared.";
                 return dto;
             }
 
@@ -281,6 +358,7 @@ namespace HTFLMS.Data.Services
             dto.StatusCssClass = "student-course-tag";
             dto.CanApply = false;
             dto.ButtonText = latestRequest.Status;
+
             return dto;
         }
 
@@ -299,9 +377,13 @@ namespace HTFLMS.Data.Services
             if (user == null)
                 return "Student";
 
-            return !string.IsNullOrWhiteSpace(user.Email)
-                ? user.Email
-                : "Student";
+            var name = !string.IsNullOrWhiteSpace(user.Name)
+                ? user.Name
+                : user.Email;
+
+            return CertificateGenerationHelper.BuildStudentDisplayName(
+                user.TitlePrefix,
+                name);
         }
     }
 }

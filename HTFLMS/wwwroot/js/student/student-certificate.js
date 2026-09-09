@@ -39,10 +39,10 @@
             }
 
             const certificates = result.data || [];
-            const approvedCount = certificates.filter(x => x.status === 'Approved').length;
+            const readyCount = certificates.filter(x => x.status === 'Generated').length;
 
             if (countEl) {
-                countEl.textContent = `Approved Certificates: ${approvedCount}`;
+                countEl.textContent = `Ready Certificates: ${readyCount}`;
             }
 
             if (!certificates.length) {
@@ -53,6 +53,7 @@
 
             showEmpty(emptyState, false);
             grid.innerHTML = certificates.map(renderCertificateCard).join('');
+
             bindApplyButtons();
 
         } catch (error) {
@@ -66,13 +67,27 @@
         const imagePath = item.courseImagePath || '/img/course/certificate.png';
         const metaDate = getMetaDateText(item);
         const actions = renderActions(item);
-        const message = item.message ? `<p class="student-course-author certificate-status-message">${escapeHtml(item.message)}</p>` : '';
+        const message = item.message
+            ? `<p class="student-course-author certificate-status-message">${escapeHtml(item.message)}</p>`
+            : '';
+
+        const certificateNumber = item.certificateNumber
+            ? `
+                <div class="student-course-meta-item">
+                    <i class="bi bi-upc-scan"></i>
+                    <span>${escapeHtml(item.certificateNumber)}</span>
+                </div>
+            `
+            : '';
+
         const statusIcon = getStatusIcon(item.status);
 
         return `
             <div class="student-course-card certificate-card" data-title="${escapeHtml(item.courseTitle)}">
                 <div class="student-course-image-wrap certificate-image-wrap">
-                    <img src="${escapeHtml(imagePath)}" alt="${escapeHtml(item.courseTitle)} Certificate" class="student-course-image" />
+                    <img src="${escapeHtml(imagePath)}"
+                         alt="${escapeHtml(item.courseTitle)} Certificate"
+                         class="student-course-image" />
                 </div>
 
                 <div class="student-course-body">
@@ -89,6 +104,8 @@
                             <i class="bi bi-calendar-event"></i>
                             <span>${escapeHtml(metaDate)}</span>
                         </div>
+
+                        ${certificateNumber}
                     </div>
 
                     ${message}
@@ -116,7 +133,9 @@
 
             const downloadButton = item.canDownload && item.downloadUrl
                 ? `
-                    <a href="${escapeHtml(item.downloadUrl)}" download class="student-material-btn download">
+                    <a href="${escapeHtml(item.downloadUrl)}"
+                       download
+                       class="student-material-btn download">
                         <i class="bi bi-download"></i>
                         Download PDF
                     </a>
@@ -148,9 +167,10 @@
     }
 
     function getStatusIcon(status) {
+        if (status === 'Generated') return 'bi-patch-check';
+        if (status === 'Processing') return 'bi-hourglass-split';
         if (status === 'Pending') return 'bi-hourglass-split';
         if (status === 'Rejected') return 'bi-x-circle';
-        if (status === 'Approved') return 'bi-patch-check';
         if (status === 'ReadyToApply') return 'bi-send-check';
         if (status === 'CourseInProgress') return 'bi-clock-history';
 
@@ -158,8 +178,12 @@
     }
 
     function getMetaDateText(item) {
-        if (item.status === 'Approved' && item.approvedAtText) {
-            return `Issued: ${item.approvedAtText}`;
+        if (item.status === 'Generated' && item.issueDateText) {
+            return `Issued: ${item.issueDateText}`;
+        }
+
+        if (item.status === 'Processing' && item.approvedAtText) {
+            return `Approved: ${item.approvedAtText}`;
         }
 
         if (item.status === 'Pending' && item.requestedAtText) {
@@ -268,10 +292,29 @@
             setText('certificateBatchNumber', certificate.batchNumber || '-');
             setText('certificateDuration', certificate.durationText || '-');
 
+            const pdfFrame = document.getElementById('certificatePdfFrame');
+            const previewPlaceholder = document.getElementById('certificatePreviewPlaceholder');
+
+            if (pdfFrame && certificate.downloadUrl) {
+                pdfFrame.src = certificate.downloadUrl;
+                pdfFrame.hidden = false;
+            }
+
+            if (previewPlaceholder && certificate.downloadUrl) {
+                previewPlaceholder.hidden = true;
+            }
+
             const downloadWrap = document.getElementById('certificateDownloadWrap');
 
             if (downloadWrap && certificate.downloadUrl) {
                 downloadWrap.innerHTML = `
+                    <a href="${escapeHtml(certificate.downloadUrl)}"
+                       target="_blank"
+                       class="student-material-btn">
+                        <i class="bi bi-eye"></i>
+                        Open PDF
+                    </a>
+
                     <a href="${escapeHtml(certificate.downloadUrl)}"
                        download
                        class="student-material-btn download">
@@ -304,7 +347,9 @@
                 <p id="certificateConfirmMessage">Are you sure?</p>
 
                 <div class="certificate-modal-actions">
-                    <button type="button" class="dashboard-btn dashboard-btn-outline" id="certificateConfirmCancel">
+                    <button type="button"
+                            class="dashboard-btn dashboard-btn-outline"
+                            id="certificateConfirmCancel">
                         Cancel
                     </button>
 
@@ -393,6 +438,7 @@
         toast.classList.add('show');
 
         window.clearTimeout(showToast.timer);
+
         showToast.timer = window.setTimeout(function () {
             toast.classList.remove('show');
             toast.hidden = true;
@@ -406,6 +452,7 @@
 
     function showEmpty(element, shouldShow) {
         if (!element) return;
+
         element.hidden = !shouldShow;
     }
 

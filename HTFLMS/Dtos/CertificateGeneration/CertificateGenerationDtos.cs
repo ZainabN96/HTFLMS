@@ -6,6 +6,7 @@
         public string Message { get; set; } = "";
 
         public int GeneratedCount { get; set; }
+        public int PdfGeneratedCount { get; set; }
         public int SkippedCount { get; set; }
 
         public List<CertificateGenerationItemDto> GeneratedCertificates { get; set; } = new();
@@ -25,5 +26,25 @@
 
         public string DeliveryMode { get; set; } = "";
         public string CertificateNumber { get; set; } = "";
+        public string CertificateFilePath { get; set; } = "";
+    }
+
+    public class CertificatePdfDataDto
+    {
+        public int StudentId { get; set; }
+        public int CourseId { get; set; }
+
+        public string CertificateNumber { get; set; } = "";
+        public string StudentFullName { get; set; } = "";
+        public string CourseTitle { get; set; } = "";
+        public string IssueDateText { get; set; } = "";
+        public string PeriodText { get; set; } = "";
+        public string DeliveryMode { get; set; } = "";
+    }
+
+    public class CertificatePdfOutputDto
+    {
+        public string RelativePath { get; set; } = "";
+        public string PhysicalPath { get; set; } = "";
     }
 }

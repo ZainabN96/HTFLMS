@@ -7,11 +7,12 @@ using HTFLMS.Data.Services;
 using HTFLMS.Data.IServices;
 using HTFLMS.Helper;
 using HTFLMS.Middlewares;
+using QuestPDF.Infrastructure;
 
 
 var builder = WebApplication.CreateBuilder(args);
 
-
+QuestPDF.Settings.License = LicenseType.Community;
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 builder.Services.AddControllersWithViews();
 builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();

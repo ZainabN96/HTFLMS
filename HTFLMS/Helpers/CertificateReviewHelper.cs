@@ -73,17 +73,6 @@ namespace HTFLMS.Helper
                 .Distinct()
                 .ToList();
 
-            var generatedCertificateStudentIds = await context.Certificates
-                .AsNoTracking()
-                .Where(x =>
-                    x.CourseId == courseId &&
-                    studentIds.Contains(x.StudentId))
-                .Select(x => x.StudentId)
-                .Distinct()
-                .ToListAsync();
-
-            var generatedCertificateStudentSet = new HashSet<int>(generatedCertificateStudentIds);
-
             var submissions = await context.AssignmentSubmissions
                 .AsNoTracking()
                 .Where(x =>
@@ -110,6 +99,19 @@ namespace HTFLMS.Helper
                 .GroupBy(x => x.StudentId)
                 .ToDictionary(g => g.Key, g => g.First());
 
+            var generatedCertificates = await context.Certificates
+                .AsNoTracking()
+                .Where(x =>
+                    x.CourseId == courseId &&
+                    studentIds.Contains(x.StudentId))
+                .OrderByDescending(x => x.GeneratedAt)
+                .ThenByDescending(x => x.Id)
+                .ToListAsync();
+
+            var generatedCertificateLookup = generatedCertificates
+                .GroupBy(x => x.StudentId)
+                .ToDictionary(g => g.Key, g => g.First());
+
             var assignmentColumns = assignments
                 .Select((assignment, index) => new CertificateReviewAssignmentColumnDto
                 {
@@ -130,6 +132,7 @@ namespace HTFLMS.Helper
                     continue;
 
                 latestRequestLookup.TryGetValue(enrollment.StudentId, out var latestRequest);
+                generatedCertificateLookup.TryGetValue(enrollment.StudentId, out var generatedCertificate);
 
                 var row = BuildStudentRow(
                     course,
@@ -137,8 +140,8 @@ namespace HTFLMS.Helper
                     assignments,
                     submissionLookup,
                     latestRequest,
-                    isCourseEnded,
-                    generatedCertificateStudentSet.Contains(enrollment.StudentId));
+                    generatedCertificate,
+                    isCourseEnded);
 
                 rows.Add(row);
             }
@@ -273,12 +276,12 @@ namespace HTFLMS.Helper
         {
             var normalizedDeliveryMode = NormalizeDeliveryModeForUpdate(deliveryMode);
 
-            if (normalizedDeliveryMode == null)
+            if (string.IsNullOrWhiteSpace(normalizedDeliveryMode))
             {
                 return new CertificateReviewActionResultDto
                 {
                     Success = false,
-                    Message = "Delivery mode must be Online or Onsite."
+                    Message = "Please select a valid delivery mode."
                 };
             }
 
@@ -296,6 +299,7 @@ namespace HTFLMS.Helper
             }
 
             var certificateAlreadyGenerated = await context.Certificates
+                .AsNoTracking()
                 .AnyAsync(x =>
                     x.StudentId == enrollment.StudentId &&
                     x.CourseId == enrollment.CourseId);
@@ -305,7 +309,7 @@ namespace HTFLMS.Helper
                 return new CertificateReviewActionResultDto
                 {
                     Success = false,
-                    Message = "Delivery mode cannot be changed because certificate has already been generated."
+                    Message = "Delivery mode is locked because certificate has already been generated."
                 };
             }
 
@@ -313,7 +317,6 @@ namespace HTFLMS.Helper
             enrollment.DeliveryModeUpdatedByUserId = updatedByUserId;
             enrollment.DeliveryModeUpdatedAt = DateTime.UtcNow;
 
-            context.CourseEnrollments.Update(enrollment);
             await context.SaveChangesAsync();
 
             return new CertificateReviewActionResultDto
@@ -329,8 +332,8 @@ namespace HTFLMS.Helper
             List<Assignment> assignments,
             Dictionary<string, AssignmentSubmission> submissionLookup,
             CertificateRequest? latestRequest,
-            bool isCourseEnded,
-            bool certificateAlreadyGenerated)
+            Certificate? generatedCertificate,
+            bool isCourseEnded)
         {
             var student = enrollment.Student!;
 
@@ -361,24 +364,29 @@ namespace HTFLMS.Helper
             {
                 StudentId = student.Id,
                 StudentName = student.Name,
+
                 CourseId = course.Id,
                 CourseTitle = course.Title,
 
                 EnrollmentId = enrollment.Id,
                 DeliveryMode = deliveryMode,
                 DeliveryModeText = deliveryMode,
-                CanUpdateDeliveryMode = !certificateAlreadyGenerated,
+                CanUpdateDeliveryMode = generatedCertificate == null,
 
                 AssignmentCells = cells,
                 TotalMarks = totalMarks,
                 ObtainedMarks = obtainedMarks,
                 OverallPercentage = percentage,
                 OverallText = totalMarks > 0 ? $"{percentage:0.#}%" : "—",
-                OverallCssClass = totalMarks > 0 ? GetScoreCssClass(percentage) : "trainer-score-muted"
+                OverallCssClass = totalMarks > 0 ? GetScoreCssClass(percentage) : "trainer-score-muted",
+
+                IsCertificateGenerated = generatedCertificate != null,
+                GeneratedCertificateRecordId = generatedCertificate?.Id,
+                GeneratedCertificateNumber = generatedCertificate?.CertificateId
             };
 
             ApplyStanding(row);
-            ApplyCertificateStatus(row, latestRequest, isCourseEnded);
+            ApplyCertificateStatus(row, latestRequest, generatedCertificate, isCourseEnded);
 
             return row;
         }
@@ -533,8 +541,24 @@ namespace HTFLMS.Helper
         private void ApplyCertificateStatus(
             CertificateReviewStudentRowDto row,
             CertificateRequest? latestRequest,
+            Certificate? generatedCertificate,
             bool isCourseEnded)
         {
+            if (generatedCertificate != null)
+            {
+                row.CertificateRequestId = generatedCertificate.CertificateRequestId;
+                row.CertificateStatus = "Generated";
+                row.CertificateStatusText = "Generated";
+                row.CertificateStatusCssClass = "pill trainer-grade-pill-good";
+                row.IsCertificateGenerated = true;
+                row.GeneratedCertificateRecordId = generatedCertificate.Id;
+                row.GeneratedCertificateNumber = generatedCertificate.CertificateId;
+                row.CanApprove = false;
+                row.CanReject = false;
+                row.CanUpdateDeliveryMode = false;
+                return;
+            }
+
             if (!isCourseEnded)
             {
                 row.CertificateStatus = "InProgress";
@@ -614,6 +638,7 @@ namespace HTFLMS.Helper
                 NotApplied = rows.Count(x => x.CertificateStatus == "NotApplied"),
                 PendingRequests = rows.Count(x => x.CertificateStatus == "Pending"),
                 Approved = rows.Count(x => x.CertificateStatus == "Approved"),
+                Generated = rows.Count(x => x.CertificateStatus == "Generated"),
                 Rejected = rows.Count(x => x.CertificateStatus == "Rejected")
             };
         }
@@ -671,14 +696,14 @@ namespace HTFLMS.Helper
                 : value.Trim().Replace(" ", "").ToLower();
         }
 
-        private static string NormalizeDeliveryMode(string? deliveryMode)
+        private string NormalizeDeliveryMode(string? deliveryMode)
         {
             return string.Equals(deliveryMode?.Trim(), "Online", StringComparison.OrdinalIgnoreCase)
                 ? "Online"
                 : "Onsite";
         }
 
-        private static string? NormalizeDeliveryModeForUpdate(string? deliveryMode)
+        private string? NormalizeDeliveryModeForUpdate(string? deliveryMode)
         {
             if (string.Equals(deliveryMode?.Trim(), "Online", StringComparison.OrdinalIgnoreCase))
                 return "Online";

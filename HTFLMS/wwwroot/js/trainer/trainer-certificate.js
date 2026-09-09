@@ -359,35 +359,53 @@
     }
 
     function renderCertificateAction(student) {
+        if (student.isCertificateGenerated) {
+            const certificateNumber = student.generatedCertificateNumber || '';
+
+            return `
+            <div>
+                <span class="${escapeHtml(student.certificateStatusCssClass || 'pill trainer-grade-pill-good')}">
+                    <i class="bi bi-patch-check"></i>
+                    Generated
+                </span>
+                ${certificateNumber ? `
+                    <div class="dashboard-muted-small">
+                        ${escapeHtml(certificateNumber)}
+                    </div>
+                ` : ''}
+            </div>
+        `;
+        }
+
         if (student.canApprove && student.canReject && student.certificateRequestId) {
             return `
-                <div class="trainer-gradebook-certificate-actions">
-                    <button type="button"
-                            class="dashboard-btn dashboard-btn-sm trainer-certificate-approve-btn"
-                            data-request-id="${student.certificateRequestId}"
-                            data-student-name="${escapeHtml(student.studentName)}"
-                            data-course-title="${escapeHtml(student.courseTitle)}">
-                        <i class="bi bi-check-circle"></i>
-                        Approve
-                    </button>
+            <div class="trainer-gradebook-certificate-actions">
+                <button type="button"
+                        class="dashboard-btn dashboard-btn-sm trainer-certificate-approve-btn"
+                        data-request-id="${student.certificateRequestId}"
+                        data-student-name="${escapeHtml(student.studentName)}"
+                        data-course-title="${escapeHtml(student.courseTitle)}">
+                    <i class="bi bi-check-circle"></i>
+                    Approve
+                </button>
 
-                    <button type="button"
-                            class="dashboard-btn dashboard-btn-sm dashboard-btn-outline trainer-certificate-reject-btn"
-                            data-request-id="${student.certificateRequestId}"
-                            data-student-name="${escapeHtml(student.studentName)}"
-                            data-course-title="${escapeHtml(student.courseTitle)}">
-                        <i class="bi bi-x-circle"></i>
-                        Reject
-                    </button>
-                </div>
-            `;
+                <button type="button"
+                        class="dashboard-btn dashboard-btn-sm dashboard-btn-outline trainer-certificate-reject-btn"
+                        data-request-id="${student.certificateRequestId}"
+                        data-student-name="${escapeHtml(student.studentName)}"
+                        data-course-title="${escapeHtml(student.courseTitle)}">
+                    <i class="bi bi-x-circle"></i>
+                    Reject
+                </button>
+            </div>
+        `;
         }
 
         return `
-            <span class="${escapeHtml(student.certificateStatusCssClass || 'pill trainer-grade-pill-warn')}">
-                ${escapeHtml(student.certificateStatusText)}
-            </span>
-        `;
+        <span class="${escapeHtml(student.certificateStatusCssClass || 'pill trainer-grade-pill-warn')}">
+            ${escapeHtml(student.certificateStatusText)}
+        </span>
+    `;
     }
 
     function bindActionButtons() {

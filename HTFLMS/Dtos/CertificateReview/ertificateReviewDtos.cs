@@ -30,6 +30,7 @@ namespace HTFLMS.Dtos.CertificateReview
         public int NotApplied { get; set; }
         public int PendingRequests { get; set; }
         public int Approved { get; set; }
+        public int Generated { get; set; }
         public int Rejected { get; set; }
     }
 
@@ -44,6 +45,7 @@ namespace HTFLMS.Dtos.CertificateReview
             "Not Applied",
             "Pending",
             "Approved",
+            "Generated",
             "Rejected"
         };
     }
@@ -94,6 +96,10 @@ namespace HTFLMS.Dtos.CertificateReview
         public string CertificateStatusText { get; set; } = "";
         public string CertificateStatusCssClass { get; set; } = "";
 
+        public bool IsCertificateGenerated { get; set; }
+        public int? GeneratedCertificateRecordId { get; set; }
+        public string? GeneratedCertificateNumber { get; set; }
+
         public bool CanApprove { get; set; }
         public bool CanReject { get; set; }
     }
@@ -118,16 +124,16 @@ namespace HTFLMS.Dtos.CertificateReview
         public bool IsPending { get; set; }
     }
 
+    public class CertificateReviewActionResultDto
+    {
+        public bool Success { get; set; }
+        public string Message { get; set; } = "";
+    }
+
     public class CertificateReviewDeliveryModeUpdateDto
     {
         [Required(ErrorMessage = "Delivery mode is required.")]
         [RegularExpression("^(Online|Onsite)$", ErrorMessage = "Delivery mode must be Online or Onsite.")]
         public string DeliveryMode { get; set; } = "";
-    }
-
-    public class CertificateReviewActionResultDto
-    {
-        public bool Success { get; set; }
-        public string Message { get; set; } = "";
     }
 }

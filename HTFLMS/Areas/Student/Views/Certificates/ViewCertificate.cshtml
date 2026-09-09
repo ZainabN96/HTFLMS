@@ -1,11 +1,11 @@
 ﻿@{
     ViewData["Title"] = "View Certificate";
     Layout = "_StudentLayout";
+
     var certificateRequestId = ViewBag.CertificateRequestId ?? 0;
 }
 
 <div class="dashboard-page certificate-view-page" data-certificate-request-id="@certificateRequestId">
-
     <div class="dashboard-page-head">
         <div>
             <h1 class="dashboard-h1">Certificate</h1>
@@ -22,15 +22,23 @@
     </div>
 
     <div class="certificate-view-wrap" id="certificateDetailWrap">
-
         <div class="certificate-preview-card">
-            <img src="~/img/course/certificate.png"
-                 class="certificate-preview-img"
-                 alt="certificate" />
+            <iframe id="certificatePdfFrame"
+                    class="certificate-preview-img"
+                    title="Certificate PDF"
+                    hidden>
+            </iframe>
+
+            <div class="certificate-empty-inner" id="certificatePreviewPlaceholder">
+                <div class="certificate-empty-icon">
+                    <i class="bi bi-hourglass-split"></i>
+                </div>
+                <h3>Loading certificate...</h3>
+                <p>Please wait while we load your certificate PDF.</p>
+            </div>
         </div>
 
         <div class="certificate-info-card">
-
             <div class="certificate-info-row">
                 <div class="certificate-info-item">
                     <label>Student</label>
@@ -65,9 +73,7 @@
 
             <div class="certificate-actions" id="certificateDownloadWrap">
             </div>
-
         </div>
-
     </div>
 
     <div class="certificate-empty-state" id="certificateDetailEmpty" hidden>
@@ -77,85 +83,12 @@
                     <i class="bi bi-patch-check"></i>
                 </div>
                 <h3>Certificate not available</h3>
-                <p>This certificate is not approved or could not be found.</p>
+                <p>This certificate has not been generated yet or could not be found.</p>
             </div>
         </div>
     </div>
-
 </div>
 
 @section Scripts {
     <script src="~/js/student/student-certificate.js" asp-append-version="true"></script>
 }
-
-
-
-
-@* @{
-    ViewData["Title"] = "View Certificate";
-    Layout = "_StudentLayout";
-}
-
-<div class="dashboard-page certificate-view-page">
-
-    <div class="dashboard-page-head">
-        <div>
-            <h1 class="dashboard-h1">Certificate</h1>
-            <p class="dashboard-sub">Verify and download your achievement</p>
-        </div>
-
-        <a asp-area="Student"
-           asp-controller="Certificates"
-           asp-action="Index"
-           class="dashboard-btn dashboard-btn-outline">
-            <i class="bi bi-arrow-left"></i>
-            Back
-        </a>
-    </div>
-
-    <div class="certificate-view-wrap">
-
-        <div class="certificate-preview-card">
-            <img src="~/img/course/certificate.png"
-                 class="certificate-preview-img"
-                 alt="certificate" />
-        </div>
-
-        <div class="certificate-info-card">
-
-            <div class="certificate-info-row">
-                <div class="certificate-info-item">
-                    <label>Student</label>
-                    <div>Daud Iqbal</div>
-                </div>
-
-                <div class="certificate-info-item">
-                    <label>Course</label>
-                    <div>Full Stack Web Development</div>
-                </div>
-
-                <div class="certificate-info-item">
-                    <label>Issue Date</label>
-                    <div>Jan 15, 2026</div>
-                </div>
-
-                <div class="certificate-info-item">
-                    <label>Certificate ID</label>
-                    <div>HCC-2026-001</div>
-                </div>
-            </div>
-
-            <div class="certificate-actions">
-                <a href="~/img/course/certificate.pdf"
-                   download
-                   class="student-material-btn download">
-                    <i class="bi bi-download"></i>
-                    Download PDF
-                </a>
-            </div>
-
-        </div>
-
-    </div>
-
-</div> *@
