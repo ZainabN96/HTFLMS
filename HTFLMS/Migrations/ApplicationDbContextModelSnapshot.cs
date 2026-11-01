@@ -70,6 +70,45 @@ namespace HTFLMS.Migrations
                     b.ToTable("Assignments");
                 });
 
+            modelBuilder.Entity("HTFLMS.Models.AssignmentDueReminder", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AssignmentId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("EmailSent")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("EmailSentAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("NotificationSent")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("NotificationSentAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("StudentId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("StudentId");
+
+                    b.HasIndex("AssignmentId", "StudentId")
+                        .IsUnique();
+
+                    b.ToTable("AssignmentDueReminders");
+                });
+
             modelBuilder.Entity("HTFLMS.Models.AssignmentSubmission", b =>
                 {
                     b.Property<int>("Id")
@@ -1041,6 +1080,25 @@ namespace HTFLMS.Migrations
                     b.Navigation("Course");
 
                     b.Navigation("Module");
+                });
+
+            modelBuilder.Entity("HTFLMS.Models.AssignmentDueReminder", b =>
+                {
+                    b.HasOne("HTFLMS.Models.Assignment", "Assignment")
+                        .WithMany()
+                        .HasForeignKey("AssignmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("HTFLMS.Models.User", "Student")
+                        .WithMany()
+                        .HasForeignKey("StudentId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Assignment");
+
+                    b.Navigation("Student");
                 });
 
             modelBuilder.Entity("HTFLMS.Models.AssignmentSubmission", b =>

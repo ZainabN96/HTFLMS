@@ -451,7 +451,7 @@ namespace HTFLMS.Helper
     <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"" />
 </head>
 
-<body style=""margin:0; padding:0; background-color:#f5f5f5;
+<body style=""margin:0; padding:0; background-color:#fC9828F;
              font-family:Arial, Helvetica, sans-serif;"">
 
     <table width=""100%""
@@ -473,7 +473,7 @@ namespace HTFLMS.Helper
                               overflow:hidden;"">
 
                     <tr>
-                        <td style=""background-color:#db291b;
+                        <td style=""background-color:#C9828F;
                                    padding:22px 30px;
                                    text-align:center;"">
 
