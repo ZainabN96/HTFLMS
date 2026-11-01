@@ -56,5 +56,10 @@ namespace HTFLMS.Controllers
         {
             return View();
         }
+        public IActionResult CourseDetailPage()
+        {
+            return View();
+        }
+
     }
 }

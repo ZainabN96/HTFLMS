@@ -21,6 +21,7 @@
         ITrainerCertificateService TrainerCertificateService { get; }
         IAdminCertificateService AdminCertificateService { get; }
         ICertificateGenerationService CertificateGenerationService { get; }
+        INotificationService NotificationService { get; }
         Task<bool> SaveAsync();
     }
 }

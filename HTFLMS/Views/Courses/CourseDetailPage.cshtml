@@ -1,0 +1,212 @@
+﻿@{
+    ViewData["Title"] = "Web Development Fundamentals";
+    Layout = "_Layout";
+}
+
+<main class="main">
+    <div class="htf-cd">
+        <script>document.currentScript.parentNode.classList.add('htf-cd--js');</script>
+
+        <div class="htf-cd__page">
+
+            <!-- ================= HEADER ================= -->
+            <header class="htf-cd__head">
+                <nav class="htf-cd__crumbs htf-cd__up" style="--cd-i:0" aria-label="Breadcrumb">
+                    <a href="/Courses">Courses</a>
+                    <svg class="htf-cd__ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6" /></svg>
+                    <span aria-current="page">Web Development Fundamentals</span>
+                </nav>
+
+                <span class="htf-cd__tag htf-cd__up" style="--cd-i:1">Web Development</span>
+
+                <h1 class="htf-cd__h1 htf-cd__up" style="--cd-i:2">Web Development <em>Fundamentals</em></h1>
+
+                <p class="htf-cd__summary htf-cd__up" style="--cd-i:3">
+                    Learn how the web is built, from structure and layout to working, deployed projects, guided live by industry mentors who review your real work.
+                </p>
+
+                <div class="htf-cd__byline htf-cd__up" style="--cd-i:4">
+                    <span class="htf-cd__avatar" aria-hidden="true">NN</span>
+                    <p>
+                        Taught by <b>Dr. Nouman Noor</b><br />Lead Web Engineer, Course Director
+                    </p>
+                </div>
+
+                <div class="htf-cd__facts htf-cd__up" style="--cd-i:5">
+                    <div class="htf-cd__fact">
+                        <i><svg class="htf-cd__ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 2" /></svg></i>
+                        <div><small>Duration</small><span>12 weeks</span></div>
+                    </div>
+                    <div class="htf-cd__fact">
+                        <i><svg class="htf-cd__ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20v-5M12 20V9M19 20V4" /></svg></i>
+                        <div><small>Level</small><span>Beginner to Advanced</span></div>
+                    </div>
+                    <div class="htf-cd__fact">
+                        <i><svg class="htf-cd__ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5" /><path d="M5 20c0-4 3-6 7-6s7 2 7 6" /></svg></i>
+                        <div><small>Eligibility</small><span>No prior experience</span></div>
+                    </div>
+                    <div class="htf-cd__fact">
+                        <i><svg class="htf-cd__ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 9l10-5 10 5-10 5z" /><path d="M6 11.5V16c0 1.5 3 3 6 3s6-1.5 6-3v-4.5" /></svg></i>
+                        <div><small>Certificate</small><span>Yes</span></div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- ================= SIDEBAR ================= -->
+            <aside class="htf-cd__aside htf-cd__up" style="--cd-i:3" aria-label="Enrolment">
+                <div class="htf-cd__enrol">
+                    <span class="htf-cd__free">Free to enrol</span>
+                    <h2>Reserve your seat</h2>
+
+                    <a href="#" class="htf-cd__btn">
+                        Enroll now <span class="htf-cd__arr">&rarr;</span>
+                    </a>
+
+                    <div class="htf-cd__cohort">
+                        <i><svg class="htf-cd__ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2" /><path d="M3 10h18M8 3v4M16 3v4" /></svg></i>
+                        <div>
+                            <small>Next cohort</small>
+                            <b>4 March 2027</b>
+                            <span>Wednesdays &amp; Fridays · 7:00 – 9:00 PM GST</span>
+                        </div>
+                    </div>
+
+                    <ul class="htf-cd__rows">
+                        <li><span><svg class="htf-cd__ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h9M4 9h6M12 20l4-10 4 10M13.5 16.5h5" /></svg>Language</span><b>Urdu / English</b></li>
+                        <li><span><svg class="htf-cd__ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-6 7-11a7 7 0 10-14 0c0 5 7 11 7 11z" /><circle cx="12" cy="10" r="2.5" /></svg>Format</span><b>Onsite</b></li>
+                        <li><span><svg class="htf-cd__ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2" /><path d="M8 20h8M12 16v4" /></svg>Live sessions</span><b>2 per week</b></li>
+                        <li><span><svg class="htf-cd__ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l5 5 9-10" /></svg>Feedback</span><b>Weekly critique</b></li>
+                    </ul>
+                </div>
+
+                <div class="htf-cd__help">
+                    <h4>Need help deciding?</h4>
+                    <p>Talk to an advisor about the pace, or whether this is the right starting point.</p>
+                    <a href="/Contact">Contact our team <span class="htf-cd__arr">&rarr;</span></a>
+                </div>
+            </aside>
+
+            <!-- ================= MAIN ================= -->
+            <div class="htf-cd__main">
+
+                <nav class="htf-cd__tabs htf-cd__up" style="--cd-i:6" aria-label="Course sections">
+                    <span class="htf-cd__ind" aria-hidden="true"></span>
+                    <a href="#overview" class="is-active">Overview</a>
+                    <a href="#curriculum">Curriculum</a>
+                    <a href="#instructor">Instructor</a>
+                </nav>
+
+                <!-- Overview -->
+                <section class="htf-cd__panel htf-cd__rv" id="overview">
+                    <span class="htf-cd__eyebrow">Overview</span>
+                    <h2 class="htf-cd__title">More than just a <em>course</em></h2>
+
+                    <div class="htf-cd__prose">
+                        <p>Most traditional courses hand you a syllabus and a video playlist. HTF puts you in a live interactive environment, learning directly from industry mentors who review and critique your actual work.</p>
+                        <p>The first six weeks build the fundamentals in sequence: structure with HTML, layout with CSS, then the language itself. The last six weeks are a studio block. You pick one product brief, build it in public, and get a written critique every Friday until it ships.</p>
+                    </div>
+
+                    <p class="htf-cd__pull">“We would rather you leave with one deployed project and a clear head than twelve half-finished tutorials.”</p>
+
+                    <div class="htf-cd__sub">By the end of week 12</div>
+                    <ul class="htf-cd__wins">
+                        <li class="htf-cd__win">
+                            <i><svg class="htf-cd__ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l5 5 9-10" /></svg></i>
+                            <b>Ship three real projects</b>
+                            <span>A responsive marketing page, a data-driven dashboard and a deployed portfolio you can show in interviews.</span>
+                        </li>
+                        <li class="htf-cd__win">
+                            <i><svg class="htf-cd__ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l5 5 9-10" /></svg></i>
+                            <b>Work from a design file</b>
+                            <span>Translate a Figma screen into accessible, responsive markup without guessing at spacing.</span>
+                        </li>
+                        <li class="htf-cd__win">
+                            <i><svg class="htf-cd__ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l5 5 9-10" /></svg></i>
+                            <b>Read a codebase with confidence</b>
+                            <span>Debug in the browser, follow a component tree and review pull requests without panic.</span>
+                        </li>
+                        <li class="htf-cd__win">
+                            <i><svg class="htf-cd__ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l5 5 9-10" /></svg></i>
+                            <b>Launch your reviewed portfolio</b>
+                            <span>A one-to-one critique with your mentor on the final week, plus a certificate on completion.</span>
+                        </li>
+                    </ul>
+                </section>
+
+                <!-- Curriculum (sirf handbook) -->
+                <section class="htf-cd__panel htf-cd__rv" id="curriculum">
+                    <span class="htf-cd__eyebrow">Curriculum</span>
+                    <h2 class="htf-cd__title">Explore the course <em>curriculum</em></h2>
+
+                    <div class="htf-cd__handbook">
+                        <div>
+                            <i><svg class="htf-cd__ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h9l4 4v14H6z" /><path d="M14 3v5h5M9 13h6M9 17h6" /></svg></i>
+                            <p><b>Web-Development Handbook</b><span>How the web actually works, and the tools you will use every day.</span></p>
+                        </div>
+                        <nav>
+                            <a class="htf-cd__btn htf-cd__btn--ghost htf-cd__btn--sm" href="#" target="_blank" rel="noopener">View</a>
+                            <a class="htf-cd__btn htf-cd__btn--sm" href="#" download>Download</a>
+                        </nav>
+                    </div>
+                </section>
+
+                <!-- Requirements (chhoti collapsible bar) -->
+                <section class="htf-cd__need htf-cd__rv" id="requirements">
+                    <button type="button" class="htf-cd__need-head" aria-expanded="false" aria-controls="htfCdNeedBody">
+                        <span class="htf-cd__need-t">
+                            <i><svg class="htf-cd__ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2" /><path d="M8 20h8M12 16v4" /></svg></i>
+                            <span><b>Requirements</b><small>Laptop, connection and tools</small></span>
+                        </span>
+                        <span class="htf-cd__need-chev" aria-hidden="true"><svg class="htf-cd__ico" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" /></svg></span>
+                    </button>
+                    <div class="htf-cd__need-body" id="htfCdNeedBody">
+                        <div>
+                            <ul class="htf-cd__need-list">
+                                <li><b>Laptop</b>Any machine from the last six years, macOS, Windows or Linux.</li>
+                                <li><b>Connection</b>A stable 5 Mbps connection for the two live sessions each week.</li>
+                                <li><b>Tools</b>VS Code, Node.js and a GitHub account, all free, installed in lesson two.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Instructor -->
+                <section class="htf-cd__panel htf-cd__rv" id="instructor">
+                    <span class="htf-cd__eyebrow">Instructor</span>
+                    <h2 class="htf-cd__title">Taught by an industry <em>expert</em></h2>
+
+                    <div class="htf-cd__teacher">
+                        <div class="htf-cd__tcard">
+                            <!-- photo ho to initials ki jagah: <span class="htf-cd__avatar"><img src="/img/trainer.jpg" alt=""></span> -->
+                            <span class="htf-cd__avatar" aria-hidden="true">NN</span>
+                            <b>Dr. Nouman Noor</b>
+                            <span>Lead Web Engineer, Course Director</span>
+                        </div>
+
+                        <div class="htf-cd__tbody">
+                            <p>Dr. Nouman Noor has spent twelve years building front-end systems for banks, logistics companies and early-stage products across the Gulf. He teaches the way he reviews code: plainly, patiently, and always with the browser open.</p>
+                            <p class="htf-cd__pull">“You do not learn to build by watching it. You learn it by shipping small things, badly, then fixing them.”</p>
+                            <div class="htf-cd__stats">
+                                <div><b>12 years</b><span>Building for the web</span></div>
+                                <div><b>1,240</b><span>Students taught</span></div>
+                                <div><b>4.9</b><span>Average rating</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+        </div>
+
+        <!-- Mobile par neeche fixed Enroll bar -->
+        <div class="htf-cd__bar">
+            <div>
+                <b>Web Development Fundamentals</b>
+                <small>Free to enrol · Next cohort 4 March 2027</small>
+            </div>
+            <a href="#" class="htf-cd__btn htf-cd__btn--sm">Enroll now</a>
+        </div>
+    </div>
+</main>
+
+<script src="~/js/Website/htf-course-detail.js"></script>

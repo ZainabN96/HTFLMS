@@ -49,6 +49,16 @@
                         </select>
                         <span asp-validation-for="Gender" class="text-danger small"></span>
                     </div>
+                    <div class="reg-field">
+                        <select asp-for="TitlePrefix" class="reg-input">
+                            <option value="">Title Prefix*</option>
+                            <option value="Ms.">Ms.</option>
+                            <option value="Mr.">Mr.</option>
+                            <option value="Mrs.">Mrs.</option>
+                        </select>
+                        <span asp-validation-for="TitlePrefix"
+                              class="text-danger small"></span>
+                    </div>
 
 
                     <div class="reg-field">

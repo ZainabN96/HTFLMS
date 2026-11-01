@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿
+using AutoMapper;
 using HTFLMS.Data.IServices;
 using HTFLMS.Dtos;
 using HTFLMS.Helper;
@@ -17,17 +18,20 @@ namespace HTFLMS.Controllers.api
         private readonly IMapper mapper;
         private readonly IPasswordHasher<User> hasher;
         private readonly IMailService mailService;
+        private readonly ILogger<UserController> logger;
 
         public UserController(
             IUnitOfWork uow,
             IMapper mapper,
             IPasswordHasher<User> hasher,
-            IMailService mailService)
+            IMailService mailService,
+            ILogger<UserController> logger)
         {
             this.uow = uow;
             this.mapper = mapper;
             this.hasher = hasher;
             this.mailService = mailService;
+            this.logger = logger;
         }
 
         [AllowAnonymous]
@@ -36,6 +40,15 @@ namespace HTFLMS.Controllers.api
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
+
+            if (string.IsNullOrWhiteSpace(dto.Password))
+            {
+                return BadRequest(new
+                {
+                    success = false,
+                    message = "Password is required."
+                });
+            }
 
             if (await uow.UserService.UserAlreadyExists(dto.CNIC, dto.Email))
             {
@@ -47,36 +60,68 @@ namespace HTFLMS.Controllers.api
             }
 
             var user = mapper.Map<User>(dto);
+            user.TitlePrefix = dto.TitlePrefix;
 
             user.UserId = await GenerateUniqueUserIdAsync();
             user.MemberType = "Student";
-            user.CreatedAt = DateTime.Now;
+            user.CreatedAt = DateTime.UtcNow;
             user.IsActive = true;
-            user.PasswordHash = hasher.HashPassword(user, dto.Password);
+
+            user.PasswordHash = hasher.HashPassword(
+                user,
+                dto.Password
+            );
 
             uow.UserService.Register(user);
+
             var saved = await uow.SaveAsync();
 
             if (!saved)
             {
+                logger.LogWarning(
+                    "Registration database save returned false."
+                );
+
                 return BadRequest(new
                 {
                     success = false,
-                    message = "Registration failed. Please try again."
+                    message = "Registration could not be completed. Please try again."
                 });
             }
 
-            await mailService.SendRegistrationEmailAsync(
-                user.Email,
-                user.Name,
-                user.UserId,
-                dto.Password
-            );
+            // Account has been saved successfully.
+            // Email failure must not undo or misreport account creation.
+
+            bool emailSent = false;
+
+            try
+            {
+                await mailService.SendRegistrationEmailAsync(
+                    user.Email,
+                    user.Name,
+                    user.UserId
+                    //dto.Password
+                );
+
+
+                emailSent = true;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(
+                    ex,
+                    "Registration email failed for UserId {UserId}",
+                    user.UserId
+                );
+            }
 
             return Ok(new
             {
                 success = true,
-                message = "Registered successfully! Please login.",
+                emailSent = emailSent,
+                message = emailSent
+                    ? "Registered successfully! Please login."
+                    : "Your account was created successfully, but the registration email could not be sent. Please contact support if you need assistance.",
                 userId = user.UserId,
                 email = user.Email
             });
@@ -88,7 +133,7 @@ namespace HTFLMS.Controllers.api
             var users = await uow.UserService.GetAllAsync();
 
             var trainers = users
-                .Where(x => x.MemberType == "Trainer" && x.IsActive == true)
+                .Where(x => x.MemberType == "Trainer" && x.IsActive)
                 .Select(x => new
                 {
                     x.Id,

@@ -1,6 +1,8 @@
 ﻿using HTFLMS.Data.IServices;
 using HTFLMS.Data.Services;
 using Microsoft.EntityFrameworkCore;
+using HTFLMS.Hubs;
+using Microsoft.AspNetCore.SignalR;
 
 namespace HTFLMS.Data.Services
 {
@@ -28,8 +30,9 @@ namespace HTFLMS.Data.Services
         public ITrainerCertificateService TrainerCertificateService { get; }
         public IAdminCertificateService AdminCertificateService { get; }
         public ICertificateGenerationService CertificateGenerationService { get; }
-
-        public UnitOfWork(ApplicationDbContext context)
+        public INotificationService NotificationService { get; }
+        public UnitOfWork(ApplicationDbContext context,
+            IHubContext<NotificationHub> notificationHubContext)
         {
             this.context = context;
 
@@ -53,6 +56,8 @@ namespace HTFLMS.Data.Services
             TrainerCertificateService = new TrainerCertificateService(context);
             AdminCertificateService = new AdminCertificateService(context);
             CertificateGenerationService = new CertificateGenerationService(context);
+            NotificationService = new
+              NotificationService(context,notificationHubContext);
         }
 
         public async Task<bool> SaveAsync()

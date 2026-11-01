@@ -2,9 +2,823 @@
     ViewData["Title"] = "About";
     Layout = "_Layout";
 }
-<main class="main">
 
-    <!-- Page Title -->
+@section Styles {
+    <link rel="stylesheet" href="~/css/about.css" asp-append-version="true" />
+}
+
+
+<main class="about-page">
+  <!-- ================= HERO ================= -->
+  <section class="ab-hero">
+    <div class="ab-container ab-hero__grid">
+      <div class="ab-hero__text">
+        <span class="ab-eyebrow-pill"
+          ><i class="ab-dot"></i> HCC Technology Foundation &bull; Est.
+          2000</span
+        >
+        <h1 class="ab-hero__title">
+          <span class="ab-hero__about">ABOUT</span>
+          <span class="ab-hero__us">US.</span>
+        </h1>
+        <p class="ab-hero__lead">
+          We are HCC, a team that helps people stand out, connect and grow
+          through world-class technology, targeted vocational training, and
+          dedicated executive mentorship.
+        </p>
+      </div>
+
+      <div class="ab-hero__visual" aria-hidden="true">
+        <div class="ab-orbit ab-orbit--1"></div>
+        <div class="ab-orbit ab-orbit--2"></div>
+        <div class="ab-sphere">
+          <small>Empowering Future Tech</small>
+          <strong>Inspire. Learn. Lead.</strong>
+        </div>
+        <span class="ab-chip ab-chip--top"
+          ><i class="ab-dot ab-dot--green"></i> Innovation Hub</span
+        >
+        <span class="ab-chip ab-chip--bottom">4+ Yrs Empowering Youth</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= OUR STORY (ab upar) ================= -->
+  <section class="ab-story">
+    <div class="ab-container ab-story__inner">
+      <span class="ab-pill reveal">Our Story</span>
+      <p class="ab-story__text reveal" style="--d: 0.1s">
+        We believe talent has no gender, and every woman deserves the
+        opportunity to shape the future of technology name was born from a
+        simple question: if women graduate with the knowledge and potential to
+        succeed, why are so few represented in technology leadership? We saw a
+        gap between what women learn in the classroom and what the industry
+        expects , and we knew something had to change .So, we set out to do more
+        than create opportunities. We set out to build a community where women
+        feel supported, gain practical skills, get real-world experience, and
+        find the confidence to turn their ambitions into careers. And we're
+        putting that belief into practice. Today, 99% of our employees are
+        former name students.  That's more than a statistic; it's a reflection
+        of what happens when potential is nurtured, opportunities are created,
+        and talent is given room to grow. At HCC Technology Foundation, we don't
+        just prepare women for the world of work. We empower them to find their
+        place, make their mark, and help shape the future of tech.
+      </p>
+    </div>
+    @*
+  </section>
+  *@
+
+  <!-- ================= TIMELINE ================= -->
+  @*
+  <section class="ab-timeline">
+    *@
+    <div class="ab-container">
+      <header class="ab-timeline__head reveal ab-timeline__margin">
+        <span class="ab-eyebrow">Our Evolution &amp; Impact</span>
+        <h2 class="ab-timeline__title">How it all began</h2>
+        <span class="ab-underline"></span>
+      </header>
+
+      <ol class="ab-tl" id="abTimeline">
+        <li class="ab-tl__item" style="--i: 0">
+          <span class="ab-tl__node"></span>
+          <article class="ab-tl__card">
+            <div class="ab-tl__year">2000</div>
+            <div class="ab-tl__head">
+              <h3>HCC Begins</h3>
+              <span>FOUNDATION ROOTS & CONSULTING</span>
+            </div>
+            <p>
+              Founded on Pakistan’s legacy of integrity and excellence, we
+              empower female technology graduates through professional training,
+              upskilling, and career readiness.
+            </p>
+          </article>
+        </li>
+
+        <li class="ab-tl__item" style="--i: 1">
+          <span class="ab-tl__node"></span>
+          <article class="ab-tl__card">
+            <div class="ab-tl__year">2021</div>
+            <div class="ab-tl__head">
+              <h3>Foundation launches</h3>
+              <span>NON-PROFIT EDUCATION ARM</span>
+            </div>
+            <p>
+              The HCC Technology Foundation starts empowering youth through
+              high-demand technology skills, accessible labs, and practical
+              digital literacy.
+            </p>
+          </article>
+        </li>
+
+        <li class="ab-tl__item" style="--i: 2">
+          <span class="ab-tl__node"></span>
+          <article class="ab-tl__card">
+            <div class="ab-tl__year">2025</div>
+            <div class="ab-tl__head">
+              <h3>4 years of change</h3>
+              <span>EXPANDING FRONTIERS</span>
+            </div>
+            <p>
+              We celebrate four years of empowerment, exponential community
+              growth, regional partnerships, and sustainable life-transforming
+              careers.
+            </p>
+          </article>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ================= PEOPLE ================= -->
+  <section class="ab-people">
+    <div class="ab-container ab-people__head reveal">
+      <span class="ab-eyebrow-pill ab-eyebrow-pill--soft"
+        >Our Organization &amp; Visionaries</span
+      >
+      <h2 class="ab-people__title">The People behind <em>HTF</em></h2>
+      <p>
+        A diverse group of passionate professionals, each bringing unique skills
+        and experiences to drive innovation and excellence in every project we
+        undertake.
+      </p>
+    </div>
+
+    <!-- ---------- Board of Directors ---------- -->
+
+    <div class="ab-band ab-band--light">
+      <div class="ab-container">
+        <div class="ab-band__tag reveal">
+          <span class="ab-pill">Board of Directors</span>
+        </div>
+
+        <div class="ab-board" data-stagger>
+          <!-- Card 1 -->
+          <article class="ab-bcard" tabindex="0">
+            <div class="ab-bcard__photo">
+              <img src="/img/Tania.png" alt="Tania Chaudhary" />
+            </div>
+            <h3 class="ab-bcard__name">Tania Chaudhary</h3>
+            <p class="ab-bcard__role">CEO &amp; Executive Director</p>
+            <div class="ab-bcard__glass">
+              <h4>CEO &amp; Executive Director</h4>
+              <p>
+                Tania is the CEO of HCC, bringing 25+ years of international
+                experience across technology, law, consulting, and education,
+                and leading digital transformation across South Asia and MENA.
+              </p>
+              <a
+                class="ab-bcard__in"
+                href="#"
+                aria-label="LinkedIn – Tania Chaudhary"
+                target="_blank"
+                rel="noopener"
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  width="14"
+                  height="14"
+                  fill="currentColor"
+                >
+                  <path
+                    d="M4.98 3.5a2.5 2.5 0 11-.02 5 2.5 2.5 0 01.02-5zM3 9.75h4V21H3zM9.5 9.75h3.8v1.6h.06c.53-1 1.84-2.05 3.8-2.05 4.06 0 4.84 2.67 4.84 6.14V21h-4v-4.9c0-1.17-.02-2.67-1.63-2.67-1.63 0-1.88 1.27-1.88 2.58V21h-4z"
+                  />
+                </svg>
+              </a>
+            </div>
+          </article>
+
+          <!-- Card 2 -->
+          <article class="ab-bcard" tabindex="0">
+            <div class="ab-bcard__photo">
+              <img src="/img/Abrar.png" alt="DR. Abrar Choudhry" />
+            </div>
+            <h3 class="ab-bcard__name">Abrar Choudhry</h3>
+            <p class="ab-bcard__role">Co.Founder and Advisor</p>
+            <div class="ab-bcard__glass">
+              <h4>Co.Founder and Advisor</h4>
+              <p>
+                Dr. Abrar is a co-founder of HCC and a trusted advisor, guiding
+                strategy, governance and long-term vision for the foundation and
+                its programs.
+              </p>
+              <a
+                class="ab-bcard__in"
+                href="#"
+                aria-label="LinkedIn – DR. Abrar Choudhry"
+                target="_blank"
+                rel="noopener"
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  width="14"
+                  height="14"
+                  fill="currentColor"
+                >
+                  <path
+                    d="M4.98 3.5a2.5 2.5 0 11-.02 5 2.5 2.5 0 01.02-5zM3 9.75h4V21H3zM9.5 9.75h3.8v1.6h.06c.53-1 1.84-2.05 3.8-2.05 4.06 0 4.84 2.67 4.84 6.14V21h-4v-4.9c0-1.17-.02-2.67-1.63-2.67-1.63 0-1.88 1.27-1.88 2.58V21h-4z"
+                  />
+                </svg>
+              </a>
+            </div>
+          </article>
+
+          <!-- Card 3 -->
+          <article class="ab-bcard" tabindex="0">
+            <div class="ab-bcard__photo">
+              <img src="/img/Tehmina.png" alt="Tehmina Khan" />
+            </div>
+            <h3 class="ab-bcard__name">Tehmina Khan</h3>
+            <p class="ab-bcard__role">co.founder and director</p>
+            <div class="ab-bcard__glass">
+              <h4>co.founder and director</h4>
+              <p>
+                Tehmina leads the organization, driving strategic initiatives
+                and ensuring the foundation's mission is fulfilled.
+              </p>
+              <a
+                class="ab-bcard__in"
+                href="#"
+                aria-label="LinkedIn – Tehmina Khan"
+                target="_blank"
+                rel="noopener"
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  width="14"
+                  height="14"
+                  fill="currentColor"
+                >
+                  <path
+                    d="M4.98 3.5a2.5 2.5 0 11-.02 5 2.5 2.5 0 01.02-5zM3 9.75h4V21H3zM9.5 9.75h3.8v1.6h.06c.53-1 1.84-2.05 3.8-2.05 4.06 0 4.84 2.67 4.84 6.14V21h-4v-4.9c0-1.17-.02-2.67-1.63-2.67-1.63 0-1.88 1.27-1.88 2.58V21h-4z"
+                  />
+                </svg>
+              </a>
+            </div>
+          </article>
+
+          <!-- Card 4 -->
+          <article class="ab-bcard" tabindex="0">
+            <div class="ab-bcard__photo">
+              <img src="/img/Hussain Chaudhury.png" alt="Hussain Chaudhury" />
+            </div>
+            <h3 class="ab-bcard__name">Hussain Chaudhury</h3>
+            <p class="ab-bcard__role">Founder of HCC</p>
+            <div class="ab-bcard__glass">
+              <h4>Founder of HCC</h4>
+              <p>
+                Abbas brings deep hands-on expertise in enterprise systems,
+                guiding delivery teams and mentoring the next generation of
+                technologists.
+              </p>
+              <a
+                class="ab-bcard__in"
+                href="#"
+                aria-label="LinkedIn – Muhammad Abbas Khan"
+                target="_blank"
+                rel="noopener"
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  width="14"
+                  height="14"
+                  fill="currentColor"
+                >
+                  <path
+                    d="M4.98 3.5a2.5 2.5 0 11-.02 5 2.5 2.5 0 01.02-5zM3 9.75h4V21H3zM9.5 9.75h3.8v1.6h.06c.53-1 1.84-2.05 3.8-2.05 4.06 0 4.84 2.67 4.84 6.14V21h-4v-4.9c0-1.17-.02-2.67-1.63-2.67-1.63 0-1.88 1.27-1.88 2.58V21h-4z"
+                  />
+                </svg>
+              </a>
+            </div>
+          </article>
+
+          <!-- Card 5 -->
+          <article class="ab-bcard" tabindex="0">
+            <div class="ab-bcard__photo">
+              <img src="/img/Nida.png" alt="Nida" />
+            </div>
+            <h3 class="ab-bcard__name">Nida Aly</h3>
+            <p class="ab-bcard__role">Executive Director at HCC</p>
+            <div class="ab-bcard__glass">
+              <h4>Executive Director at HCC</h4>
+              <p>
+                Nida brings extensive experience in strategic leadership and
+                organizational development, driving the growth and impact of
+                HCC.
+              </p>
+              <a
+                class="ab-bcard__in"
+                href="#"
+                aria-label="LinkedIn – Nida Aly"
+                target="_blank"
+                rel="noopener"
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  width="14"
+                  height="14"
+                  fill="currentColor"
+                >
+                  <path
+                    d="M4.98 3.5a2.5 2.5 0 11-.02 5 2.5 2.5 0 01.02-5zM3 9.75h4V21H3zM9.5 9.75h3.8v1.6h.06c.53-1 1.84-2.05 3.8-2.05 4.06 0 4.84 2.67 4.84 6.14V21h-4v-4.9c0-1.17-.02-2.67-1.63-2.67-1.63 0-1.88 1.27-1.88 2.58V21h-4z"
+                  />
+                </svg>
+              </a>
+            </div>
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <!-- ---------- Our Team ---------- -->
+
+    <div class="ab-band ab-band--white">
+      <div class="ab-container">
+        <div class="ab-band__tag reveal">
+          <span class="ab-pill">Our Team</span>
+        </div>
+
+        <div class="ab-grid" data-stagger>
+          <article class="ab-pcard ab-pcard--tint">
+            <img class="ab-pcard__img" src="/img/Amina.png" alt="Amina Abid" />
+            <h3>Amina Abid</h3>
+            <span class="ab-pcard__role">Project Manager</span>
+            <p>
+              A results-driven professional with a passion for leadership and
+              community development across vocational programs.
+            </p>
+            <div class="ab-pcard__social">
+              <a href="#" aria-label="LinkedIn" target="_blank" rel="noopener"
+                ><svg
+                  viewBox="0 0 24 24"
+                  width="14"
+                  height="14"
+                  fill="currentColor"
+                >
+                  <path
+                    d="M4.98 3.5a2.5 2.5 0 11-.02 5 2.5 2.5 0 01.02-5zM3 9.75h4V21H3zM9.5 9.75h3.8v1.6h.06c.53-1 1.84-2.05 3.8-2.05 4.06 0 4.84 2.67 4.84 6.14V21h-4v-4.9c0-1.17-.02-2.67-1.63-2.67-1.63 0-1.88 1.27-1.88 2.58V21h-4z"
+                  /></svg
+              ></a>
+              <a href="mailto:#" aria-label="Email"
+                ><svg
+                  viewBox="0 0 24 24"
+                  width="14"
+                  height="14"
+                  fill="currentColor"
+                >
+                  <path
+                    d="M3 5h18a1 1 0 011 1v12a1 1 0 01-1 1H3a1 1 0 01-1-1V6a1 1 0 011-1zm9 7.2L4.5 7v.1L12 12.3 19.5 7.1V7z"
+                  /></svg
+              ></a>
+            </div>
+          </article>
+
+          <article class="ab-pcard ab-pcard--tint">
+            <img
+              class="ab-pcard__img"
+              src="/img/Mohsin.jpg"
+              alt="Mohsin Idrees"
+            />
+            <h3>Mohsin Idrees</h3>
+            <span class="ab-pcard__role">Senior Manager – Consulting</span>
+            <p>
+              A strategic leader driving consulting excellence, technological
+              innovation, and scalable organizational growth.
+            </p>
+            <div class="ab-pcard__social">
+              <a href="#" aria-label="LinkedIn" target="_blank" rel="noopener"
+                ><svg
+                  viewBox="0 0 24 24"
+                  width="14"
+                  height="14"
+                  fill="currentColor"
+                >
+                  <path
+                    d="M4.98 3.5a2.5 2.5 0 11-.02 5 2.5 2.5 0 01.02-5zM3 9.75h4V21H3zM9.5 9.75h3.8v1.6h.06c.53-1 1.84-2.05 3.8-2.05 4.06 0 4.84 2.67 4.84 6.14V21h-4v-4.9c0-1.17-.02-2.67-1.63-2.67-1.63 0-1.88 1.27-1.88 2.58V21h-4z"
+                  /></svg
+              ></a>
+              <a href="mailto:#" aria-label="Email"
+                ><svg
+                  viewBox="0 0 24 24"
+                  width="14"
+                  height="14"
+                  fill="currentColor"
+                >
+                  <path
+                    d="M3 5h18a1 1 0 011 1v12a1 1 0 01-1 1H3a1 1 0 01-1-1V6a1 1 0 011-1zm9 7.2L4.5 7v.1L12 12.3 19.5 7.1V7z"
+                  /></svg
+              ></a>
+            </div>
+          </article>
+
+          <article class="ab-pcard ab-pcard--tint">
+            <img class="ab-pcard__img" src="/img/Huma.png" alt="Huma Rauf" />
+            <h3>Huma Rauf</h3>
+            <span class="ab-pcard__role">Company Secretary at HTF</span>
+            <p>
+              An experienced corporate advisory professional overseeing
+              strategic assignments across diverse sectors at HCC and Crowe.
+            </p>
+            <div class="ab-pcard__social">
+              <a href="#" aria-label="LinkedIn" target="_blank" rel="noopener"
+                ><svg
+                  viewBox="0 0 24 24"
+                  width="14"
+                  height="14"
+                  fill="currentColor"
+                >
+                  <path
+                    d="M4.98 3.5a2.5 2.5 0 11-.02 5 2.5 2.5 0 01.02-5zM3 9.75h4V21H3zM9.5 9.75h3.8v1.6h.06c.53-1 1.84-2.05 3.8-2.05 4.06 0 4.84 2.67 4.84 6.14V21h-4v-4.9c0-1.17-.02-2.67-1.63-2.67-1.63 0-1.88 1.27-1.88 2.58V21h-4z"
+                  /></svg
+              ></a>
+              <a href="mailto:#" aria-label="Email"
+                ><svg
+                  viewBox="0 0 24 24"
+                  width="14"
+                  height="14"
+                  fill="currentColor"
+                >
+                  <path
+                    d="M3 5h18a1 1 0 011 1v12a1 1 0 01-1 1H3a1 1 0 01-1-1V6a1 1 0 011-1zm9 7.2L4.5 7v.1L12 12.3 19.5 7.1V7z"
+                  /></svg
+              ></a>
+            </div>
+          </article>
+
+          <article class="ab-pcard ab-pcard--tint">
+            <img
+              class="ab-pcard__img"
+              src="/img/Marukha.jpg"
+              alt="Muhammad Khalid"
+            />
+            <h3>Mahrukh Javaid</h3>
+            <span class="ab-pcard__role">Senior Finance Consultant</span>
+            <p>
+              Experienced finance professional skilled in financial analysis,
+              management, and accounting, with an ACCA qualification.
+            </p>
+            <div class="ab-pcard__social">
+              <a href="#" aria-label="LinkedIn" target="_blank" rel="noopener"
+                ><svg
+                  viewBox="0 0 24 24"
+                  width="14"
+                  height="14"
+                  fill="currentColor"
+                >
+                  <path
+                    d="M4.98 3.5a2.5 2.5 0 11-.02 5 2.5 2.5 0 01.02-5zM3 9.75h4V21H3zM9.5 9.75h3.8v1.6h.06c.53-1 1.84-2.05 3.8-2.05 4.06 0 4.84 2.67 4.84 6.14V21h-4v-4.9c0-1.17-.02-2.67-1.63-2.67-1.63 0-1.88 1.27-1.88 2.58V21h-4z"
+                  /></svg
+              ></a>
+              <a href="mailto:#" aria-label="Email"
+                ><svg
+                  viewBox="0 0 24 24"
+                  width="14"
+                  height="14"
+                  fill="currentColor"
+                >
+                  <path
+                    d="M3 5h18a1 1 0 011 1v12a1 1 0 01-1 1H3a1 1 0 01-1-1V6a1 1 0 011-1zm9 7.2L4.5 7v.1L12 12.3 19.5 7.1V7z"
+                  /></svg
+              ></a>
+            </div>
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <!-- ---------- Trainers ---------- -->
+     
+    <div class="ab-band ab-band--rose">
+      <div class="ab-container">
+        <div class="ab-band__tag reveal">
+          <span class="ab-pill">Trainers</span>
+        </div>
+
+        <div class="ab-grid" data-stagger>
+          <article class="ab-pcard">
+            <img
+              class="ab-pcard__img"
+              src="/images/team/aymen-mehmood.jpg"
+              alt="Aymen Mehmood"
+            />
+            <h3>Aymen Mehmood</h3>
+            <span class="ab-pcard__role">UI/UX Design Trainer</span>
+            <p>
+              UI/UX designer with 5+ years of experience creating user-centered
+              digital experiences and responsive design systems.
+            </p>
+            <div class="ab-pcard__social">
+              <a href="#" aria-label="LinkedIn" target="_blank" rel="noopener"
+                ><svg
+                  viewBox="0 0 24 24"
+                  width="14"
+                  height="14"
+                  fill="currentColor"
+                >
+                  <path
+                    d="M4.98 3.5a2.5 2.5 0 11-.02 5 2.5 2.5 0 01.02-5zM3 9.75h4V21H3zM9.5 9.75h3.8v1.6h.06c.53-1 1.84-2.05 3.8-2.05 4.06 0 4.84 2.67 4.84 6.14V21h-4v-4.9c0-1.17-.02-2.67-1.63-2.67-1.63 0-1.88 1.27-1.88 2.58V21h-4z"
+                  /></svg
+              ></a>
+              <a href="mailto:#" aria-label="Email"
+                ><svg
+                  viewBox="0 0 24 24"
+                  width="14"
+                  height="14"
+                  fill="currentColor"
+                >
+                  <path
+                    d="M3 5h18a1 1 0 011 1v12a1 1 0 01-1 1H3a1 1 0 01-1-1V6a1 1 0 011-1zm9 7.2L4.5 7v.1L12 12.3 19.5 7.1V7z"
+                  /></svg
+              ></a>
+            </div>
+          </article>
+
+          <article class="ab-pcard">
+            <img
+              class="ab-pcard__img"
+              src="/images/team/sehrish-batool.jpg"
+              alt="Sehrish Batool"
+            />
+            <h3>Sehrish Batool</h3>
+            <span class="ab-pcard__role">Web Development Trainer</span>
+            <p>
+              Full-stack developer with 6+ years of experience building modern
+              web applications and hands-on JavaScript mastery.
+            </p>
+            <div class="ab-pcard__social">
+              <a href="#" aria-label="LinkedIn" target="_blank" rel="noopener"
+                ><svg
+                  viewBox="0 0 24 24"
+                  width="14"
+                  height="14"
+                  fill="currentColor"
+                >
+                  <path
+                    d="M4.98 3.5a2.5 2.5 0 11-.02 5 2.5 2.5 0 01.02-5zM3 9.75h4V21H3zM9.5 9.75h3.8v1.6h.06c.53-1 1.84-2.05 3.8-2.05 4.06 0 4.84 2.67 4.84 6.14V21h-4v-4.9c0-1.17-.02-2.67-1.63-2.67-1.63 0-1.88 1.27-1.88 2.58V21h-4z"
+                  /></svg
+              ></a>
+              <a href="mailto:#" aria-label="Email"
+                ><svg
+                  viewBox="0 0 24 24"
+                  width="14"
+                  height="14"
+                  fill="currentColor"
+                >
+                  <path
+                    d="M3 5h18a1 1 0 011 1v12a1 1 0 01-1 1H3a1 1 0 01-1-1V6a1 1 0 011-1zm9 7.2L4.5 7v.1L12 12.3 19.5 7.1V7z"
+                  /></svg
+              ></a>
+            </div>
+          </article>
+
+          <article class="ab-pcard">
+            <img
+              class="ab-pcard__img"
+              src="/images/team/zainab-naveed.jpg"
+              alt="Zainab Naveed"
+            />
+            <h3>Zainab Naveed</h3>
+            <span class="ab-pcard__role">Digital Marketing Trainer</span>
+            <p>
+              Digital marketer with 4+ years of experience in social media
+              campaigns, analytics optimization, and strategy.
+            </p>
+            <div class="ab-pcard__social">
+              <a href="#" aria-label="LinkedIn" target="_blank" rel="noopener"
+                ><svg
+                  viewBox="0 0 24 24"
+                  width="14"
+                  height="14"
+                  fill="currentColor"
+                >
+                  <path
+                    d="M4.98 3.5a2.5 2.5 0 11-.02 5 2.5 2.5 0 01.02-5zM3 9.75h4V21H3zM9.5 9.75h3.8v1.6h.06c.53-1 1.84-2.05 3.8-2.05 4.06 0 4.84 2.67 4.84 6.14V21h-4v-4.9c0-1.17-.02-2.67-1.63-2.67-1.63 0-1.88 1.27-1.88 2.58V21h-4z"
+                  /></svg
+              ></a>
+              <a href="mailto:#" aria-label="Email"
+                ><svg
+                  viewBox="0 0 24 24"
+                  width="14"
+                  height="14"
+                  fill="currentColor"
+                >
+                  <path
+                    d="M3 5h18a1 1 0 011 1v12a1 1 0 01-1 1H3a1 1 0 01-1-1V6a1 1 0 011-1zm9 7.2L4.5 7v.1L12 12.3 19.5 7.1V7z"
+                  /></svg
+              ></a>
+            </div>
+          </article>
+
+          <article class="ab-pcard">
+            <img
+              class="ab-pcard__img"
+              src="/images/team/muhammad-khalid.jpg"
+              alt="Muhammad Khalid"
+            />
+            <h3>Muhammad Khalid</h3>
+            <span class="ab-pcard__role">Graphic Design Trainer</span>
+            <p>
+              Graphic designer with 4+ years of experience in branding, visual
+              design, print layout, and vector illustration.
+            </p>
+            <div class="ab-pcard__social">
+              <a href="#" aria-label="LinkedIn" target="_blank" rel="noopener"
+                ><svg
+                  viewBox="0 0 24 24"
+                  width="14"
+                  height="14"
+                  fill="currentColor"
+                >
+                  <path
+                    d="M4.98 3.5a2.5 2.5 0 11-.02 5 2.5 2.5 0 01.02-5zM3 9.75h4V21H3zM9.5 9.75h3.8v1.6h.06c.53-1 1.84-2.05 3.8-2.05 4.06 0 4.84 2.67 4.84 6.14V21h-4v-4.9c0-1.17-.02-2.67-1.63-2.67-1.63 0-1.88 1.27-1.88 2.58V21h-4z"
+                  /></svg
+              ></a>
+              <a href="mailto:#" aria-label="Email"
+                ><svg
+                  viewBox="0 0 24 24"
+                  width="14"
+                  height="14"
+                  fill="currentColor"
+                >
+                  <path
+                    d="M3 5h18a1 1 0 011 1v12a1 1 0 01-1 1H3a1 1 0 01-1-1V6a1 1 0 011-1zm9 7.2L4.5 7v.1L12 12.3 19.5 7.1V7z"
+                  /></svg
+              ></a>
+            </div>
+          </article>
+
+          <article class="ab-pcard">
+            <img
+              class="ab-pcard__img"
+              src="/images/team/ali-rahman.jpg"
+              alt="Ali Rahman"
+            />
+            <h3>Ali Rahman</h3>
+            <span class="ab-pcard__role">Communication Skills Trainer</span>
+            <p>
+              Communication coach helping learners build confidence, persuasive
+              rhetoric, and effective workplace speech.
+            </p>
+            <div class="ab-pcard__social">
+              <a href="#" aria-label="LinkedIn" target="_blank" rel="noopener"
+                ><svg
+                  viewBox="0 0 24 24"
+                  width="14"
+                  height="14"
+                  fill="currentColor"
+                >
+                  <path
+                    d="M4.98 3.5a2.5 2.5 0 11-.02 5 2.5 2.5 0 01.02-5zM3 9.75h4V21H3zM9.5 9.75h3.8v1.6h.06c.53-1 1.84-2.05 3.8-2.05 4.06 0 4.84 2.67 4.84 6.14V21h-4v-4.9c0-1.17-.02-2.67-1.63-2.67-1.63 0-1.88 1.27-1.88 2.58V21h-4z"
+                  /></svg
+              ></a>
+              <a href="mailto:#" aria-label="Email"
+                ><svg
+                  viewBox="0 0 24 24"
+                  width="14"
+                  height="14"
+                  fill="currentColor"
+                >
+                  <path
+                    d="M3 5h18a1 1 0 011 1v12a1 1 0 01-1 1H3a1 1 0 01-1-1V6a1 1 0 011-1zm9 7.2L4.5 7v.1L12 12.3 19.5 7.1V7z"
+                  /></svg
+              ></a>
+            </div>
+          </article>
+
+          <article class="ab-pcard">
+            <img
+              class="ab-pcard__img"
+              src="/images/team/mustafa-abid.jpg"
+              alt="Mustafa Abid"
+            />
+            <h3>Mustafa Abid</h3>
+            <span class="ab-pcard__role">Freelancing Trainer</span>
+            <p>
+              Freelance professional helping students develop practical
+              freelancing skillsets, international client pitching, and
+              contracts.
+            </p>
+            <div class="ab-pcard__social">
+              <a href="#" aria-label="LinkedIn" target="_blank" rel="noopener"
+                ><svg
+                  viewBox="0 0 24 24"
+                  width="14"
+                  height="14"
+                  fill="currentColor"
+                >
+                  <path
+                    d="M4.98 3.5a2.5 2.5 0 11-.02 5 2.5 2.5 0 01.02-5zM3 9.75h4V21H3zM9.5 9.75h3.8v1.6h.06c.53-1 1.84-2.05 3.8-2.05 4.06 0 4.84 2.67 4.84 6.14V21h-4v-4.9c0-1.17-.02-2.67-1.63-2.67-1.63 0-1.88 1.27-1.88 2.58V21h-4z"
+                  /></svg
+              ></a>
+              <a href="mailto:#" aria-label="Email"
+                ><svg
+                  viewBox="0 0 24 24"
+                  width="14"
+                  height="14"
+                  fill="currentColor"
+                >
+                  <path
+                    d="M3 5h18a1 1 0 011 1v12a1 1 0 01-1 1H3a1 1 0 01-1-1V6a1 1 0 011-1zm9 7.2L4.5 7v.1L12 12.3 19.5 7.1V7z"
+                  /></svg
+              ></a>
+            </div>
+          </article>
+
+          <article class="ab-pcard">
+            <img
+              class="ab-pcard__img"
+              src="/images/team/areeba-shahid.jpg"
+              alt="Areeba Shahid"
+            />
+            <h3>Areeba Shahid</h3>
+            <span class="ab-pcard__role">Content Writing Trainer</span>
+            <p>
+              Content writer and strategist passionate about clear, impactful
+              storytelling, SEO optimization, and brand narrative.
+            </p>
+            <div class="ab-pcard__social">
+              <a href="#" aria-label="LinkedIn" target="_blank" rel="noopener"
+                ><svg
+                  viewBox="0 0 24 24"
+                  width="14"
+                  height="14"
+                  fill="currentColor"
+                >
+                  <path
+                    d="M4.98 3.5a2.5 2.5 0 11-.02 5 2.5 2.5 0 01.02-5zM3 9.75h4V21H3zM9.5 9.75h3.8v1.6h.06c.53-1 1.84-2.05 3.8-2.05 4.06 0 4.84 2.67 4.84 6.14V21h-4v-4.9c0-1.17-.02-2.67-1.63-2.67-1.63 0-1.88 1.27-1.88 2.58V21h-4z"
+                  /></svg
+              ></a>
+              <a href="mailto:#" aria-label="Email"
+                ><svg
+                  viewBox="0 0 24 24"
+                  width="14"
+                  height="14"
+                  fill="currentColor"
+                >
+                  <path
+                    d="M3 5h18a1 1 0 011 1v12a1 1 0 01-1 1H3a1 1 0 01-1-1V6a1 1 0 011-1zm9 7.2L4.5 7v.1L12 12.3 19.5 7.1V7z"
+                  /></svg
+              ></a>
+            </div>
+          </article>
+
+          <article class="ab-pcard">
+            <img
+              class="ab-pcard__img"
+              src="/images/team/sana-iqbal.jpg"
+              alt="Sana Iqbal"
+            />
+            <h3>Sana Iqbal</h3>
+            <span class="ab-pcard__role">Soft Skills Trainer</span>
+            <p>
+              Soft skills trainer focused on leadership, teamwork, emotional
+              resilience, and authentic personal professional growth.
+            </p>
+            <div class="ab-pcard__social">
+              <a href="#" aria-label="LinkedIn" target="_blank" rel="noopener"
+                ><svg
+                  viewBox="0 0 24 24"
+                  width="14"
+                  height="14"
+                  fill="currentColor"
+                >
+                  <path
+                    d="M4.98 3.5a2.5 2.5 0 11-.02 5 2.5 2.5 0 01.02-5zM3 9.75h4V21H3zM9.5 9.75h3.8v1.6h.06c.53-1 1.84-2.05 3.8-2.05 4.06 0 4.84 2.67 4.84 6.14V21h-4v-4.9c0-1.17-.02-2.67-1.63-2.67-1.63 0-1.88 1.27-1.88 2.58V21h-4z"
+                  /></svg
+              ></a>
+              <a href="mailto:#" aria-label="Email"
+                ><svg
+                  viewBox="0 0 24 24"
+                  width="14"
+                  height="14"
+                  fill="currentColor"
+                >
+                  <path
+                    d="M3 5h18a1 1 0 011 1v12a1 1 0 01-1 1H3a1 1 0 01-1-1V6a1 1 0 011-1zm9 7.2L4.5 7v.1L12 12.3 19.5 7.1V7z"
+                  /></svg
+              ></a>
+            </div>
+          </article>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script src="~/js/Website/About.js" asp-append-version="true"></script>
+
+
+
+
+
+
+
+
+
+@* <main class="main">
+
     <div class="page-title page-title-about" data-aos="fade">
         <div class="heading">
             <div class="container">
@@ -16,16 +830,9 @@
                 </div>
             </div>
         </div>
-        @* <nav class="breadcrumbs">
-            <div class="container">
-                <ol>
-                    <li><a href="#">Home</a></li>
-                    <li class="current">About Us<br></li>
-                </ol>
-            </div>
-        </nav> *@
-    </div><!-- End Page Title -->
-    <!-- About Us Section -->
+        
+    </div>
+  
     <section id="about-us" class="section about-us">
 
         <div class="container">
@@ -52,8 +859,7 @@
 
         </div>
 
-    </section><!-- /About Us Section -->
-    <!-- Counts Section -->
+    </section>
     <section id="counts" class="section counts light-background">
 
         <div class="container" data-aos="fade-up" data-aos-delay="100">
@@ -117,8 +923,7 @@
         </div>
 
     </section>
-    <!-- Testimonials Section -->
-    <!-- Success Stories Section -->
+
     <section id="testimonials" class="testimonials section">
 
         <!-- Section Title -->
@@ -198,7 +1003,6 @@
                         </div>
                     </div>
 
-                    <!-- Zainab Naveed -->
                     <div class="swiper-slide">
                         <div class="testimonial-wrap">
                             <div class="testimonial-item">
@@ -218,7 +1022,6 @@
                         </div>
                     </div>
 
-                    <!-- Sehrish Batool -->
                     <div class="swiper-slide">
                         <div class="testimonial-wrap">
                             <div class="testimonial-item">
@@ -247,5 +1050,5 @@
         </div>
 
     </section>
-    <!-- End Success Stories Section -->
-</main>
+   
+</main> *@

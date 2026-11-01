@@ -1,0 +1,238 @@
+﻿@{
+    ViewData["Title"] = "Gallery";
+}
+
+@section Styles {
+    @* Existing stylesheet should already be loaded by Layout.
+       Gallery CSS is appended to that same stylesheet. *@
+}
+
+<main class="htf-gallery" id="galleryPage">
+
+    <section class="htf-gallery__hero">
+        <div class="htf-gallery__intro">
+            <h1 class="htf-gallery__heading">
+                <span class="htf-gallery__script">Moments</span>
+                <span class="htf-gallery__heading-line">FROM OUR</span>
+                <span class="htf-gallery__heading-line">JOURNEY</span>
+            </h1>
+
+            <p class="htf-gallery__description">
+                A glimpse into the lives we're shaping through
+                technology and education. Every photo is a
+                milestone of empowerment, collaboration and hope.
+            </p>
+
+            <div class="htf-gallery__filters"
+                 role="group"
+                 aria-label="Filter gallery">
+                <button type="button"
+                        class="htf-gallery__filter is-active"
+                        data-filter="all"
+                        aria-pressed="true">
+                    All
+                </button>
+
+                <button type="button"
+                        class="htf-gallery__filter"
+                        data-filter="highlighted"
+                        aria-pressed="false">
+                    Highlighted
+                </button>
+            </div>
+        </div>
+
+        <div class="htf-gallery__visual"
+             aria-label="Empowering future tech">
+            <div class="htf-gallery__orbit">
+                <span class="htf-gallery__orbit-label htf-gallery__orbit-label--top">
+                    <span class="htf-gallery__dot"></span>
+                    Innovation Hub
+                </span>
+
+                <div class="htf-gallery__circle">
+                    <span class="htf-gallery__circle-caption">
+                        EMPOWERING FUTURE TECH
+                    </span>
+                    <span class="htf-gallery__circle-title">
+                        Inspire. Learn. Lead.
+                    </span>
+                </div>
+
+                <span class="htf-gallery__orbit-label htf-gallery__orbit-label--bottom">
+                    4+ Yrs Empowering Youth
+                </span>
+            </div>
+        </div>
+    </section>
+
+    <section class="htf-gallery__content"
+             aria-label="Our gallery moments">
+
+        <div class="htf-gallery__grid" id="galleryGrid">
+
+            <article class="htf-gallery__card"
+                     data-category="highlighted">
+                <div class="htf-gallery__image">
+                    <img src="~/images/gallery/guest-visit.jpg"
+                         alt="Inspirational chief guest visit"
+                         loading="lazy" />
+                </div>
+                <div class="htf-gallery__card-body">
+                    <h2>The Inspirational Chief Guest, Dr. Arfa Syeda Zehra</h2>
+                    <p>
+                        Dr. Arfa Syeda Zehra's spirit on analysis on
+                        gender parity in the occasion of IWD 2023,
+                        on the event organised by HTF.
+                    </p>
+                </div>
+            </article>
+
+            <article class="htf-gallery__card"
+                     data-category="all">
+                <div class="htf-gallery__image">
+                    <img src="~/images/gallery/womens-day.jpg"
+                         alt="International Women's Day celebration"
+                         loading="lazy" />
+                </div>
+                <div class="htf-gallery__card-body">
+                    <h2>International Women's Day</h2>
+                    <p>
+                        From lines of code to lines of change!
+                        Our tech foundation paves the way for a
+                        world where women's brilliance knows no bounds.
+                    </p>
+                </div>
+            </article>
+
+            <article class="htf-gallery__card"
+                     data-category="all">
+                <div class="htf-gallery__image">
+                    <img src="~/images/gallery/collaborative-learning.jpg"
+                         alt="Students participating in collaborative learning"
+                         loading="lazy" />
+                </div>
+                <div class="htf-gallery__card-body">
+                    <h2>Collaborative Learning</h2>
+                    <p>
+                        Joyful games, building connections,
+                        and creating unforgettable memories.
+                    </p>
+                </div>
+            </article>
+
+            <article class="htf-gallery__card"
+                     data-category="all">
+                <div class="htf-gallery__image">
+                    <img src="~/images/gallery/mentorship.jpg"
+                         alt="Mentorship session"
+                         loading="lazy" />
+                </div>
+                <div class="htf-gallery__card-body">
+                    <h2>Mentorship Moments</h2>
+                    <p>1-on-1 Guidance</p>
+                </div>
+            </article>
+
+            <article class="htf-gallery__card"
+                     data-category="highlighted">
+                <div class="htf-gallery__image">
+                    <span class="htf-gallery__image-tag">
+                        HIGHLIGHTED MOMENTS
+                    </span>
+                    <img src="~/images/gallery/self-defense.jpg"
+                         alt="Self-defense training session"
+                         loading="lazy" />
+                </div>
+                <div class="htf-gallery__card-body">
+                    <h2>
+                        Self-defense session with Martial Arts
+                        and Sports Coach
+                    </h2>
+                    <p>
+                        Martial Arts demonstrated essential
+                        defense techniques.
+                    </p>
+                </div>
+            </article>
+
+            <article class="htf-gallery__card"
+                     data-category="highlighted">
+                <div class="htf-gallery__image">
+                    <img src="~/images/gallery/anniversary.jpg"
+                         alt="Foundation anniversary group photograph"
+                         loading="lazy" />
+                </div>
+                <div class="htf-gallery__card-body">
+                    <h2>
+                        Celebrating 4 Years of Empowerment,
+                        Growth &amp; Change
+                    </h2>
+                    <p>
+                        The HCC Technology Foundation proudly
+                        marks its 4th anniversary.
+                    </p>
+                </div>
+            </article>
+
+            <article class="htf-gallery__card"
+                     data-category="all">
+                <div class="htf-gallery__image">
+                    <img src="~/images/gallery/artist-visit.jpg"
+                         alt="Special artist visit"
+                         loading="lazy" />
+                </div>
+                <div class="htf-gallery__card-body">
+                    <h2>A Special Creative Visit</h2>
+                    <p>
+                        We were honored to have Lubna Jehangir,
+                        a contemporary artist.
+                    </p>
+                </div>
+            </article>
+
+            <article class="htf-gallery__card"
+                     data-category="all">
+                <div class="htf-gallery__image">
+                    <img src="~/images/gallery/team-building.jpg"
+                         alt="Team building activities"
+                         loading="lazy" />
+                </div>
+                <div class="htf-gallery__card-body">
+                    <h2>Mountains, motivation, and memories</h2>
+                    <p>
+                        Team Building Activity in Murree brought
+                        the entire team together for some
+                        well-deserved fun, reflection, and bonding.
+                    </p>
+                </div>
+            </article>
+
+            <article class="htf-gallery__card"
+                     data-category="all">
+                <div class="htf-gallery__image">
+                    <img src="~/images/gallery/sports-week.jpg"
+                         alt="Sports week activities"
+                         loading="lazy" />
+                </div>
+                <div class="htf-gallery__card-body">
+                    <h2>
+                        Sports Week Highlights:
+                        Energy, Unity &amp; Team Spirit
+                    </h2>
+                    <p>
+                        The Sports Week beautifully reflected our
+                        values—teamwork, positivity, with our women
+                        leading, inspiring, and making every
+                        moment count.
+                    </p>
+                </div>
+            </article>
+
+        </div>
+    </section>
+</main>
+
+@section Scripts {
+    <script src="~/js/Website/Gallery.js" asp-append-version="true"></script>
+}

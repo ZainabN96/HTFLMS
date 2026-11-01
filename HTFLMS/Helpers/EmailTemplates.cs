@@ -1,135 +1,273 @@
-﻿// HTFLMS/Helper/EmailTemplates.cs
+﻿
+using System;
+using System.Net;
+
 namespace HTFLMS.Helper
 {
     public static class EmailTemplates
     {
+        private const string ThemeColor = "#C9828F";
+
+        private static string Encode(string? value)
+        {
+            return WebUtility.HtmlEncode(value ?? "");
+        }
+
+        private static string BuildEmail(
+            string heading,
+            string content)
+        {
+            return $@"
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+</head>
+<body style='margin:0; padding:0; background-color:#f7f4f5; font-family:Arial,Helvetica,sans-serif; color:#333333;'>
+
+    <table role='presentation' width='100%' cellpadding='0' cellspacing='0'
+           style='background-color:#f7f4f5; padding:30px 12px;'>
+        <tr>
+            <td align='center'>
+
+                <table role='presentation' width='100%' cellpadding='0' cellspacing='0'
+                       style='max-width:600px; background-color:#ffffff; border:1px solid #e9e0e3;'>
+
+                    <!-- Header -->
+                    <tr>
+                        <td align='center'
+                            style='background-color:{ThemeColor}; padding:28px 20px;'>
+
+                            <h2 style='color:#ffffff; margin:0; font-size:22px; font-weight:700;'>
+                                HCC Technology Foundation
+                            </h2>
+
+                            <p style='color:#ffffff; margin:9px 0 0; font-size:12px; letter-spacing:1.2px;'>
+                                LEARNING MANAGEMENT SYSTEM
+                            </p>
+                        </td>
+                    </tr>
+
+                    <!-- Main Content -->
+                    <tr>
+                        <td style='padding:35px 30px; font-size:14px; line-height:1.8;'>
+
+                            <h1 style='color:#28242a; margin:0 0 24px; font-size:24px; line-height:1.4;'>
+                                {Encode(heading)}
+                            </h1>
+
+                            {content}
+
+                            <p style='margin-top:30px; margin-bottom:0;'>
+                                Best regards,<br>
+                                <strong>HCC Technology Foundation Team</strong>
+                            </p>
+
+                        </td>
+                    </tr>
+
+                    <!-- Footer -->
+                    <tr>
+                        <td align='center'
+                            style='background-color:#f7f4f5; padding:22px 15px; border-top:1px solid #e9e0e3;'>
+
+                            <p style='margin:0 0 6px; font-size:13px; color:#555555;'>
+                                HCC Technology Foundation
+                            </p>
+
+                            <p style='margin:0; font-size:11px; color:#888888;'>
+                                &copy; {DateTime.UtcNow.Year} HCC Technology Foundation.
+                                All rights reserved.
+                            </p>
+
+                        </td>
+                    </tr>
+
+                </table>
+
+            </td>
+        </tr>
+    </table>
+
+</body>
+</html>";
+        }
+
+        // REGISTRATION EMAIL
         public static (string Subject, string Body) RegistrationEmail(
-            string name, string userId, string password)
+            string name,
+            string userId)
         {
-            var subject = "Welcome to HTF LMS — Your Account Credentials";
+            var subject = "Welcome to HTF LMS | Your Account Is Ready";
 
-            var body = $@"
-            <!DOCTYPE html>
-            <html>
-            <body style='font-family: Arial, sans-serif; color: #333; max-width: 600px; margin: auto;'>
+            var content = $@"
+                <p>Dear <strong>{Encode(name)}</strong>,</p>
 
-                <div style='background-color: #003366; padding: 20px; text-align: center;'>
-                    <h2 style='color: white; margin: 0;'>HCC Tech Foundation LMS</h2>
-                </div>
+                <p>
+                    Welcome to HCC Technology Foundation's
+                    Learning Management System!
+                </p>
 
-                <div style='padding: 30px;'>
-                    <p>Hi <b>{name}</b>,</p>
+                <p>
+                    Your account has been successfully created.
+                    You can now access your learning dashboard,
+                    explore available courses, and begin your
+                    learning journey with us.
+                </p>
 
-                    <p>Your account has been created successfully in <b>HTF LMS</b>.</p>
+                <table role='presentation' width='100%' cellpadding='0'
+                       cellspacing='0'
+                       style='background-color:#f9f3f5; margin:25px 0;'>
+                    <tr>
+                        <td style='padding:18px 22px;'>
+                            <p style='margin:0 0 5px; color:#90606b; font-size:12px; font-weight:bold;'>
+                                YOUR USER ID
+                            </p>
 
-                    <p>Here are your login credentials:</p>
+                            <p style='margin:0; color:#28242a; font-size:22px; font-weight:bold;'>
+                                {Encode(userId)}
+                            </p>
+                        </td>
+                    </tr>
+                </table>
 
-                    <table style='border-collapse: collapse; width: 100%; margin: 20px 0;'>
-                        <tr style='background-color: #f2f2f2;'>
-                            <td style='padding: 10px; border: 1px solid #ddd; font-weight: bold;'>User ID</td>
-                            <td style='padding: 10px; border: 1px solid #ddd;'>{userId}</td>
-                        </tr>
-                        <tr>
-                            <td style='padding: 10px; border: 1px solid #ddd; font-weight: bold;'>Password</td>
-                            <td style='padding: 10px; border: 1px solid #ddd;'>{password}</td>
-                        </tr>
-                    </table>
+                <p>
+                    To sign in, use your registered email address
+                    and the password you created during registration.
+                </p>
 
-                    <p>Please keep your credentials confidential.</p>
 
-                    <br>
-                    <p>Best regards,<br>
-                    <b>HTF LMS Team</b><br>
-                    HCC Tech Foundation</p>
-                </div>
 
-                <div style='background-color: #f2f2f2; padding: 10px; text-align: center; font-size: 12px; color: #888;'>
-                    &copy; {DateTime.UtcNow.Year} HCC Tech Foundation. All rights reserved.
-                </div>
+                <p>
+                    We look forward to supporting you throughout
+                    your learning journey.
+                </p>";
 
-            </body>
-            </html>";
-
-            return (subject, body);
+            return (
+                subject,
+                BuildEmail("Welcome to HTF LMS!", content)
+            );
         }
 
-        public static (string Subject, string Body) PasswordResetOtpEmail(string otp)
+        // PASSWORD RESET OTP EMAIL
+        public static (string Subject, string Body) PasswordResetOtpEmail(
+            string otp)
         {
-            var subject = "HTF LMS - Password Reset OTP";
+            var subject = "HTF LMS | Password Reset Verification Code";
 
-            var body = $@"
-            <!DOCTYPE html>
-            <html>
-            <body style='font-family: Arial, sans-serif; color: #333; max-width: 600px; margin: auto;'>
+            var content = $@"
+                <p>Hello,</p>
 
-                <div style='background-color: #c2343d; padding: 20px; text-align: center;'>
-                    <h2 style='color: white; margin: 0;'>HTF LMS Password Reset</h2>
-                </div>
+                <p>
+                    We received a request to reset the password
+                    for your HTF LMS account.
+                </p>
 
-                <div style='padding: 30px;'>
-                    <p>Hello,</p>
+                <p>
+                    Please use the following verification code
+                    to continue:
+                </p>
 
-                    <p>You requested to reset your HTF LMS password.</p>
+                <table role='presentation' width='100%' cellpadding='0'
+                       cellspacing='0'
+                       style='background-color:#f9f3f5; margin:25px 0;'>
+                    <tr>
+                        <td align='center' style='padding:25px 15px;'>
 
-                    <p>Your OTP code is:</p>
+                            <p style='margin:0; color:{ThemeColor}; font-size:30px; font-weight:bold; letter-spacing:5px;'>
+                                {Encode(otp)}
+                            </p>
 
-                    <h1 style='letter-spacing: 5px; color: #c2343d; text-align: center;'>
-                        {otp}
-                    </h1>
+                        </td>
+                    </tr>
+                </table>
 
-                    <p>This OTP will expire in <b>10 minutes</b>.</p>
+                <p>
+                    This verification code will expire in
+                    <strong>10 minutes</strong>.
+                </p>
 
-                    <p>If you did not request this password reset, please ignore this email.</p>
+                <p style='color:#666666; font-size:13px;'>
+                    For your security, do not share this code
+                    with anyone.
+                </p>
 
-                    <br>
-                    <p>Best regards,<br>
-                    <b>HTF LMS Team</b><br>
-                    HCC Tech Foundation</p>
-                </div>
+                <p>
+                    If you did not request a password reset,
+                    you can safely ignore this email.
+                </p>";
 
-                <div style='background-color: #f2f2f2; padding: 10px; text-align: center; font-size: 12px; color: #888;'>
-                    &copy; {DateTime.UtcNow.Year} HCC Tech Foundation. All rights reserved.
-                </div>
-
-            </body>
-            </html>";
-
-            return (subject, body);
+            return (
+                subject,
+                BuildEmail("Password Reset Request", content)
+            );
         }
 
+        // CONTACT FORM EMAIL
         public static (string Subject, string Body) ContactMessageEmail(
-            string name, string email, string subjectText, string message)
+            string name,
+            string email,
+            string subjectText,
+            string message)
         {
             var subject = $"HTF LMS Contact Form - {subjectText}";
 
-            var body = $@"
-            <!DOCTYPE html>
-            <html>
-            <body style='font-family: Arial, sans-serif; color: #333; max-width: 600px; margin: auto;'>
+            var safeMessage = Encode(message)
+                .Replace("\r\n", "\n")
+                .Replace("\n", "<br>");
 
-                <div style='background-color: #003366; padding: 20px; text-align: center;'>
-                    <h2 style='color: white; margin: 0;'>New Contact Message</h2>
-                </div>
+            var content = $@"
+                <p>
+                    A new message has been submitted through
+                    the HTF LMS contact form.
+                </p>
 
-                <div style='padding: 30px;'>
-                    <p><b>Name:</b> {name}</p>
-                    <p><b>Email:</b> {email}</p>
-                    <p><b>Subject:</b> {subjectText}</p>
+                <table role='presentation' width='100%' cellpadding='0'
+                       cellspacing='0'
+                       style='margin:25px 0; border-collapse:collapse;'>
 
-                    <hr>
+                    <tr>
+                        <td style='padding:12px; background-color:#f9f3f5; font-weight:bold; width:110px;'>
+                            Name
+                        </td>
+                        <td style='padding:12px; background-color:#f9f3f5;'>
+                            {Encode(name)}
+                        </td>
+                    </tr>
 
-                    <p><b>Message:</b></p>
-                    <p>{message}</p>
-                </div>
+                    <tr>
+                        <td style='padding:12px; font-weight:bold;'>
+                            Email
+                        </td>
+                        <td style='padding:12px;'>
+                            {Encode(email)}
+                        </td>
+                    </tr>
 
-                <div style='background-color: #f2f2f2; padding: 10px; text-align: center; font-size: 12px; color: #888;'>
-                    &copy; {DateTime.UtcNow.Year} HCC Tech Foundation. All rights reserved.
-                </div>
+                    <tr>
+                        <td style='padding:12px; background-color:#f9f3f5; font-weight:bold;'>
+                            Subject
+                        </td>
+                        <td style='padding:12px; background-color:#f9f3f5;'>
+                            {Encode(subjectText)}
+                        </td>
+                    </tr>
 
-            </body>
-            </html>";
+                </table>
 
-            return (subject, body);
+                <p style='font-weight:bold; margin-bottom:8px;'>
+                    Message:
+                </p>
+
+                <div style='background-color:#f9f3f5; padding:18px; border-left:3px solid {ThemeColor}; overflow-wrap:break-word;'>
+                    {safeMessage}
+                </div>";
+
+            return (
+                subject,
+                BuildEmail("New Contact Message", content)
+            );
         }
     }
 }

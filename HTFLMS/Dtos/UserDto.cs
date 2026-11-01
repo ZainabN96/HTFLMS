@@ -17,7 +17,10 @@ namespace HTFLMS.Dtos
         // Title -> Gender
         [Required]
         public string Gender { get; set; } = "";
-
+        [Required(ErrorMessage = "Title prefix is required.")]
+        [RegularExpression(@"^(Ms\.|Mr\.|Mrs\.)$",
+    ErrorMessage = "Please select a valid title prefix.")]
+        public string TitlePrefix { get; set; } = "";
         [Required]
         public string Name { get; set; } = "";
 

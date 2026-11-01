@@ -4,10 +4,14 @@ namespace HTFLMS.Data.IServices
 {
     public interface ICourseEnrollmentService
     {
-        Task<bool> IsAlreadyEnrolledAsync(int studentId, int courseId);
+        Task<bool> IsAlreadyEnrolledAsync(
+            int studentId,
+            int courseId);
 
-        Task<bool> HasAnyActiveEnrollmentAsync(int studentId);
+        Task<bool> HasAnyActiveEnrollmentAsync(
+            int studentId);
 
-        void Add(CourseEnrollment enrollment);
+        void Add(
+            CourseEnrollment enrollment);
     }
 }

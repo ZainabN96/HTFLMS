@@ -2,102 +2,150 @@
 @{
     ViewData["Title"] = "Courses";
     Layout = "_Layout";
+
+    
+    var categories = (Model ?? new List<HTFLMS.Models.Course>())
+        .Where(c => !string.IsNullOrWhiteSpace(c.Category))
+        .Select(c => c.Category.Trim())
+        .Distinct(StringComparer.OrdinalIgnoreCase)
+        .OrderBy(x => x)
+        .ToList();
 }
 
 <main class="main">
+    <div class="htf-courses">
 
-    <div class="page-title page-title-courses" data-aos="fade">
-        <div class="heading">
-            <div class="container">
-                <div class="row d-flex justify-content-center text-center">
-                    <div class="col-lg-8">
-                        <h1>Courses</h1>
-                        <p class="mb-0">Explore our courses and start learning today.</p>
+        <!-- HERO -->
+        <section class="htf-courses__hero">
+            <div class="htf-courses__intro">
+                <h1 class="htf-courses__heading">
+                    <span class="htf-courses__our">Our</span>
+                    <span class="htf-courses__script">courses</span>
+                </h1>
+                <p class="htf-courses__description">
+                    A glimpse into the lives we're shaping through technology and education.
+                    Every photo is a milestone of empowerment, collaboration and hope.
+                </p>
+            </div>
+
+            <div class="htf-courses__visual">
+                <div class="htf-courses__orbit">
+                    <span class="htf-courses__orbit-label htf-courses__orbit-label--top">
+                        <i class="htf-courses__dot"></i>Innovation Hub
+                    </span>
+                    <div class="htf-courses__circle">
+                        <span class="htf-courses__circle-caption">EMPOWERING FUTURE TECH</span>
+                        <span class="htf-courses__circle-title">Inspire. Learn. Lead.</span>
                     </div>
+                    <span class="htf-courses__orbit-label htf-courses__orbit-label--bottom">
+                        4+ Yrs Empowering Youth
+                    </span>
                 </div>
             </div>
-        </div>
-    </div>
+        </section>
 
-    <section id="courses" class="courses section">
-        <div class="container">
-            <div class="row g-4">
+        <!-- LISTING -->
+        <section class="htf-courses__listing" id="courses">
+            <div class="htf-courses__toolbar">
+                <div class="htf-courses__filters" id="htfCoursesFilters">
+                    <button type="button" class="htf-courses__filter is-active" data-filter="all" aria-pressed="true">All</button>
+                    @foreach (var cat in categories)
+                    {
+                        <button type="button" class="htf-courses__filter"
+                                data-filter="@cat.ToLowerInvariant()" aria-pressed="false">
+                            @cat
+                        </button>
+                    }
+                </div>
 
-                @if (Model == null || Model.Count == 0)
-                {
-                    <div class="col-12">
-                        <div class="text-center p-5">
-                            <h4>No courses available yet</h4>
-                            <p class="mb-0">Please check back soon.</p>
-                        </div>
-                    </div>
-                }
-                else
-                {
+                <div class="htf-courses__search">
+                    <label for="htfCoursesSearch" class="htf-courses__sr">Search courses</label>
+                    <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+                        <circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2" />
+                        <path d="M20 20l-3.5-3.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                    </svg>
+                    <input type="search" id="htfCoursesSearch" placeholder="Search courses" autocomplete="off">
+                </div>
+            </div>
+
+            @if (Model == null || Model.Count == 0)
+            {
+                <div class="htf-courses__empty">
+                    <h4>No courses available yet</h4>
+                    <p>Please check back soon.</p>
+                </div>
+            }
+            else
+            {
+                <div class="htf-courses__grid" id="htfCoursesGrid">
                     @foreach (var c in Model)
                     {
-                        <div class="col-lg-4 col-md-6 d-flex align-items-stretch"
-                             data-aos="zoom-in" data-aos-delay="100">
-                            <div class="course-item">
+                        <article class="htf-courses__card" tabindex="0"
+                                 data-category="@(c.Category?.Trim().ToLowerInvariant())"
+                                 data-search="@((c.Title + " " + c.Category + " " + c.Trainer?.Name).ToLowerInvariant())">
 
+                            <div class="htf-courses__media">
                                 <img src="@(string.IsNullOrWhiteSpace(c.CourseImagePath)
-                                                                                                                  ? Url.Content("~/img/course/course-2.webp")
-                                                                                                                  : c.CourseImagePath)"
-                                                                                                                                      class="img-fluid course-cover" alt="">
+                                                                                   ? Url.Content("~/img/course/course-2.webp")
+                                                                                   : c.CourseImagePath)"
+                             alt="@c.Title" loading="lazy">
+                    </div>
 
-                                <div class="course-content">
-                                    <div class="d-flex justify-content-between align-items-center mb-3">
-                                        <p class="category">@c.Category</p>
-                                        @* price removed because your DB course has no price field *@
-                                    </div>
-
-                                    <h3><a href="#">@c.Title</a></h3>
-
-                                    <p class="description">
-                                        @(string.IsNullOrWhiteSpace(c.Description)
-                                                                        ? "Course description coming soon."
-                                                                        : c.Description)
-                            </p>
-
-                                    @* <div class="text-center mt-3 mb-3">
-                                        <a asp-controller="Account"
-                                           asp-action="Login"
-                                           class="btn btn-danger sub-btn">
-                                            Enroll Now
-                                        </a>
-                                    </div> *@
-                                    <div class="text-center mt-3 mb-3">
-                                        <a asp-area="Student"
-                                           asp-controller="Courses"
-                                           asp-action="EnrollDetail"
-                                           asp-route-id="@c.Id"
-                                           class="btn btn-danger sub-btn">
-                                            Enroll Now
-                                        </a>
-                                    </div>
-
-                                    <div class="trainer d-flex justify-content-between align-items-center">
-                                        <div class="trainer-profile d-flex align-items-center">
-
-                                            <img src="@(string.IsNullOrWhiteSpace(c.Trainer?.ProfilePicturePath)
-                                                         ? Url.Content("~/img/trainers/trainer-2.jpg")
-                                                         : c.Trainer.ProfilePicturePath)"
-                                         class="img-fluid trainer-profile-img"
-                                         alt="@(c.Trainer?.Name ?? "Trainer")">
-
-                                            <a href="#" class="trainer-link">
-                                                @(c.Trainer != null ? c.Trainer.Name : "No Trainer")
-                                            </a>
-
-                                        </div>
-                                    </div>
-                                </div>
+                            <div class="htf-courses__glass">
+                                <span class="htf-courses__tag">@c.Category</span>
+                                <h3 class="htf-courses__name">@c.Title</h3>
                             </div>
-                        </div>
-                                }
-                }
 
+                            <div class="htf-courses__panel">
+                                <h3 class="htf-courses__panel-title">@c.Title</h3>
+                                <p class="htf-courses__panel-text">
+                            @if (c.Trainer != null && !string.IsNullOrWhiteSpace(c.Trainer.Name))
+                                    {
+                                        <strong>By @c.Trainer.Name</strong>
+                            
+                                        <br />
+                                    }
+                                @(string.IsNullOrWhiteSpace(c.Description)
+                                                            ? "Course description coming soon."
+                                                            : c.Description)
+                        </p>
+                        <a asp-area="Student"
+                           asp-controller="Courses"
+                           asp-action="CourseDetailPage"
+                           asp-route-id="@c.Id"
+                           class="htf-courses__enroll">
+                            Enroll Now <span aria-hidden="true">&rarr;</span>
+                        </a>
+                    </div>
+                </article>
+                                }
+                </div>
+
+                <div class="htf-courses__empty" id="htfCoursesNoMatch" hidden>
+                    <h4>No matching courses</h4>
+                    <p>Try a different search or category.</p>
+                </div>
+            }
+        </section>
+
+        <!-- CTA BAND -->
+        <section class="htf-courses__cta-wrap">
+            <div class="htf-courses__cta">
+                <svg class="htf-courses__cap" viewBox="0 0 90 70" aria-hidden="true">
+                    <path d="M45 6L2 26l43 20 43-20z" fill="#1d1d1f" />
+                    <path d="M20 38v14c0 6 11 12 25 12s25-6 25-12V38l-25 12z" fill="#2a2a2d" />
+                    <path d="M80 30v22" stroke="#f2b600" stroke-width="3" />
+                    <rect x="77" y="50" width="6" height="14" rx="2" fill="#f2b600" />
+                </svg>
+                <div class="htf-courses__cta-text">
+                    <h2>You have the power to change your future</h2>
+                    <p>We're here to help you every step of the way</p>
+                </div>
+                <a asp-controller="Account" asp-action="Login" class="htf-courses__cta-btn">Join HCC LMS Now</a>
             </div>
-        </div>
-    </section>
+        </section>
+
+    </div>
 </main>
+
+<script src="~/js/Website/Course.js" asp-append-version="true"></script>

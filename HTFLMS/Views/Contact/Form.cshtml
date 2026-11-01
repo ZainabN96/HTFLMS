@@ -1,0 +1,126 @@
+﻿@{
+    ViewData["Title"] = "Contact Us";
+    Layout = "_Layout";
+
+    var type = (ViewContext.RouteData.Values["type"] ?? Context.Request.Query["type"]).ToString()?.ToLowerInvariant();
+
+    var all = new Dictionary<string, (string Pre, string Word, string Cap, string Title, string L1, string L2, string[] Opts)>
+    {
+        ["student"] = ("I'm a", "student", "FOR STUDENTS", "Take your first step.",
+                       "Learning opportunities", "First steps into tech",
+                       new[] { "Learning opportunities", "Courses", "Mentorship", "Other" }),
+
+        ["contribute"] = ("I want to", "contribute", "JOIN THE TEAM", "Share your skills.",
+                          "Internships & employment", "Volunteer your skills",
+                          new[] { "Internship", "Employment", "Volunteering", "Other" }),
+
+        ["support"] = ("I want to", "support", "SUPPORT THE MISSION", "Open doors for women in tech.",
+                       "More women in technology", "Create opportunities",
+                       new[] { "Creating opportunities", "Sponsorship", "Other" }),
+
+        ["partner"] = ("Let's", "partner up", "PARTNERSHIPS", "Build it together.",
+                       "Industry partnerships", "Collaborations & shared initiatives",
+                       new[] { "Industry partnership", "Collaboration", "Shared initiative", "Other" })
+    };
+
+    if (string.IsNullOrEmpty(type) || !all.ContainsKey(type)) { type = "student"; }
+    var cfg = all[type];
+}
+
+<main class="main">
+    <div class="htf-courses htf-contact">
+
+        <!-- HERO -->
+        <section class="htf-courses__hero">
+            <div class="htf-courses__intro">
+                <a asp-controller="Contact" asp-action="Index" class="htf-contact__back" aria-label="Back to contact options">
+                    <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+                        <path d="M19 12H5M11 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                </a>
+                <h1 class="htf-courses__heading">
+                    <span class="htf-courses__our">@cfg.Pre</span>
+                    <span class="htf-courses__script">@cfg.Word</span>
+                </h1>
+            </div>
+
+            <div class="htf-courses__visual">
+                <div class="htf-courses__orbit">
+                    <span class="htf-courses__orbit-label htf-courses__orbit-label--top">
+                        <i class="htf-courses__dot"></i>@cfg.L1
+                    </span>
+                    <div class="htf-courses__circle">
+                        <span class="htf-courses__circle-caption">@cfg.Cap</span>
+                        <span class="htf-courses__circle-title">@cfg.Title</span>
+                    </div>
+                    <span class="htf-courses__orbit-label htf-courses__orbit-label--bottom">@cfg.L2</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- DETAILS + FORM -->
+        <section class="htf-contact__formsec">
+            <div class="htf-contact__formgrid">
+
+                <div class="htf-contact__info">
+                    <span class="htf-contact__label">DROP US A LINE</span>
+                    <a href="mailto:info@hcc.com.pk" class="htf-contact__mail">support@hcctechfoundation.com</a>
+
+                    <span class="htf-contact__label">PHONE</span>
+                    <a href="tel:+97143724624" class="htf-contact__value">+92 300 0541542</a>
+
+                    <span class="htf-contact__label">ADDRESS</span>
+                    <p class="htf-contact__value">Syed Maratab Ali Road 2C Gulberg 2 </p>
+                </div>
+
+                <div class="htf-contact__formwrap">
+                    @if (TempData["ContactSuccess"] != null)
+                    {
+                        <div class="htf-contact__alert" role="status">@TempData["ContactSuccess"]</div>
+                    }
+
+                    <form asp-controller="Contact" asp-action="Submit" method="post" class="htf-contact__form" id="htfContactForm">
+                        <input type="hidden" name="Type" value="@type" />
+
+                        <div class="htf-contact__field">
+                            <label for="htfName">NAME</label>
+                            <input type="text" id="htfName" name="Name" required maxlength="100" autocomplete="name">
+                        </div>
+
+                        <div class="htf-contact__field">
+                            <label for="htfEmail">EMAIL</label>
+                            <input type="email" id="htfEmail" name="Email" required maxlength="150" autocomplete="email">
+                        </div>
+
+                        <div class="htf-contact__field htf-contact__field--select">
+                            <label for="htfInterest">INTERESTED IN</label>
+                            <select id="htfInterest" name="InterestedIn" required>
+                                <option value="" disabled selected hidden></option>
+                                @foreach (var o in cfg.Opts)
+                                {
+                                    <option value="@o">@o</option>
+                                }
+                            </select>
+                        </div>
+
+                        <div class="htf-contact__field">
+                            <label for="htfEducation">CURRENT EDUCATION</label>
+                            <input type="text" id="htfEducation" name="CurrentEducation" maxlength="150">
+                        </div>
+
+                        <div class="htf-contact__field">
+                            <label for="htfMessage">MESSAGE</label>
+                            <textarea id="htfMessage" name="Message" rows="3" required maxlength="2000"></textarea>
+                        </div>
+
+                        <button type="submit" class="htf-contact__send">Send message <span aria-hidden="true">&rarr;</span></button>
+                    </form>
+                </div>
+
+            </div>
+        </section>
+
+    </div>
+</main>
+
+<script src="~/js/Website/Contact.js" asp-append-version="true"></script>

@@ -1,119 +1,310 @@
-﻿@{
+﻿
+@{
     ViewData["Title"] = "Home";
     Layout = "_Layout";
 }
 
-<main class="main">
+<main>
+    <!-- ============ HERO ============ -->
+    <section class="hero" id="about">
+        <div class="hero__text">
+            @* <p class="hero__eyebrow" data-hero="eyebrow">HCC Technology Foundation • Est. 2000</p> *@
 
-    <!-- Hero Section -->
-    <section id="hero" class="hero section dark-background">
+            <h1 class="hero__title" aria-label="Learn. Build. Grow.">
+                <span class="hero__line hero__line--learn"><span class="mask"><span data-hero="line">LEARN</span></span></span>
+                <span class="hero__line hero__line--build">
+                    <span class="mask"><span data-hero="line">BUILD</span></span>
+                    <span class="mask mask--grow"><span class="hero__grow" data-hero="grow">Grow.</span></span>
+                </span>
+            </h1>
 
-        <img src="~/img/Herobanner.jpg" alt="" data-aos="fade-in">
-
-        <div class="container">
-            <h2 data-aos="fade-up" data-aos-delay="100">Learn Today,<br>Lead Tomorrow</h2>
-            <p data-aos="fade-up" data-aos-delay="200">HTF LMS is the digital learning platform of HCC, designed to help students and professionals gain practical skills through structured courses, hands-on projects, and guided learning paths.</p>
-            <div class="d-flex mt-4" data-aos="fade-up" data-aos-delay="300">
-                <a class="btn-get-started"
-                   asp-controller="Courses"
-                   asp-action="CoursesIndex">
-                    Get Started
-                </a>
-            </div>
+            <p class="hero__lead" data-hero="lead">
+                We empower women through technology education, practical skills, and mentorship to build a brighter, more independent future.
+            </p>
         </div>
 
-    </section><!-- /Hero Section -->
-    <!-- About Section -->
-    <section id="about" class="about section">
+        <div class="hero__photos" aria-hidden="true">
+            <figure class="photo photo--1" data-hero="photo"><img src="~/img/Home/batch.jpeg" alt="" /></figure>
+            <figure class="photo photo--2" data-hero="photo"><img src="~/img/Home/EQUITYEVENT 2.JPG" alt="" /></figure>
+            <figure class="photo photo--3" data-hero="photo"><img src="~/img/Home/Home-Journey-03.jpg" alt="" /></figure>
+        </div>
+    </section>
 
-        <div class="container">
+    <!-- ============ BRIDGE STRIP ============ -->
+    <section class="bridge" aria-label="Let’s bridge the gender gap in technology">
+        <div class="bridge__track" id="bridgeTrack" aria-hidden="true">
+            <div class="bridge__set">
+                <span class="bridge__text">Let’s <em>bridge</em> the gender gap in technology</span><i class="bridge__mark"></i>
+                <span class="bridge__text">Let’s <em>bridge</em> the gender gap in technology</span><i class="bridge__mark"></i>
+                <span class="bridge__text">Let’s <em>bridge</em> the gender gap in technology</span><i class="bridge__mark"></i>
+            </div>
+        </div>
+    </section>
 
-            <div class="row gy-4">
+    <!-- ============ ROTATING STATEMENT ============ -->
+    <section class="statement" aria-label="What we do">
+        <h2 class="swap">
+            <span class="swap__row"><span class="swap__mask"><span class="swap__line">We empower women to </span></span></span>
+            <span class="swap__row">
+                <span class="swap__mask"><span class="swap__line">become&nbsp;</span></span>
+                <span class="swap__mask swap__mask--word">
+                    <span class="swap__word" id="swapWord" aria-live="polite">
+                        <span class="swap__item is-active">Future Leaders.</span>
+                        <span class="swap__item">Confident Professionals.</span>
+                        <span class="swap__item">Skilled Innovators.</span>
+                        <span class="swap__item">Industry Trailblazers.</span>
+                        @* <span class="swap__item">brands.</span>
+                        <span class="swap__item">users.</span>
+                        <span class="swap__item">consumers.</span> *@
+                    </span>
+                </span>
+            </span>
+        </h2>
+    </section>
 
-                <div class="col-lg-6 order-1 order-lg-2" data-aos="fade-up" data-aos-delay="100">
-                    <img src="~/img/about.jpg" class="img-fluid" alt="">
+    <!-- ============ STATS ============ -->
+    <section class="stats" id="courses">
+        <h2 class="stats__title serif-title" data-reveal>Number That Tell Our <em>Story</em></h2>
+        <p class="stats__sub" data-reveal>
+            Together, we are building a brighter future for young women through
+            education, mentorship and opportunity.
+        </p>
+
+        <div class="stats__grid" id="statsGrid">
+            <article class="stat">
+                <div class="stat__num" data-value="395" data-suffix="+" aria-label="395+">395+</div>
+                <p class="stat__label">Shaping the future of women in tech.</p>
+            </article>
+            <article class="stat">
+                <div class="stat__num" data-value="28" data-suffix="+" aria-label="28+">28+</div>
+                <p class="stat__label">Skill-based learning for a stronger future.</p>
+            </article>
+            <article class="stat">
+                <div class="stat__num" data-value="35" data-suffix="+" aria-label="35+">35+</div>
+                <p class="stat__label">Connecting, learning, and growing together.</p>
+            </article>
+            <article class="stat">
+                <div class="stat__num" data-value="50" data-suffix="+" aria-label="50+">50+</div>
+                <p class="stat__label">Creating pathways to new opportunities.</p>
+            </article>
+        </div>
+
+        @* <p class="stats__source" data-reveal>Sources: ProPakistani (2023), Deloitte (2026), Girls Who Code &amp; Accenture</p> *@
+    </section>
+
+    <!-- ============ GALLERY ============ -->
+    <section class="gallery" id="gallery">
+        <div class="gallery__bg" aria-hidden="true"></div>
+
+        <header class="gallery__head">
+            <h2 class="gallery__title">
+                <span class="gallery__mask"><span class="gallery__l1">Moments from our</span></span>
+                <span class="gallery__mask"><span class="gallery__l2">Journey</span></span>
+            </h2>
+            <a href="#gallery" class="btn-ghost gallery__open">Open gallery <span class="arr">→</span></a>
+        </header>
+
+        <div class="gallery__viewport">
+            <ul class="gallery__track" id="galleryTrack">
+                <li class="g-card">
+                    <figure>
+                        <div class="g-card__img"><img src="~/img/Home/PINKOCT.JPG" alt="Sports week highlights" loading="lazy" /></div>
+                        <figcaption>The inspirational guests</figcaption>
+                    </figure>
+                </li>
+                <li class="g-card">
+                    <figure>
+                        <div class="g-card__img"><img src="~/img/Home/EQUITYEVENT 2.JPG" alt="Mentorship moments" loading="lazy" /></div>
+                        <figcaption>Breast Cancer Awareness</figcaption>
+                    </figure>
+                </li>
+                <li class="g-card">
+                    <figure>
+                        <div class="g-card__img"><img src="~/img/Home/batch.jpeg" alt="Self-defense session" loading="lazy" /></div>
+                        <figcaption>Graduation</figcaption>
+                    </figure>
+                </li>
+                <li class="g-card">
+                    <figure>
+                        <div class="g-card__img"><img src="~/img/Home/WOMWNSDAY 2025.jpg" alt="Celebrating 4 years" loading="lazy" /></div>
+                        <figcaption>Sports week highlights</figcaption>
+                    </figure>
+                </li>
+                <li class="g-card">
+                    <figure>
+                        <div class="g-card__img"><img src="~/img/Home/Home-Journey-08.jpg" alt="Orientation session" loading="lazy" /></div>
+                        <figcaption>An inspiring orientation session</figcaption>
+                    </figure>
+                </li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- ============ TESTIMONIALS ============ -->
+    <section class="stories" id="trainers">
+        <div class="stories__panel">
+            <h2 class="stories__title" data-reveal>Student Success <em>Stories</em></h2>
+            <p class="stories__sub" data-reveal>Discover how HTF has helped them grow, upskill, and achieve their goals.</p>
+
+            <div class="stories__stage" id="storiesStage">
+                <div class="stories__track" id="storiesTrack">
+                    <article class="s-card">
+                        <div class="s-card__photo"><img class="s-card__bg s-card__bg--1" src="~/img/Home/Home-Journey-04.jpg" alt="" loading="lazy" /></div>
+                        <div class="s-card__front">
+                            <img class="s-card__avatar" src="~/img/Home/Home-Journey-09.png" alt="Ayesha Farman" />
+                            <h3 class="s-card__name">Ayesha Farman</h3>
+                            <p class="s-card__role">UI/UX Designer</p>
+                            <p class="s-card__quote">"I loved how in depth the UI/UX course was. I applied what I learned in my every projects, and the results were amazing!"</p>
+                        </div>
+                    </article>
+                    <article class="s-card">
+                        <div class="s-card__photo"><img class="s-card__bg s-card__bg--2" src="~/img/Home/Home-Journey-05.jpg" alt="" loading="lazy" /></div>
+                        <div class="s-card__front">
+                            <img class="s-card__avatar" src="~/img/Home/Home-Journey-10.jpg" alt="Memoona" />
+                            <h3 class="s-card__name">Memoona</h3>
+                            <p class="s-card__role">COLLEGE STUDENT</p>
+                            <p class="s-card__quote">“I joined to improve my communication skills, and it paid off. I feel much more confident in presentations and interviews.”</p>
+                        </div>
+                    </article>
+                    <article class="s-card">
+                        <div class="s-card__photo"><img class="s-card__bg s-card__bg--3" src="~/img/Home/Home-Journey-06.jpg" alt="" loading="lazy" /></div>
+                        <div class="s-card__front">
+                            <img class="s-card__avatar" src="~/img/Home/Home-Journey-11.jpg" alt="Maryam Yaqoob" />
+                            <h3 class="s-card__name">Maryam Yaqoob</h3>
+                            <p class="s-card__role">Content Creator &amp; Influencer</p>
+                            <p class="s-card__quote">“The Digital Marketing class helped me grow my audience and understand analytics. Highly recommended for creators!”</p>
+                        </div>
+                    </article>
+                    <article class="s-card">
+                        <div class="s-card__photo"><img class="s-card__bg s-card__bg--4" src="~/img/Home/Home-Journey-07.jpg" alt="" loading="lazy" /></div>
+                        <div class="s-card__front">
+                            <img class="s-card__avatar" src="~/img/Home/Home-Journey-12.jpg" alt="Alina Mirza" />
+                            <h3 class="s-card__name">Alina Mirza</h3>
+                            <p class="s-card__role">UI/UX Designer</p>
+                            <p class="s-card__quote">“I loved how in depth the UI/UX course was. I applied what I learned immediately to real projects, and the results were great.”</p>
+                        </div>
+                    </article>
+                    <!-- PLACEHOLDER story: replace name, role, quote & photo -->
+                    <article class="s-card">
+                        <div class="s-card__photo"><img class="s-card__bg s-card__bg--5" src="~/img/Home/Home-Journey-08.jpg" alt="" loading="lazy" /></div>
+                        <div class="s-card__front">
+                            <img class="s-card__avatar" src="~/img/Home/Home-Journey-10.jpg" alt="Hira Aslam" />
+                            <h3 class="s-card__name">Hira Aslam</h3>
+                            <p class="s-card__role">Web Developer</p>
+                            <p class="s-card__quote">“The mentors were patient and every project felt like real work. I now build websites for my own clients.”</p>
+                        </div>
+                    </article>
+                    <!-- PLACEHOLDER story: replace name, role, quote & photo -->
+                    <article class="s-card">
+                        <div class="s-card__photo"><img class="s-card__bg s-card__bg--6" src="~/img/Home/Home-Journey-06.jpg" alt="" loading="lazy" /></div>
+                        <div class="s-card__front">
+                            <img class="s-card__avatar" src="~/img/Home/Home-Journey-09.png" alt="Zainab Malik" />
+                            <h3 class="s-card__name">Zainab Malik</h3>
+                            <p class="s-card__role">Graphic Designer</p>
+                            <p class="s-card__quote">“Learning alongside other young women made all the difference. I found my confidence and my portfolio here.”</p>
+                        </div>
+                    </article>
+                    <!-- PLACEHOLDER story: replace name, role, quote & photo -->
+                    <article class="s-card">
+                        <div class="s-card__photo"><img class="s-card__bg s-card__bg--7" src="~/img/Home/Home-Journey-07.jpg" alt="" loading="lazy" /></div>
+                        <div class="s-card__front">
+                            <img class="s-card__avatar" src="~/img/Home/Home-Journey-11.jpg" alt="Fatima Noor" />
+                            <h3 class="s-card__name">Fatima Noor</h3>
+                            <p class="s-card__role">Freelancer</p>
+                            <p class="s-card__quote">“From my first workshop to my first paid project, the community backed me every step of the way.”</p>
+                        </div>
+                    </article>
+                    <!-- PLACEHOLDER story: replace name, role, quote & photo -->
+                    <article class="s-card">
+                        <div class="s-card__photo"><img class="s-card__bg s-card__bg--8" src="~/img/Home/Home-Journey-05.jpg" alt="" loading="lazy" /></div>
+                        <div class="s-card__front">
+                            <img class="s-card__avatar" src="~/img/Home/Home-Journey-12.jpg" alt="Sana Iqbal" />
+                            <h3 class="s-card__name">Sana Iqbal</h3>
+                            <p class="s-card__role">Cybersecurity Trainee</p>
+                            <p class="s-card__quote">“The hands-on labs gave me skills employers actually ask for. I landed my internship within weeks.”</p>
+                        </div>
+                    </article>
+                    <!-- PLACEHOLDER story: replace name, role, quote & photo -->
+                    <article class="s-card">
+                        <div class="s-card__photo"><img class="s-card__bg s-card__bg--9" src="~/img/Home/Home-Journey-04.jpg" alt="" loading="lazy" /></div>
+                        <div class="s-card__front">
+                            <img class="s-card__avatar" src="~/img/Home/Home-Journey-10.jpg" alt="Areeba Khan" />
+                            <h3 class="s-card__name">Areeba Khan</h3>
+                            <p class="s-card__role">Digital Marketer</p>
+                            <p class="s-card__quote">“Clear lessons, real feedback and a supportive circle. I would recommend HTF to every girl who loves technology.”</p>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </div>
+    </section>
+
+ 
+    <!-- ============ PARTNERS MARQUEE ============ -->
+    <section class="partners" aria-label="Our partners">
+
+        <div class="partners__track" id="partnersTrack">
+
+            <!-- Original Logos -->
+            <div class="partners__set">
+
+                <div class="partners__logo">
+                    <img src="~/img/Home/Home-Journey-13.png"
+                         alt="Walled City of Lahore Authority" />
                 </div>
 
-                <div class="col-lg-6 order-2 order-lg-1 content" data-aos="fade-up" data-aos-delay="200">
-                    <h3>HCC Mission and Overview</h3>
-                    <p class="fst-italic">
-                        HCC started in 2000 as the technology consulting arm of Crowe Pakistan and has grown into a global digital transformation and consulting company combining expertise in finance and technology.
+                <div class="partners__logo">
+                    <img src="~/img/Home/Home-Journey-14.png"
+                         alt="EDUFI" />
+                </div>
 
-                        HTF LMS is built to support this mission by providing accessible, industry-relevant learning programs that prepare students for real careers in technology and business.
-                    </p>
-                    <ul>
-                        <li><i class="bi bi-check-circle"></i> <span>Learn practical skills aligned with industry needs</span></li>
-                        <li><i class="bi bi-check-circle"></i> <span>Courses designed by technology and consulting professionals</span></li>
-                        <li><i class="bi bi-check-circle"></i> <span>Hands-on projects and real-world case studies</span></li>
-                        <li><i class="bi bi-check-circle"></i> <span>Career-focused learning paths</span></li>
-                        <li><i class="bi bi-check-circle"></i> <span>Continuous skill development for modern digital jobs</span></li>
-                    </ul>
-                    <a asp-controller="About" asp-action="AboutIndex" class="read-more"><span>Read More</span><i class="bi bi-arrow-right"></i></a>
+                <div class="partners__logo">
+                    <img src="~/img/Home/Home-Journey-15.png"
+                         alt="Superior University" />
+                </div>
+
+                <div class="partners__logo">
+                    <img src="~/img/Home/Home-Journey-16.png"
+                         alt="SABAC" />
+                </div>
+
+                <div class="partners__logo">
+                    <img src="~/img/Home/apexx.png"
+                         alt="Apex Innovation Technology" />
+                </div>
+
+                <div class="partners__logo">
+                    <img src="~/img/Home/Home-Journey-18.png"
+                         alt="NUST" />
                 </div>
 
             </div>
 
-        </div>
+            <!-- Duplicate Logos for Seamless Animation -->
+            <div class="partners__set" aria-hidden="true">
 
-    </section><!-- /About Section -->
-
-    <!-- Counts Section -->
-    <section id="counts" class="section counts light-background">
-
-        <div class="container" data-aos="fade-up" data-aos-delay="100">
-
-            <div class="row gy-4">
-
-                <div class="col-lg-3 col-md-6">
-                    <div class="stats-item text-center w-100 h-100">
-                        <div class="counter-wrapper">
-                            <span data-purecounter-start="0"
-                                  data-purecounter-end="397"
-                                  data-purecounter-duration="1"
-                                  class="purecounter"></span>
-                            <span class="counter-plus">+</span>
-                        </div>
-                        <p>Alumni</p>
-                    </div>
+                <div class="partners__logo">
+                    <img src="~/img/Home/Home-Journey-13.png" alt="" />
                 </div>
 
-                <div class="col-lg-3 col-md-6">
-                    <div class="stats-item text-center w-100 h-100">
-                        <div class="counter-wrapper">
-                            <span data-purecounter-start="0"
-                                  data-purecounter-end="12"
-                                  data-purecounter-duration="1"
-                                  class="purecounter"></span>
-                            <span class="counter-plus">+</span>
-                        </div>
-                        <p>Courses</p>
-                    </div>
+                <div class="partners__logo">
+                    <img src="~/img/Home/Home-Journey-14.png" alt="" />
                 </div>
 
-                <div class="col-lg-3 col-md-6">
-                    <div class="stats-item text-center w-100 h-100">
-                        <div class="counter-wrapper">
-                            <span data-purecounter-start="0"
-                                  data-purecounter-end="45"
-                                  data-purecounter-duration="1"
-                                  class="purecounter"></span>
-                            <span class="counter-plus">+</span>
-                        </div>
-                        <p>Events</p>
-                    </div>
+                <div class="partners__logo">
+                    <img src="~/img/Home/Home-Journey-15.png" alt="" />
                 </div>
 
-                <div class="col-lg-3 col-md-6">
-                    <div class="stats-item text-center w-100 h-100">
-                        <div class="counter-wrapper">
-                            <span data-purecounter-start="0"
-                                  data-purecounter-end="28"
-                                  data-purecounter-duration="1"
-                                  class="purecounter"></span>
-                            <span class="counter-plus">+</span>
-                        </div>
-                        <p>Cohorts</p>
-                    </div>
+                <div class="partners__logo">
+                    <img src="~/img/Home/Home-Journey-16.png" alt="" />
+                </div>
+
+                <div class="partners__logo">
+                    <img src="~/img/Home/apexx.png" alt="apex" />
+                </div>
+
+                <div class="partners__logo">
+                    <img src="~/img/Home/Home-Journey-18.png" alt="" />
                 </div>
 
             </div>
@@ -121,288 +312,31 @@
         </div>
 
     </section>
-    
-    <!-- Why Us Section -->
-    <section id="why-us" class="section why-us">
 
-        <div class="container">
+    <!-- ============ CTA ============ -->
+    <section class="cta" id="contact">
+        <div class="cta__shape" id="ctaShape">
+            <div class="cta__blobs" aria-hidden="true">
+                <i class="blob blob--1"></i><i class="blob blob--2"></i><i class="blob blob--3"></i>
+            </div>
 
-            <div class="row gy-4">
+            <div class="cta__inner">
+                <h2 class="cta__title" aria-label="Ready to start?">
+                    <span class="cta__row"><span class="cta__words" data-split>Ready to</span></span>
+                    <span class="cta__row cta__row--italic"><span class="cta__start" data-split-italic>start</span><span class="cta__q">?</span></span>
+                </h2>
 
-                <div class="col-lg-4" data-aos="fade-up" data-aos-delay="100">
-                    <div class="why-box">
-                        <h3>Why Choose Our Learning Platform?</h3>
-                        <p>
-                            HTF LMS provides structured learning paths designed with industry experts. Our programs combine theory, practical exercises, and real-world projects to ensure learners develop skills that are directly applicable in professional environments.
-                        </p>
-                        <div class="text-center">
-                            <a asp-controller="Courses"
-                               asp-action="CoursesIndex"
-                               class="more-btn">
-                                <span>Learn More</span>
-                                <i class="bi bi-chevron-right"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div><!-- End Why Box -->
-
-                <div class="col-lg-8 d-flex align-items-stretch">
-                    <div class="row gy-4" data-aos="fade-up" data-aos-delay="200">
-
-                        <div class="col-xl-4">
-                            <div class="icon-box d-flex flex-column justify-content-center align-items-center">
-                                <i class="bi bi-journal-code"></i>
-                                <h4>Industry Skills</h4>
-                                <p>Courses designed to match modern tools, technologies, and real industry requirements</p>
-                            </div>
-                        </div><!-- End Icon Box -->
-
-                        <div class="col-xl-4" data-aos="fade-up" data-aos-delay="300">
-                            <div class="icon-box d-flex flex-column justify-content-center align-items-center">
-                                <i class="bi bi-person-workspace"></i>
-                                <h4>Expert Trainers</h4>
-                                <p>Learn from professionals with real experience in consulting, development, and digital transformation</p>
-                            </div>
-                        </div><!-- End Icon Box -->
-
-                        <div class="col-xl-4" data-aos="fade-up" data-aos-delay="400">
-                            <div class="icon-box d-flex flex-column justify-content-center align-items-center">
-                                <i class="bi bi-laptop"></i>
-                                <h4>Practical Learning</h4>
-                                <p>Work on real projects and assignments to build confidence and hands-on experience</p>
-                            </div>
-                        </div><!-- End Icon Box -->
-
-                    </div>
+                <div class="cta__btnwrap">
+                    @* <span class="ring ring--1" aria-hidden="true"></span>
+                    <span class="ring ring--2" aria-hidden="true"></span>
+                    <span class="ring ring--3" aria-hidden="true"></span> *@
+                    <a href="mailto:info@hcc.com.pk" class="cta__btn" id="ctaBtn">
+                        <span class="cta__btn-fill" aria-hidden="true"></span>
+                        <span class="cta__btn-label">Let’s talk</span>
+                        <svg class="cta__btn-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+                    </a>
                 </div>
             </div>
-
         </div>
-
-    </section><!-- /Why Us Section -->
-    <!-- Features Section -->
-    <section id="features" class="features section">
-
-        <div class="container">
-
-            <div class="section-title text-center mb-3" data-aos="fade-up">
-                <h2>Partners</h2>
-                <p>Our Technology & Academic Partners</p>
-            </div>
-
-            <div class="row gy-4">
-
-                <div class="col-lg-3 col-md-4" data-aos="fade-up" data-aos-delay="100">
-                    <div class="features-item">
-                        <i class="bi bi-mortarboard" style="color: #b2904f;"></i>
-                        <h3><a href="" class="stretched-link">NUST</a></h3>
-                    </div>
-                </div><!-- End Feature Item -->
-
-                <div class="col-lg-3 col-md-4" data-aos="fade-up" data-aos-delay="150">
-                    <div class="features-item">
-                        <i class="bi bi-mortarboard-fill" style="color: #b20969;"></i>
-                        <h3><a href="" class="stretched-link">Namal University</a></h3>
-                    </div>
-                </div><!-- End Feature Item -->
-
-                <div class="col-lg-3 col-md-4" data-aos="fade-up" data-aos-delay="200">
-                    <div class="features-item">
-                        <i class="bi bi-briefcase" style="color: #ff5828;"></i>
-                        <h3><a href="" class="stretched-link">SABAC</a></h3>
-                    </div>
-                </div><!-- End Feature Item -->
-
-                <div class="col-lg-3 col-md-4" data-aos="fade-up" data-aos-delay="250">
-                    <div class="features-item">
-                        <i class="bi bi-bank" style="color: #29cc61;"></i>
-                        <h3><a href="" class="stretched-link">Superior University</a></h3>
-                    </div>
-                </div><!-- End Feature Item -->
-
-                <div class="col-lg-3 col-md-4" data-aos="fade-up" data-aos-delay="300">
-                    <div class="features-item">
-                        <i class="bi bi-cash-coin" style="color: #ffbb2c;"></i>
-                        <h3><a href="" class="stretched-link">EduFi</a></h3>
-                    </div>
-                </div><!-- End Feature Item -->
-
-                <div class="col-lg-3 col-md-4" data-aos="fade-up" data-aos-delay="350">
-                    <div class="features-item">
-                        <i class="bi bi-lightning-charge" style="color: #5578ff;"></i>
-                        <h3><a href="" class="stretched-link">Apexx</a></h3>
-                    </div>
-                </div><!-- End Feature Item -->
-
-            </div>
-
-        </div>
-
-    </section><!-- /Features Section -->
-    <!-- Courses Section -->
-    <section id="courses" class="courses section">
-
-        <!-- Section Title -->
-        <div class="container section-title" data-aos="fade-up">
-            <h2>Courses</h2>
-            <p>Popular Courses</p>
-        </div><!-- End Section Title -->
-
-        <div class="container">
-
-            <div class="row">
-
-                <div class="col-lg-4 col-md-6 d-flex align-items-stretch" data-aos="zoom-in" data-aos-delay="100">
-                    <div class="course-item">
-                        <img src="~/img/course/wordpress.jpg" class="img-fluid" alt="WordPress Course">
-                        <div class="course-content">
-                            <div class="d-flex justify-content-between align-items-center mb-3">
-                                <p class="category">WordPress</p>
-                            </div>
-
-                            <h3>
-                                <a asp-controller="Courses"
-                                   asp-action="CoursesIndex">
-                                    WordPress
-                                </a>
-                            </h3>
-                            <p class="description">Learn how to create, customize, and manage professional websites using WordPress.</p>
-
-                            <div class="trainer d-flex justify-content-between align-items-center">
-                                <div class="trainer-profile d-flex align-items-center">
-                                    <img src="~/img/trainers/zainab1.png" class="img-fluid" alt="Zainab">
-                                    <a href="" class="trainer-link">Zainab</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-lg-4 col-md-6 d-flex align-items-stretch mt-4 mt-md-0" data-aos="zoom-in" data-aos-delay="200">
-                    <div class="course-item">
-                        <img src="~/img/course/videoediting.jpg" class="img-fluid" alt="Video Editing Course">
-                        <div class="course-content">
-                            <div class="d-flex justify-content-between align-items-center mb-3">
-                                <p class="category">Video Editing</p>
-                            </div>
-
-                            <h3>
-                                <a asp-controller="Courses"
-                                   asp-action="CoursesIndex">
-                                    Video Editing
-                                </a>
-                            </h3>
-                            <p class="description">Learn professional video editing skills, transitions, effects, and content creation techniques.</p>
-
-                            <div class="trainer d-flex justify-content-between align-items-center">
-                                <div class="trainer-profile d-flex align-items-center">
-                                    <img src="~/img/trainers/ayman1.png" class="img-fluid" alt="Ayman">
-                                    <a href="" class="trainer-link">Ayman</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-lg-4 col-md-6 d-flex align-items-stretch mt-4 mt-lg-0" data-aos="zoom-in" data-aos-delay="300">
-                    <div class="course-item">
-                        <img src="~/img/course/figma.jpg" class="img-fluid" alt="Figma Course">
-                        <div class="course-content">
-                            <div class="d-flex justify-content-between align-items-center mb-3">
-                                <p class="category">Figma</p>
-                            </div>
-
-                            <h3>
-                                <a asp-controller="Courses"
-                                   asp-action="CoursesIndex">
-                                    Figma UI/UX
-                                </a>
-                            </h3>
-                            <p class="description">Learn how to design modern user interfaces, wireframes, and prototypes using Figma.</p>
-
-                            <div class="trainer d-flex justify-content-between align-items-center">
-                                <div class="trainer-profile d-flex align-items-center">
-                                    <img src="~/img/trainers/trainer-2.jpg" class="img-fluid" alt="Sehrish">
-                                    <a href="" class="trainer-link">Sehrish</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-
-        </div>
-
-    </section><!-- /Courses Section -->
-    <!-- Trainers Index Section -->
-    @* <section id="trainers-index" class="section trainers-index">
-
-        <div class="container">
-
-            <div class="row">
-
-                <div class="col-lg-4 col-md-6 d-flex" data-aos="fade-up" data-aos-delay="100">
-                    <div class="member">
-                        <img src="~/img/trainers/trainer-1.jpg" class="img-fluid" alt="">
-                        <div class="member-content">
-                            <h4>Walter White</h4>
-                            <span>Web Development</span>
-                            <p>
-                                Magni qui quod omnis unde et eos fuga et exercitationem. Odio veritatis perspiciatis quaerat qui aut aut aut
-                            </p>
-                            <div class="social">
-                                <a href=""><i class="bi bi-twitter-x"></i></a>
-                                <a href=""><i class="bi bi-facebook"></i></a>
-                                <a href=""><i class="bi bi-instagram"></i></a>
-                                <a href=""><i class="bi bi-linkedin"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                </div><!-- End Team Member -->
-
-                <div class="col-lg-4 col-md-6 d-flex" data-aos="fade-up" data-aos-delay="200">
-                    <div class="member">
-                        <img src="~/img/trainers/trainer-2.jpg" class="img-fluid" alt="">
-                        <div class="member-content">
-                            <h4>Sarah Jhinson</h4>
-                            <span>Marketing</span>
-                            <p>
-                                Repellat fugiat adipisci nemo illum nesciunt voluptas repellendus. In architecto rerum rerum temporibus
-                            </p>
-                            <div class="social">
-                                <a href=""><i class="bi bi-twitter-x"></i></a>
-                                <a href=""><i class="bi bi-facebook"></i></a>
-                                <a href=""><i class="bi bi-instagram"></i></a>
-                                <a href=""><i class="bi bi-linkedin"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                </div><!-- End Team Member -->
-
-                <div class="col-lg-4 col-md-6 d-flex" data-aos="fade-up" data-aos-delay="300">
-                    <div class="member">
-                        <img src="~/img/trainers/trainer-3.jpg" class="img-fluid" alt="">
-                        <div class="member-content">
-                            <h4>William Anderson</h4>
-                            <span>Content</span>
-                            <p>
-                                Voluptas necessitatibus occaecati quia. Earum totam consequuntur qui porro et laborum toro des clara
-                            </p>
-                            <div class="social">
-                                <a href=""><i class="bi bi-twitter-x"></i></a>
-                                <a href=""><i class="bi bi-facebook"></i></a>
-                                <a href=""><i class="bi bi-instagram"></i></a>
-                                <a href=""><i class="bi bi-linkedin"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                </div><!-- End Team Member -->
-
-            </div>
-
-        </div>
-
-    </section><!-- /Trainers Index Section --> *@
-
+    </section>
 </main>

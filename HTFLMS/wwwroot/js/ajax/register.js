@@ -1,15 +1,49 @@
-﻿$(document).ready(function () {
+﻿
+$(document).ready(function () {
+    function getDefaultTitlePrefix(gender) {
+        switch (gender) {
+            case 'Male':
+                return 'Mr.';
+
+            case 'Female':
+            case 'Other':
+                return 'Ms.';
+
+            default:
+                return '';
+        }
+    }
+
+    function updateTitlePrefix() {
+        const gender = $('#Gender').val();
+        const titlePrefix = getDefaultTitlePrefix(gender);
+
+        $('#TitlePrefix').val(titlePrefix);
+    }
+
+    $('#Gender').on('change', updateTitlePrefix);
+
+    updateTitlePrefix();
 
     $('#registerForm').on('submit', function (e) {
-        debugger;
+
         e.preventDefault();
 
-        if (!$(this).valid()) return;
+        var form = $(this);
+        var btn = $('#submitBtn');
+        var errorBox = $('.error-box');
+
+        errorBox.empty();
+
+        if (!form.valid()) {
+            return;
+        }
 
         var payload = {
             email: $('#Email').val(),
             password: $('#Password').val(),
             gender: $('#Gender').val(),
+            titlePrefix: $('#TitlePrefix').val(),
             name: $('#Name').val(),
             qualification: $('#Qualification').val(),
             cnic: $('#CNIC').val(),
@@ -21,7 +55,6 @@
             employmentStatus: $('#EmploymentStatus').val()
         };
 
-        var btn = $('#submitBtn');
         btn.prop('disabled', true).text('Submitting...');
 
         $.ajax({
@@ -29,7 +62,9 @@
             type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify(payload),
+
             success: function (res) {
+
                 localStorage.setItem(
                     "loginSuccessMessage",
                     res.message || "Registered successfully! Please login."
@@ -41,24 +76,49 @@
                 );
 
                 var returnUrl = $('#returnUrl').val();
-
                 var loginUrl = '/Account/Login';
 
                 if (returnUrl) {
-                    loginUrl += '?returnUrl=' + encodeURIComponent(returnUrl);
+                    loginUrl += '?returnUrl=' +
+                        encodeURIComponent(returnUrl);
                 }
 
                 window.location.href = loginUrl;
             },
+
             error: function (xhr) {
+
                 var err = xhr.responseJSON;
-                var msg = err?.errorMessage || 'Registration failed. Please try again.';
-                $('.error-box').html('<div>' + msg + '</div>');
+
+                var msg = 'Registration failed. Please try again.';
+
+                if (err && err.message) {
+                    msg = err.message;
+                }
+                else if (err && err.errorMessage) {
+                    msg = err.errorMessage;
+                }
+                else if (err && err.errors) {
+
+                    var messages = [];
+
+                    Object.keys(err.errors).forEach(function (key) {
+                        messages = messages.concat(err.errors[key]);
+                    });
+
+                    if (messages.length > 0) {
+                        msg = messages.join(' ');
+                    }
+                }
+
+                errorBox.text(msg);
             },
+
             complete: function () {
-                btn.prop('disabled', false).text('Submit Your Application Today!');
+
+                btn.prop('disabled', false)
+                    .text('Submit Your Application Today!');
             }
         });
     });
-
 });
