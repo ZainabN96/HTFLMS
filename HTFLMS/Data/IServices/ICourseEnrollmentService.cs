@@ -11,6 +11,9 @@ namespace HTFLMS.Data.IServices
         Task<bool> HasAnyActiveEnrollmentAsync(
             int studentId);
 
+        Task<List<int>> GetActiveStudentIdsByCourseAsync(
+            int courseId);
+
         void Add(
             CourseEnrollment enrollment);
     }

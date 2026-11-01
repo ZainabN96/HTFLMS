@@ -1,9 +1,9 @@
 ﻿using HTFLMS.Data.IServices;
+using HTFLMS.Dtos.StudentCourseContent;
 using HTFLMS.Errors;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
-using HTFLMS.Dtos.StudentCourseContent;
 
 namespace HTFLMS.Controllers.api
 {
@@ -13,87 +13,135 @@ namespace HTFLMS.Controllers.api
     public class StudentCourseContentController : ControllerBase
     {
         private readonly IUnitOfWork uow;
+        private readonly ILogger<StudentCourseContentController> logger;
 
-        public StudentCourseContentController(IUnitOfWork uow)
+        public StudentCourseContentController(
+            IUnitOfWork uow,
+            ILogger<StudentCourseContentController> logger)
         {
             this.uow = uow;
+            this.logger = logger;
         }
 
         [HttpGet("{courseId:int}/header")]
-        public async Task<IActionResult> GetHeader(int courseId)
+        public async Task<IActionResult> GetHeader(
+            int courseId)
         {
             var studentId = GetStudentId();
 
             if (studentId == null)
             {
-                return Unauthorized(new APIError(401, "Student session is invalid. Please login again."));
+                return Unauthorized(
+                    new APIError(
+                        401,
+                        "Student session is invalid. Please login again."));
             }
 
-            var result = await uow.StudentCourseContentService.GetHeaderAsync(studentId.Value, courseId);
+            var result =
+                await uow.StudentCourseContentService
+                    .GetHeaderAsync(
+                        studentId.Value,
+                        courseId);
 
             if (result == null)
             {
-                return NotFound(new APIError(404, "Course header was not found or you are not enrolled in this course."));
+                return NotFound(
+                    new APIError(
+                        404,
+                        "Course header was not found or you are not enrolled in this course."));
             }
 
             return Ok(result);
         }
 
         [HttpGet("{courseId:int}/info")]
-        public async Task<IActionResult> GetInfo(int courseId)
+        public async Task<IActionResult> GetInfo(
+            int courseId)
         {
             var studentId = GetStudentId();
 
             if (studentId == null)
             {
-                return Unauthorized(new APIError(401, "Student session is invalid. Please login again."));
+                return Unauthorized(
+                    new APIError(
+                        401,
+                        "Student session is invalid. Please login again."));
             }
 
-            var result = await uow.StudentCourseContentService.GetInfoAsync(studentId.Value, courseId);
+            var result =
+                await uow.StudentCourseContentService
+                    .GetInfoAsync(
+                        studentId.Value,
+                        courseId);
 
             if (result == null)
             {
-                return NotFound(new APIError(404, "Course info was not found or you are not enrolled in this course."));
+                return NotFound(
+                    new APIError(
+                        404,
+                        "Course info was not found or you are not enrolled in this course."));
             }
 
             return Ok(result);
         }
 
         [HttpGet("{courseId:int}/modules-lessons")]
-        public async Task<IActionResult> GetModulesAndLessons(int courseId)
+        public async Task<IActionResult> GetModulesAndLessons(
+            int courseId)
         {
             var studentId = GetStudentId();
 
             if (studentId == null)
             {
-                return Unauthorized(new APIError(401, "Student session is invalid. Please login again."));
+                return Unauthorized(
+                    new APIError(
+                        401,
+                        "Student session is invalid. Please login again."));
             }
 
-            var result = await uow.StudentCourseContentService.GetModulesAndLessonsAsync(studentId.Value, courseId);
+            var result =
+                await uow.StudentCourseContentService
+                    .GetModulesAndLessonsAsync(
+                        studentId.Value,
+                        courseId);
 
             if (result == null)
             {
-                return NotFound(new APIError(404, "Course modules were not found or you are not enrolled in this course."));
+                return NotFound(
+                    new APIError(
+                        404,
+                        "Course modules were not found or you are not enrolled in this course."));
             }
 
             return Ok(result);
         }
 
         [HttpPost("lessons/{lessonId:int}/mark-done")]
-        public async Task<IActionResult> MarkLessonDone(int lessonId)
+        public async Task<IActionResult> MarkLessonDone(
+            int lessonId)
         {
             var studentId = GetStudentId();
 
             if (studentId == null)
             {
-                return Unauthorized(new APIError(401, "Student session is invalid. Please login again."));
+                return Unauthorized(
+                    new APIError(
+                        401,
+                        "Student session is invalid. Please login again."));
             }
 
-            var result = await uow.StudentCourseContentService.MarkLessonDoneAsync(studentId.Value, lessonId);
+            var result =
+                await uow.StudentCourseContentService
+                    .MarkLessonDoneAsync(
+                        studentId.Value,
+                        lessonId);
 
             if (!result)
             {
-                return BadRequest(new APIError(400, "Lesson could not be marked as completed."));
+                return BadRequest(
+                    new APIError(
+                        400,
+                        "Lesson could not be marked as completed."));
             }
 
             return Ok(new
@@ -104,84 +152,131 @@ namespace HTFLMS.Controllers.api
         }
 
         [HttpGet("modules/{moduleId:int}/quiz")]
-        public async Task<IActionResult> GetQuiz(int moduleId)
+        public async Task<IActionResult> GetQuiz(
+            int moduleId)
         {
             var studentId = GetStudentId();
 
             if (studentId == null)
             {
-                return Unauthorized(new APIError(401, "Student session is invalid. Please login again."));
+                return Unauthorized(
+                    new APIError(
+                        401,
+                        "Student session is invalid. Please login again."));
             }
 
-            var result = await uow.StudentCourseContentService.GetQuizAsync(studentId.Value, moduleId);
+            var result =
+                await uow.StudentCourseContentService
+                    .GetQuizAsync(
+                        studentId.Value,
+                        moduleId);
 
             if (result == null)
             {
-                return NotFound(new APIError(404, "Quiz was not found or is not accessible."));
+                return NotFound(
+                    new APIError(
+                        404,
+                        "Quiz was not found or is not accessible."));
             }
 
             return Ok(result);
         }
 
         [HttpPost("modules/{moduleId:int}/quiz/submit")]
-        public async Task<IActionResult> SubmitQuiz(int moduleId, [FromBody] StudentCourseContentQuizSubmitDto dto)
+        public async Task<IActionResult> SubmitQuiz(
+            int moduleId,
+            [FromBody] StudentCourseContentQuizSubmitDto dto)
         {
             var studentId = GetStudentId();
 
             if (studentId == null)
             {
-                return Unauthorized(new APIError(401, "Student session is invalid. Please login again."));
+                return Unauthorized(
+                    new APIError(
+                        401,
+                        "Student session is invalid. Please login again."));
             }
 
             dto.ModuleId = moduleId;
 
-            var result = await uow.StudentCourseContentService.SubmitQuizAsync(studentId.Value, dto);
+            var result =
+                await uow.StudentCourseContentService
+                    .SubmitQuizAsync(
+                        studentId.Value,
+                        dto);
 
             if (result == null)
             {
-                return BadRequest(new APIError(400, "Quiz could not be submitted."));
+                return BadRequest(
+                    new APIError(
+                        400,
+                        "Quiz could not be submitted."));
             }
 
             return Ok(result);
         }
 
         [HttpGet("quizzes/{quizId:int}/review")]
-        public async Task<IActionResult> GetQuizReview(int quizId)
+        public async Task<IActionResult> GetQuizReview(
+            int quizId)
         {
             var studentId = GetStudentId();
 
             if (studentId == null)
             {
-                return Unauthorized(new APIError(401, "Student session is invalid. Please login again."));
+                return Unauthorized(
+                    new APIError(
+                        401,
+                        "Student session is invalid. Please login again."));
             }
 
-            var result = await uow.StudentCourseContentService.GetQuizReviewAsync(studentId.Value, quizId);
+            var result =
+                await uow.StudentCourseContentService
+                    .GetQuizReviewAsync(
+                        studentId.Value,
+                        quizId);
 
             if (result == null)
             {
-                return NotFound(new APIError(404, "Quiz review was not found."));
+                return NotFound(
+                    new APIError(
+                        404,
+                        "Quiz review was not found."));
             }
 
             return Ok(result);
         }
 
-        ////////////////// Slides And Assignments /////////////////
+        // =========================================
+        // MATERIALS & ASSIGNMENTS
+        // =========================================
 
         [HttpGet("{courseId:int}/materials-assignments")]
-        public async Task<IActionResult> GetMaterialsAndAssignments(int courseId)
+        public async Task<IActionResult> GetMaterialsAndAssignments(
+            int courseId)
         {
             var studentId = GetStudentId();
 
             if (studentId == null)
             {
-                return Unauthorized(new APIError(401, "Student session is invalid. Please login again."));
+                return Unauthorized(
+                    new APIError(
+                        401,
+                        "Student session is invalid. Please login again."));
             }
 
-            var result = await uow.StudentCourseContentService.GetMaterialsAndAssignmentsAsync(studentId.Value, courseId);
+            var result =
+                await uow.StudentCourseContentService
+                    .GetMaterialsAndAssignmentsAsync(
+                        studentId.Value,
+                        courseId);
 
             if (result == null)
             {
-                return NotFound(new APIError(404, "Course materials and assignments were not found or you are not enrolled in this course."));
+                return NotFound(
+                    new APIError(
+                        404,
+                        "Course materials and assignments were not found or you are not enrolled in this course."));
             }
 
             return Ok(result);
@@ -197,94 +292,153 @@ namespace HTFLMS.Controllers.api
 
             if (studentId == null)
             {
-                return Unauthorized(new APIError(401, "Student session is invalid. Please login again."));
+                return Unauthorized(
+                    new APIError(
+                        401,
+                        "Student session is invalid. Please login again."));
             }
 
-            var result = await uow.StudentCourseContentService.SubmitAssignmentAsync(
-                studentId.Value,
-                assignmentId,
-                file,
-                solutionLink);
+            var result =
+                await uow.StudentCourseContentService
+                    .SubmitAssignmentAsync(
+                        studentId.Value,
+                        assignmentId,
+                        file,
+                        solutionLink);
 
             if (result == null)
             {
-                return BadRequest(new APIError(400, "Assignment solution could not be submitted."));
+                return BadRequest(
+                    new APIError(
+                        400,
+                        "Assignment solution could not be submitted."));
             }
 
             if (!result.Success)
             {
-                return BadRequest(new APIError(400, result.Message));
+                return BadRequest(
+                    new APIError(
+                        400,
+                        result.Message));
             }
+
+            await NotifyTrainerAssignmentActivityAsync(
+                assignmentId,
+                "Assignment Submitted",
+                "submitted");
 
             return Ok(result);
         }
 
         [HttpPost("assignments/{assignmentId:int}/unsubmit")]
-        public async Task<IActionResult> UnsubmitAssignment(int assignmentId)
+        public async Task<IActionResult> UnsubmitAssignment(
+            int assignmentId)
         {
             var studentId = GetStudentId();
 
             if (studentId == null)
             {
-                return Unauthorized(new APIError(401, "Student session is invalid. Please login again."));
+                return Unauthorized(
+                    new APIError(
+                        401,
+                        "Student session is invalid. Please login again."));
             }
 
-            var result = await uow.StudentCourseContentService.UnsubmitAssignmentAsync(
-                studentId.Value,
-                assignmentId);
+            var result =
+                await uow.StudentCourseContentService
+                    .UnsubmitAssignmentAsync(
+                        studentId.Value,
+                        assignmentId);
 
             if (result == null)
             {
-                return BadRequest(new APIError(400, "Assignment solution could not be removed."));
+                return BadRequest(
+                    new APIError(
+                        400,
+                        "Assignment solution could not be removed."));
             }
 
             if (!result.Success)
             {
-                return BadRequest(new APIError(400, result.Message));
+                return BadRequest(
+                    new APIError(
+                        400,
+                        result.Message));
             }
+
+            await NotifyTrainerAssignmentActivityAsync(
+                assignmentId,
+                "Assignment Unsubmitted",
+                "unsubmitted");
 
             return Ok(result);
         }
 
-        ///////////////// Grades /////////////////
+        // =========================================
+        // GRADES
+        // =========================================
 
         [HttpGet("{courseId:int}/grades")]
-        public async Task<IActionResult> GetGrades(int courseId)
+        public async Task<IActionResult> GetGrades(
+            int courseId)
         {
             var studentId = GetStudentId();
 
             if (studentId == null)
             {
-                return Unauthorized(new APIError(401, "Student session is invalid. Please login again."));
+                return Unauthorized(
+                    new APIError(
+                        401,
+                        "Student session is invalid. Please login again."));
             }
 
-            var result = await uow.StudentGradesService.GetGradesTabAsync(studentId.Value, courseId);
+            var result =
+                await uow.StudentGradesService
+                    .GetGradesTabAsync(
+                        studentId.Value,
+                        courseId);
 
             if (result == null)
             {
-                return NotFound(new APIError(404, "Course grades were not found or you are not enrolled in this course."));
+                return NotFound(
+                    new APIError(
+                        404,
+                        "Course grades were not found or you are not enrolled in this course."));
             }
 
             return Ok(result);
         }
 
-        ///////////////// Notes /////////////////
+        // =========================================
+        // NOTES
+        // =========================================
 
         [HttpGet("{courseId:int}/notes")]
-        public async Task<IActionResult> GetNotes(int courseId)
+        public async Task<IActionResult> GetNotes(
+            int courseId)
         {
             var studentId = GetStudentId();
 
             if (studentId == null)
             {
-                return Unauthorized(new APIError(401, "Student session is invalid. Please login again."));
+                return Unauthorized(
+                    new APIError(
+                        401,
+                        "Student session is invalid. Please login again."));
             }
 
-            var result = await uow.StudentCourseContentService.GetNotesAsync(studentId.Value, courseId);
+            var result =
+                await uow.StudentCourseContentService
+                    .GetNotesAsync(
+                        studentId.Value,
+                        courseId);
 
             if (result == null)
             {
-                return NotFound(new APIError(404, "Course notes were not found or you are not enrolled in this course."));
+                return NotFound(
+                    new APIError(
+                        404,
+                        "Course notes were not found or you are not enrolled in this course."));
             }
 
             return Ok(result);
@@ -299,22 +453,33 @@ namespace HTFLMS.Controllers.api
 
             if (studentId == null)
             {
-                return Unauthorized(new APIError(401, "Student session is invalid. Please login again."));
+                return Unauthorized(
+                    new APIError(
+                        401,
+                        "Student session is invalid. Please login again."));
             }
 
-            var result = await uow.StudentCourseContentService.CreateNoteAsync(
-                studentId.Value,
-                courseId,
-                dto);
+            var result =
+                await uow.StudentCourseContentService
+                    .CreateNoteAsync(
+                        studentId.Value,
+                        courseId,
+                        dto);
 
             if (result == null)
             {
-                return BadRequest(new APIError(400, "Note could not be saved."));
+                return BadRequest(
+                    new APIError(
+                        400,
+                        "Note could not be saved."));
             }
 
             if (!result.Success)
             {
-                return BadRequest(new APIError(400, result.Message));
+                return BadRequest(
+                    new APIError(
+                        400,
+                        result.Message));
             }
 
             return Ok(result);
@@ -329,64 +494,139 @@ namespace HTFLMS.Controllers.api
 
             if (studentId == null)
             {
-                return Unauthorized(new APIError(401, "Student session is invalid. Please login again."));
+                return Unauthorized(
+                    new APIError(
+                        401,
+                        "Student session is invalid. Please login again."));
             }
 
-            var result = await uow.StudentCourseContentService.UpdateNoteAsync(
-                studentId.Value,
-                noteId,
-                dto);
+            var result =
+                await uow.StudentCourseContentService
+                    .UpdateNoteAsync(
+                        studentId.Value,
+                        noteId,
+                        dto);
 
             if (result == null)
             {
-                return BadRequest(new APIError(400, "Note could not be updated."));
+                return BadRequest(
+                    new APIError(
+                        400,
+                        "Note could not be updated."));
             }
 
             if (!result.Success)
             {
-                return BadRequest(new APIError(400, result.Message));
+                return BadRequest(
+                    new APIError(
+                        400,
+                        result.Message));
             }
 
             return Ok(result);
         }
 
         [HttpDelete("notes/{noteId:int}")]
-        public async Task<IActionResult> DeleteNote(int noteId)
+        public async Task<IActionResult> DeleteNote(
+            int noteId)
         {
             var studentId = GetStudentId();
 
             if (studentId == null)
             {
-                return Unauthorized(new APIError(401, "Student session is invalid. Please login again."));
+                return Unauthorized(
+                    new APIError(
+                        401,
+                        "Student session is invalid. Please login again."));
             }
 
-            var result = await uow.StudentCourseContentService.DeleteNoteAsync(
-                studentId.Value,
-                noteId);
+            var result =
+                await uow.StudentCourseContentService
+                    .DeleteNoteAsync(
+                        studentId.Value,
+                        noteId);
 
             if (result == null)
             {
-                return BadRequest(new APIError(400, "Note could not be deleted."));
+                return BadRequest(
+                    new APIError(
+                        400,
+                        "Note could not be deleted."));
             }
 
             if (!result.Success)
             {
-                return BadRequest(new APIError(400, result.Message));
+                return BadRequest(
+                    new APIError(
+                        400,
+                        result.Message));
             }
 
             return Ok(result);
         }
 
+        private async Task NotifyTrainerAssignmentActivityAsync(
+            int assignmentId,
+            string notificationTitle,
+            string actionText)
+        {
+            try
+            {
+                var assignment =
+                    await uow.AssignmentService
+                        .GetByIdAsync(assignmentId);
+
+                if (assignment == null ||
+                    assignment.Course == null)
+                {
+                    return;
+                }
+
+                var studentEmail =
+                    User.Identity?.Name;
+
+                if (string.IsNullOrWhiteSpace(studentEmail))
+                    return;
+
+                var student =
+                    await uow.UserService
+                        .GetUserByEmailAsync(studentEmail);
+
+                if (student == null)
+                    return;
+
+                await uow.NotificationService
+                    .CreateAsync(
+                        assignment.Course.TrainerId,
+                        notificationTitle,
+                        $"{student.Name} has {actionText} \"{assignment.Title}\".",
+                        "Assignment",
+                        "/Trainer/Submissions");
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(
+                    ex,
+                    "Trainer assignment activity notification failed. AssignmentId: {AssignmentId}",
+                    assignmentId);
+            }
+        }
+
         private int? GetStudentId()
         {
-            var studentIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var studentIdClaim =
+                User.FindFirstValue(
+                    ClaimTypes.NameIdentifier);
 
-            if (string.IsNullOrWhiteSpace(studentIdClaim))
+            if (string.IsNullOrWhiteSpace(
+                studentIdClaim))
             {
                 return null;
             }
 
-            if (!int.TryParse(studentIdClaim, out var studentId))
+            if (!int.TryParse(
+                studentIdClaim,
+                out var studentId))
             {
                 return null;
             }

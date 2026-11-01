@@ -35,6 +35,18 @@ namespace HTFLMS.Data.Services
                     x.Status == "Active");
         }
 
+        public async Task<List<int>> GetActiveStudentIdsByCourseAsync(
+            int courseId)
+        {
+            return await context.CourseEnrollments
+                .Where(x =>
+                    x.CourseId == courseId &&
+                    x.Status == "Active")
+                .Select(x => x.StudentId)
+                .Distinct()
+                .ToListAsync();
+        }
+
         public void Add(
             CourseEnrollment enrollment)
         {
