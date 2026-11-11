@@ -32,6 +32,11 @@ namespace HTFLMS.Controllers.api
             return User.IsInRole("Admin");
         }
 
+
+        // =========================================
+        // CREATE
+        // =========================================
+
         [HttpPost("create")]
         public async Task<IActionResult> Create(
             [FromForm] ModuleDto dto)
@@ -82,7 +87,8 @@ namespace HTFLMS.Controllers.api
                         "You are not allowed to add modules to this course."));
             }
 
-            var module = mapper.Map<Module>(dto);
+            var module =
+                mapper.Map<Module>(dto);
 
             module.CourseId = dto.CourseId;
             module.Title = dto.Title;
@@ -94,44 +100,14 @@ namespace HTFLMS.Controllers.api
 
             uow.ModuleService.Add(module);
 
-            var saved = await uow.SaveAsync();
+            await uow.SaveAsync();
 
-            if (!saved)
+            // If module is created already published/available
+            if (IsModuleAvailable(module, course))
             {
-                return BadRequest(
-                    new APIError(
-                        400,
-                        "Module could not be created."));
-            }
-
-            if (course.IsActive &&
-                course.IsPublished &&
-                module.IsActive &&
-                module.IsAccessible)
-            {
-                try
-                {
-                    var studentIds =
-                        await uow.CourseEnrollmentService
-                            .GetActiveStudentIdsByCourseAsync(
-                                course.Id);
-
-                    await uow.NotificationService
-                        .CreateBulkAsync(
-                            studentIds,
-                            "New Module Available",
-                            $"A new module \"{module.Title}\" has been added to {course.Title}.",
-                            "Module",
-                            "/Student/Courses");
-                }
-                catch (Exception ex)
-                {
-                    logger.LogError(
-                        ex,
-                        "Module notification failed. ModuleId: {ModuleId}, CourseId: {CourseId}",
-                        module.Id,
-                        course.Id);
-                }
+                await NotifyStudentsModuleAvailableAsync(
+                    module,
+                    course);
             }
 
             return Ok(new
@@ -140,6 +116,11 @@ namespace HTFLMS.Controllers.api
                 moduleId = module.Id
             });
         }
+
+
+        // =========================================
+        // GET MODULES BY COURSE
+        // =========================================
 
         [HttpGet("course/{courseId}")]
         public async Task<IActionResult> GetModulesByCourse(
@@ -192,30 +173,36 @@ namespace HTFLMS.Controllers.api
                 await uow.ModuleService
                     .GetByCourseIdAsync(courseId);
 
-            var result = modules.Select(m => new
-            {
-                m.Id,
-                m.CourseId,
-                m.Title,
-                m.Description,
-                m.DisplayOrder,
-                m.IsActive,
-                m.IsAccessible,
-                m.CreatedAt,
+            var result =
+                modules.Select(m => new
+                {
+                    m.Id,
+                    m.CourseId,
+                    m.Title,
+                    m.Description,
+                    m.DisplayOrder,
+                    m.IsActive,
+                    m.IsAccessible,
+                    m.CreatedAt,
 
-                LessonsCount =
-                    m.Lessons == null
-                        ? 0
-                        : m.Lessons.Count,
+                    LessonsCount =
+                        m.Lessons == null
+                            ? 0
+                            : m.Lessons.Count,
 
-                QuizCount =
-                    m.Quiz == null
-                        ? 0
-                        : 1
-            });
+                    QuizCount =
+                        m.Quiz == null
+                            ? 0
+                            : 1
+                });
 
             return Ok(result);
         }
+
+
+        // =========================================
+        // GET MODULE
+        // =========================================
 
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetModule(
@@ -288,6 +275,11 @@ namespace HTFLMS.Controllers.api
             });
         }
 
+
+        // =========================================
+        // EDIT
+        // =========================================
+
         [HttpPut("edit/{id:int}")]
         public async Task<IActionResult> Edit(
             int id,
@@ -351,6 +343,13 @@ namespace HTFLMS.Controllers.api
                         "You are not allowed to edit this module."));
             }
 
+            // IMPORTANT:
+            // Save previous availability before changing values.
+            var wasAvailable =
+                IsModuleAvailable(
+                    module,
+                    course);
+
             module.Title = dto.Title;
             module.Description = dto.Description;
             module.DisplayOrder = dto.DisplayOrder;
@@ -361,12 +360,31 @@ namespace HTFLMS.Controllers.api
 
             await uow.SaveAsync();
 
+            var isAvailableNow =
+                IsModuleAvailable(
+                    module,
+                    course);
+
+            // Draft/unavailable -> published/available
+            if (!wasAvailable &&
+                isAvailableNow)
+            {
+                await NotifyStudentsModuleAvailableAsync(
+                    module,
+                    course);
+            }
+
             return Ok(new
             {
                 message = "Module updated successfully.",
                 moduleId = module.Id
             });
         }
+
+
+        // =========================================
+        // TOGGLE ACCESS
+        // =========================================
 
         [HttpPut("toggle-access/{id:int}")]
         public async Task<IActionResult> ToggleAccess(
@@ -428,17 +446,43 @@ namespace HTFLMS.Controllers.api
                         "You are not allowed to update this module access."));
             }
 
-            module.IsAccessible = dto.IsAccessible;
+            var wasAvailable =
+                IsModuleAvailable(
+                    module,
+                    course);
+
+            module.IsAccessible =
+                dto.IsAccessible;
 
             uow.ModuleService.Update(module);
 
             await uow.SaveAsync();
 
+            var isAvailableNow =
+                IsModuleAvailable(
+                    module,
+                    course);
+
+            // Access false -> true
+            if (!wasAvailable &&
+                isAvailableNow)
+            {
+                await NotifyStudentsModuleAvailableAsync(
+                    module,
+                    course);
+            }
+
             return Ok(new
             {
-                message = "Module access updated successfully."
+                message =
+                    "Module access updated successfully."
             });
         }
+
+
+        // =========================================
+        // DELETE
+        // =========================================
 
         [HttpDelete("delete/{id:int}")]
         public async Task<IActionResult> Delete(
@@ -505,8 +549,61 @@ namespace HTFLMS.Controllers.api
 
             return Ok(new
             {
-                message = "Module deleted successfully."
+                message =
+                    "Module deleted successfully."
             });
+        }
+
+
+        // =========================================
+        // MODULE AVAILABILITY
+        // =========================================
+
+        private static bool IsModuleAvailable(
+            Module module,
+            Course course)
+        {
+            return
+                module.IsActive &&
+                module.IsAccessible &&
+                course.IsActive &&
+                course.IsPublished;
+        }
+
+
+        // =========================================
+        // MODULE AVAILABLE NOTIFICATION
+        // =========================================
+
+        private async Task NotifyStudentsModuleAvailableAsync(
+            Module module,
+            Course course)
+        {
+            try
+            {
+                var studentIds =
+                    await uow.CourseEnrollmentService
+                        .GetActiveStudentIdsByCourseAsync(
+                            course.Id);
+
+                if (studentIds.Count == 0)
+                    return;
+
+                await uow.NotificationService
+                    .CreateBulkAsync(
+                        studentIds,
+                        "New Module Available",
+                        $"A new module \"{module.Title}\" is now available in {course.Title}.",
+                        "Module",
+                        "/Student/Courses");
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(
+                    ex,
+                    "Module available notification failed. ModuleId: {ModuleId}",
+                    module.Id);
+            }
         }
     }
 }

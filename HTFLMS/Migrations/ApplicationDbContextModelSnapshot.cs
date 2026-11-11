@@ -766,6 +766,9 @@ namespace HTFLMS.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<DateTime?>("LockNotificationSentAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<DateTime>("LockedUntil")
                         .HasColumnType("datetime2");
 
@@ -774,6 +777,9 @@ namespace HTFLMS.Migrations
 
                     b.Property<int>("StudentId")
                         .HasColumnType("int");
+
+                    b.Property<DateTime?>("UnlockNotificationSentAt")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 

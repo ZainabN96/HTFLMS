@@ -4,17 +4,7 @@
     var root = document.querySelector('.htf-cd');
     if (!root) return;
 
-    /* ---------- Requirements ) ---------- */
-    var need = root.querySelector('.htf-cd__need');
-    var needBtn = root.querySelector('.htf-cd__need-head');
-    if (need && needBtn) {
-        needBtn.addEventListener('click', function () {
-            var open = need.classList.toggle('is-open');
-            needBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
-        });
-    }
-
-    /* ---------- Sticky tabs: oval indicator + scroll spy ---------- */
+    /* ---------- Sticky tabs: sliding oval + scroll spy ---------- */
     var tabs = root.querySelector('.htf-cd__tabs');
     if (tabs) {
         var links = [].slice.call(tabs.querySelectorAll('a'));
@@ -56,8 +46,8 @@
         spy();
     }
 
-    /* ---------- Scroll reveal ---------- */
-    var items = [].slice.call(root.querySelectorAll('.htf-cd__rv'));
+    /* ---------- Scroll reveal (panels + timeline line) ---------- */
+    var items = [].slice.call(root.querySelectorAll('.htf-cd__rv, .htf-cd__tl'));
     if (!items.length) return;
 
     if (!('IntersectionObserver' in window)) {

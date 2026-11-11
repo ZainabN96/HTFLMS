@@ -1,8 +1,10 @@
-﻿using HTFLMS.Data.IServices;
+﻿using HTFLMS.Data;
+using HTFLMS.Data.IServices;
 using HTFLMS.Dtos.StudentCourseContent;
 using HTFLMS.Errors;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
 namespace HTFLMS.Controllers.api
@@ -13,13 +15,16 @@ namespace HTFLMS.Controllers.api
     public class StudentCourseContentController : ControllerBase
     {
         private readonly IUnitOfWork uow;
+        private readonly ApplicationDbContext context;
         private readonly ILogger<StudentCourseContentController> logger;
 
         public StudentCourseContentController(
             IUnitOfWork uow,
+            ApplicationDbContext context,
             ILogger<StudentCourseContentController> logger)
         {
             this.uow = uow;
+            this.context = context;
             this.logger = logger;
         }
 
@@ -151,6 +156,10 @@ namespace HTFLMS.Controllers.api
             });
         }
 
+        // =========================================
+        // QUIZ
+        // =========================================
+
         [HttpGet("modules/{moduleId:int}/quiz")]
         public async Task<IActionResult> GetQuiz(
             int moduleId)
@@ -212,6 +221,11 @@ namespace HTFLMS.Controllers.api
                         400,
                         "Quiz could not be submitted."));
             }
+
+            await NotifyQuizLockIfNeededAsync(
+                studentId.Value,
+                dto.QuizId,
+                result.IsLocked);
 
             return Ok(result);
         }
@@ -565,6 +579,66 @@ namespace HTFLMS.Controllers.api
             return Ok(result);
         }
 
+        // =========================================
+        // QUIZ LOCK NOTIFICATION
+        // =========================================
+
+        private async Task NotifyQuizLockIfNeededAsync(
+            int studentId,
+            int quizId,
+            bool isLocked)
+        {
+            if (!isLocked)
+                return;
+
+            try
+            {
+                var now =
+                    DateTime.UtcNow;
+
+                var reset =
+                    await context.QuizAttemptsResets
+                        .Where(x =>
+                            x.StudentId == studentId &&
+                            x.QuizId == quizId &&
+                            x.LockedUntil > now)
+                        .OrderByDescending(
+                            x => x.CreatedAt)
+                        .FirstOrDefaultAsync();
+
+                if (reset == null)
+                    return;
+
+                if (reset.LockNotificationSentAt.HasValue)
+                    return;
+
+                await uow.NotificationService
+                    .CreateAsync(
+                        studentId,
+                        "Quiz Locked",
+                        "You have used all available attempts. This quiz is locked for 1 hour.",
+                        "Quiz",
+                        "/Student/Courses");
+
+                reset.LockNotificationSentAt =
+                    DateTime.UtcNow;
+
+                await context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(
+                    ex,
+                    "Quiz lock notification failed. StudentId: {StudentId}, QuizId: {QuizId}",
+                    studentId,
+                    quizId);
+            }
+        }
+
+        // =========================================
+        // TRAINER ASSIGNMENT ACTIVITY
+        // =========================================
+
         private async Task NotifyTrainerAssignmentActivityAsync(
             int assignmentId,
             string notificationTitle,
@@ -611,6 +685,10 @@ namespace HTFLMS.Controllers.api
                     assignmentId);
             }
         }
+
+        // =========================================
+        // CURRENT STUDENT
+        // =========================================
 
         private int? GetStudentId()
         {

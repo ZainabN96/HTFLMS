@@ -13,10 +13,14 @@ namespace HTFLMS.Controllers.api
     public class QuizController : ControllerBase
     {
         private readonly IUnitOfWork uow;
+        private readonly ILogger<QuizController> logger;
 
-        public QuizController(IUnitOfWork uow)
+        public QuizController(
+            IUnitOfWork uow,
+            ILogger<QuizController> logger)
         {
             this.uow = uow;
+            this.logger = logger;
         }
 
         private bool IsAdmin()
@@ -24,8 +28,13 @@ namespace HTFLMS.Controllers.api
             return User.IsInRole("Admin");
         }
 
+        // =========================================
+        // CREATE
+        // =========================================
+
         [HttpPost("create")]
-        public async Task<IActionResult> Create([FromBody] QuizDto dto)
+        public async Task<IActionResult> Create(
+            [FromBody] QuizDto dto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -33,28 +42,56 @@ namespace HTFLMS.Controllers.api
             var email = User.Identity?.Name;
 
             if (string.IsNullOrWhiteSpace(email))
-                return Unauthorized(new APIError(401, "User is not logged in."));
-
-            var user = await uow.UserService.GetUserByEmailAsync(email);
-
-            if (user == null)
-                return NotFound(new APIError(404, "Logged-in user was not found."));
-
-            var module = await uow.ModuleService.GetByIdAsync(dto.ModuleId);
-
-            if (module == null)
-                return NotFound(new APIError(404, "Module not found."));
-
-            var course = await uow.CourseService.GetByIdAsync(module.CourseId);
-
-            if (course == null)
-                return NotFound(new APIError(404, "Course not found."));
-
-            if (!IsAdmin() && course.TrainerId != user.Id)
             {
                 return Unauthorized(
-                    new APIError(401, "You are not allowed to add quizzes to this module.")
-                );
+                    new APIError(
+                        401,
+                        "User is not logged in."));
+            }
+
+            var user =
+                await uow.UserService
+                    .GetUserByEmailAsync(email);
+
+            if (user == null)
+            {
+                return NotFound(
+                    new APIError(
+                        404,
+                        "Logged-in user was not found."));
+            }
+
+            var module =
+                await uow.ModuleService
+                    .GetByIdAsync(dto.ModuleId);
+
+            if (module == null)
+            {
+                return NotFound(
+                    new APIError(
+                        404,
+                        "Module not found."));
+            }
+
+            var course =
+                await uow.CourseService
+                    .GetByIdAsync(module.CourseId);
+
+            if (course == null)
+            {
+                return NotFound(
+                    new APIError(
+                        404,
+                        "Course not found."));
+            }
+
+            if (!IsAdmin() &&
+                course.TrainerId != user.Id)
+            {
+                return Unauthorized(
+                    new APIError(
+                        401,
+                        "You are not allowed to add quizzes to this module."));
             }
 
             var quiz = new Quiz
@@ -69,119 +106,257 @@ namespace HTFLMS.Controllers.api
                 Questions = new List<QuizQuestion>()
             };
 
-            int questionOrder = 1;
+            var questionOrder = 1;
 
             foreach (var q in dto.Questions)
             {
-                var question = new QuizQuestion
-                {
-                    QuestionText = q.QuestionText,
-                    DisplayOrder = q.DisplayOrder > 0 ? q.DisplayOrder : questionOrder,
-                    Options = new List<QuizOption>
+                var question =
+                    new QuizQuestion
                     {
-                        new QuizOption { OptionText = q.OptionA, IsCorrect = q.CorrectAnswer == "A" },
-                        new QuizOption { OptionText = q.OptionB, IsCorrect = q.CorrectAnswer == "B" },
-                        new QuizOption { OptionText = q.OptionC, IsCorrect = q.CorrectAnswer == "C" },
-                        new QuizOption { OptionText = q.OptionD, IsCorrect = q.CorrectAnswer == "D" }
-                    }
-                };
+                        QuestionText =
+                            q.QuestionText,
+
+                        DisplayOrder =
+                            q.DisplayOrder > 0
+                                ? q.DisplayOrder
+                                : questionOrder,
+
+                        Options =
+                            new List<QuizOption>
+                            {
+                                new QuizOption
+                                {
+                                    OptionText = q.OptionA,
+                                    IsCorrect =
+                                        q.CorrectAnswer == "A"
+                                },
+
+                                new QuizOption
+                                {
+                                    OptionText = q.OptionB,
+                                    IsCorrect =
+                                        q.CorrectAnswer == "B"
+                                },
+
+                                new QuizOption
+                                {
+                                    OptionText = q.OptionC,
+                                    IsCorrect =
+                                        q.CorrectAnswer == "C"
+                                },
+
+                                new QuizOption
+                                {
+                                    OptionText = q.OptionD,
+                                    IsCorrect =
+                                        q.CorrectAnswer == "D"
+                                }
+                            }
+                    };
 
                 quiz.Questions.Add(question);
+
                 questionOrder++;
             }
 
             uow.QuizService.Add(quiz);
 
-            await uow.SaveAsync();
+            var saved =
+                await uow.SaveAsync();
+
+            if (!saved)
+            {
+                return BadRequest(
+                    new APIError(
+                        400,
+                        "Quiz could not be saved."));
+            }
+
+            // Quiz is immediately available
+            if (quiz.IsActive &&
+                quiz.IsAccessible &&
+                module.IsActive &&
+                module.IsAccessible &&
+                course.IsActive &&
+                course.IsPublished)
+            {
+                await NotifyStudentsQuizAvailableAsync(
+                    quiz,
+                    module,
+                    course);
+            }
 
             return Ok(new
             {
-                message = "Quiz created successfully.",
-                quizId = quiz.Id
+                message =
+                    "Quiz created successfully.",
+
+                quizId =
+                    quiz.Id
             });
         }
 
+        // =========================================
+        // GET BY MODULE
+        // =========================================
+
         [HttpGet("module/{moduleId}")]
-        public async Task<IActionResult> GetQuizzesByModule(int moduleId)
+        public async Task<IActionResult> GetQuizzesByModule(
+            int moduleId)
         {
             var email = User.Identity?.Name;
 
             if (string.IsNullOrWhiteSpace(email))
-                return Unauthorized(new APIError(401, "User is not logged in."));
-
-            var user = await uow.UserService.GetUserByEmailAsync(email);
-
-            if (user == null)
-                return NotFound(new APIError(404, "Logged-in user was not found."));
-
-            var module = await uow.ModuleService.GetByIdAsync(moduleId);
-
-            if (module == null)
-                return NotFound(new APIError(404, "Module not found."));
-
-            var course = await uow.CourseService.GetByIdAsync(module.CourseId);
-
-            if (course == null)
-                return NotFound(new APIError(404, "Course not found."));
-
-            if (!IsAdmin() && course.TrainerId != user.Id)
             {
                 return Unauthorized(
-                    new APIError(401, "You are not allowed to view these quizzes.")
-                );
+                    new APIError(
+                        401,
+                        "User is not logged in."));
             }
 
-            var quizzes = await uow.QuizService.GetByModuleIdAsync(moduleId);
+            var user =
+                await uow.UserService
+                    .GetUserByEmailAsync(email);
 
-            var result = quizzes.Select(q => new
+            if (user == null)
             {
-                q.Id,
-                q.ModuleId,
-                q.Title,
-                q.Instructions,
-                q.AttemptsAllowed,
-                q.IsActive,
-                q.IsAccessible,
-                q.CreatedAt,
-                QuestionsCount = q.Questions == null ? 0 : q.Questions.Count
-            });
+                return NotFound(
+                    new APIError(
+                        404,
+                        "Logged-in user was not found."));
+            }
+
+            var module =
+                await uow.ModuleService
+                    .GetByIdAsync(moduleId);
+
+            if (module == null)
+            {
+                return NotFound(
+                    new APIError(
+                        404,
+                        "Module not found."));
+            }
+
+            var course =
+                await uow.CourseService
+                    .GetByIdAsync(module.CourseId);
+
+            if (course == null)
+            {
+                return NotFound(
+                    new APIError(
+                        404,
+                        "Course not found."));
+            }
+
+            if (!IsAdmin() &&
+                course.TrainerId != user.Id)
+            {
+                return Unauthorized(
+                    new APIError(
+                        401,
+                        "You are not allowed to view these quizzes."));
+            }
+
+            var quizzes =
+                await uow.QuizService
+                    .GetByModuleIdAsync(moduleId);
+
+            var result =
+                quizzes.Select(q => new
+                {
+                    q.Id,
+                    q.ModuleId,
+                    q.Title,
+                    q.Instructions,
+                    q.AttemptsAllowed,
+                    q.IsActive,
+                    q.IsAccessible,
+                    q.CreatedAt,
+
+                    QuestionsCount =
+                        q.Questions == null
+                            ? 0
+                            : q.Questions.Count
+                });
 
             return Ok(result);
         }
 
+        // =========================================
+        // GET
+        // =========================================
+
         [HttpGet("{id:int}")]
-        public async Task<IActionResult> GetQuiz(int id)
+        public async Task<IActionResult> GetQuiz(
+            int id)
         {
             var email = User.Identity?.Name;
 
             if (string.IsNullOrWhiteSpace(email))
-                return Unauthorized(new APIError(401, "User is not logged in."));
-
-            var user = await uow.UserService.GetUserByEmailAsync(email);
-
-            if (user == null)
-                return NotFound(new APIError(404, "Logged-in user was not found."));
-
-            var quiz = await uow.QuizService.GetByIdAsync(id);
-
-            if (quiz == null)
-                return NotFound(new APIError(404, "Quiz not found."));
-
-            var module = await uow.ModuleService.GetByIdAsync(quiz.ModuleId);
-
-            if (module == null)
-                return NotFound(new APIError(404, "Module not found."));
-
-            var course = await uow.CourseService.GetByIdAsync(module.CourseId);
-
-            if (course == null)
-                return NotFound(new APIError(404, "Course not found."));
-
-            if (!IsAdmin() && course.TrainerId != user.Id)
             {
                 return Unauthorized(
-                    new APIError(401, "You are not allowed to view this quiz.")
-                );
+                    new APIError(
+                        401,
+                        "User is not logged in."));
+            }
+
+            var user =
+                await uow.UserService
+                    .GetUserByEmailAsync(email);
+
+            if (user == null)
+            {
+                return NotFound(
+                    new APIError(
+                        404,
+                        "Logged-in user was not found."));
+            }
+
+            var quiz =
+                await uow.QuizService
+                    .GetByIdAsync(id);
+
+            if (quiz == null)
+            {
+                return NotFound(
+                    new APIError(
+                        404,
+                        "Quiz not found."));
+            }
+
+            var module =
+                await uow.ModuleService
+                    .GetByIdAsync(quiz.ModuleId);
+
+            if (module == null)
+            {
+                return NotFound(
+                    new APIError(
+                        404,
+                        "Module not found."));
+            }
+
+            var course =
+                await uow.CourseService
+                    .GetByIdAsync(module.CourseId);
+
+            if (course == null)
+            {
+                return NotFound(
+                    new APIError(
+                        404,
+                        "Course not found."));
+            }
+
+            if (!IsAdmin() &&
+                course.TrainerId != user.Id)
+            {
+                return Unauthorized(
+                    new APIError(
+                        401,
+                        "You are not allowed to view this quiz."));
             }
 
             return Ok(new
@@ -193,29 +368,45 @@ namespace HTFLMS.Controllers.api
                 quiz.AttemptsAllowed,
                 quiz.IsActive,
                 quiz.IsAccessible,
-                Questions = quiz.Questions == null
-                    ? new List<object>()
-                    : quiz.Questions
-                        .OrderBy(q => q.DisplayOrder)
-                        .Select(q => new
-                        {
-                            q.Id,
-                            q.QuestionText,
-                            q.DisplayOrder,
-                            Options = q.Options == null
-                                ? new List<object>()
-                                : q.Options.Select(o => new
+
+                Questions =
+                    quiz.Questions == null
+                        ? new List<object>()
+                        : quiz.Questions
+                            .OrderBy(
+                                q => q.DisplayOrder)
+                            .Select(
+                                q => new
                                 {
-                                    o.Id,
-                                    o.OptionText,
-                                    o.IsCorrect
-                                }).ToList<object>()
-                        }).ToList<object>()
+                                    q.Id,
+                                    q.QuestionText,
+                                    q.DisplayOrder,
+
+                                    Options =
+                                        q.Options == null
+                                            ? new List<object>()
+                                            : q.Options
+                                                .Select(
+                                                    o => new
+                                                    {
+                                                        o.Id,
+                                                        o.OptionText,
+                                                        o.IsCorrect
+                                                    })
+                                                .ToList<object>()
+                                })
+                            .ToList<object>()
             });
         }
 
+        // =========================================
+        // EDIT
+        // =========================================
+
         [HttpPut("edit/{id:int}")]
-        public async Task<IActionResult> Edit(int id, [FromBody] QuizDto dto)
+        public async Task<IActionResult> Edit(
+            int id,
+            [FromBody] QuizDto dto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -223,168 +414,439 @@ namespace HTFLMS.Controllers.api
             var email = User.Identity?.Name;
 
             if (string.IsNullOrWhiteSpace(email))
-                return Unauthorized(new APIError(401, "User is not logged in."));
-
-            var user = await uow.UserService.GetUserByEmailAsync(email);
-
-            if (user == null)
-                return NotFound(new APIError(404, "Logged-in user was not found."));
-
-            var quiz = await uow.QuizService.GetByIdAsync(id);
-
-            if (quiz == null)
-                return NotFound(new APIError(404, "Quiz not found."));
-
-            var module = await uow.ModuleService.GetByIdAsync(dto.ModuleId);
-
-            if (module == null)
-                return NotFound(new APIError(404, "Module not found."));
-
-            var course = await uow.CourseService.GetByIdAsync(module.CourseId);
-
-            if (course == null)
-                return NotFound(new APIError(404, "Course not found."));
-
-            if (!IsAdmin() && course.TrainerId != user.Id)
             {
                 return Unauthorized(
-                    new APIError(401, "You are not allowed to edit this quiz.")
-                );
+                    new APIError(
+                        401,
+                        "User is not logged in."));
             }
 
-            quiz.ModuleId = dto.ModuleId;
-            quiz.Title = dto.Title;
-            quiz.Instructions = dto.Instructions;
-            quiz.AttemptsAllowed = dto.AttemptsAllowed;
-            quiz.IsActive = dto.IsActive;
-            quiz.IsAccessible = dto.IsAccessible;
+            var user =
+                await uow.UserService
+                    .GetUserByEmailAsync(email);
+
+            if (user == null)
+            {
+                return NotFound(
+                    new APIError(
+                        404,
+                        "Logged-in user was not found."));
+            }
+
+            var quiz =
+                await uow.QuizService
+                    .GetByIdAsync(id);
+
+            if (quiz == null)
+            {
+                return NotFound(
+                    new APIError(
+                        404,
+                        "Quiz not found."));
+            }
+
+            var wasAvailable =
+                quiz.IsActive &&
+                quiz.IsAccessible;
+
+            var module =
+                await uow.ModuleService
+                    .GetByIdAsync(dto.ModuleId);
+
+            if (module == null)
+            {
+                return NotFound(
+                    new APIError(
+                        404,
+                        "Module not found."));
+            }
+
+            var course =
+                await uow.CourseService
+                    .GetByIdAsync(module.CourseId);
+
+            if (course == null)
+            {
+                return NotFound(
+                    new APIError(
+                        404,
+                        "Course not found."));
+            }
+
+            if (!IsAdmin() &&
+                course.TrainerId != user.Id)
+            {
+                return Unauthorized(
+                    new APIError(
+                        401,
+                        "You are not allowed to edit this quiz."));
+            }
+
+            quiz.ModuleId =
+                dto.ModuleId;
+
+            quiz.Title =
+                dto.Title;
+
+            quiz.Instructions =
+                dto.Instructions;
+
+            quiz.AttemptsAllowed =
+                dto.AttemptsAllowed;
+
+            quiz.IsActive =
+                dto.IsActive;
+
+            quiz.IsAccessible =
+                dto.IsAccessible;
 
             quiz.Questions?.Clear();
-            quiz.Questions = new List<QuizQuestion>();
 
-            int questionOrder = 1;
+            quiz.Questions =
+                new List<QuizQuestion>();
+
+            var questionOrder = 1;
 
             foreach (var q in dto.Questions)
             {
-                var question = new QuizQuestion
-                {
-                    QuizId = quiz.Id,
-                    QuestionText = q.QuestionText,
-                    DisplayOrder = q.DisplayOrder > 0 ? q.DisplayOrder : questionOrder,
-                    Options = new List<QuizOption>
+                var question =
+                    new QuizQuestion
                     {
-                        new QuizOption { OptionText = q.OptionA, IsCorrect = q.CorrectAnswer == "A" },
-                        new QuizOption { OptionText = q.OptionB, IsCorrect = q.CorrectAnswer == "B" },
-                        new QuizOption { OptionText = q.OptionC, IsCorrect = q.CorrectAnswer == "C" },
-                        new QuizOption { OptionText = q.OptionD, IsCorrect = q.CorrectAnswer == "D" }
-                    }
-                };
+                        QuizId =
+                            quiz.Id,
+
+                        QuestionText =
+                            q.QuestionText,
+
+                        DisplayOrder =
+                            q.DisplayOrder > 0
+                                ? q.DisplayOrder
+                                : questionOrder,
+
+                        Options =
+                            new List<QuizOption>
+                            {
+                                new QuizOption
+                                {
+                                    OptionText = q.OptionA,
+                                    IsCorrect =
+                                        q.CorrectAnswer == "A"
+                                },
+
+                                new QuizOption
+                                {
+                                    OptionText = q.OptionB,
+                                    IsCorrect =
+                                        q.CorrectAnswer == "B"
+                                },
+
+                                new QuizOption
+                                {
+                                    OptionText = q.OptionC,
+                                    IsCorrect =
+                                        q.CorrectAnswer == "C"
+                                },
+
+                                new QuizOption
+                                {
+                                    OptionText = q.OptionD,
+                                    IsCorrect =
+                                        q.CorrectAnswer == "D"
+                                }
+                            }
+                    };
 
                 quiz.Questions.Add(question);
+
                 questionOrder++;
             }
 
             uow.QuizService.Update(quiz);
 
-            await uow.SaveAsync();
+            var saved =
+                await uow.SaveAsync();
+
+            if (!saved)
+            {
+                return BadRequest(
+                    new APIError(
+                        400,
+                        "Quiz could not be updated."));
+            }
+
+            var isAvailableNow =
+                quiz.IsActive &&
+                quiz.IsAccessible &&
+                module.IsActive &&
+                module.IsAccessible &&
+                course.IsActive &&
+                course.IsPublished;
+
+            // Notify only when unavailable quiz becomes available
+            if (!wasAvailable &&
+                isAvailableNow)
+            {
+                await NotifyStudentsQuizAvailableAsync(
+                    quiz,
+                    module,
+                    course);
+            }
 
             return Ok(new
             {
-                message = "Quiz updated successfully.",
-                quizId = quiz.Id
+                message =
+                    "Quiz updated successfully.",
+
+                quizId =
+                    quiz.Id
             });
         }
 
+        // =========================================
+        // TOGGLE ACCESS
+        // =========================================
+
         [HttpPut("toggle-access/{id:int}")]
-        public async Task<IActionResult> ToggleAccess(int id, [FromBody] ToggleQuizAccessDto dto)
+        public async Task<IActionResult> ToggleAccess(
+            int id,
+            [FromBody] ToggleQuizAccessDto dto)
         {
             var email = User.Identity?.Name;
 
             if (string.IsNullOrWhiteSpace(email))
-                return Unauthorized(new APIError(401, "User is not logged in."));
-
-            var user = await uow.UserService.GetUserByEmailAsync(email);
-
-            if (user == null)
-                return NotFound(new APIError(404, "Logged-in user was not found."));
-
-            var quiz = await uow.QuizService.GetByIdAsync(id);
-
-            if (quiz == null)
-                return NotFound(new APIError(404, "Quiz not found."));
-
-            var module = await uow.ModuleService.GetByIdAsync(quiz.ModuleId);
-
-            if (module == null)
-                return NotFound(new APIError(404, "Module not found."));
-
-            var course = await uow.CourseService.GetByIdAsync(module.CourseId);
-
-            if (course == null)
-                return NotFound(new APIError(404, "Course not found."));
-
-            if (!IsAdmin() && course.TrainerId != user.Id)
             {
                 return Unauthorized(
-                    new APIError(401, "You are not allowed to update this quiz access.")
-                );
+                    new APIError(
+                        401,
+                        "User is not logged in."));
             }
 
-            quiz.IsAccessible = dto.IsAccessible;
+            var user =
+                await uow.UserService
+                    .GetUserByEmailAsync(email);
+
+            if (user == null)
+            {
+                return NotFound(
+                    new APIError(
+                        404,
+                        "Logged-in user was not found."));
+            }
+
+            var quiz =
+                await uow.QuizService
+                    .GetByIdAsync(id);
+
+            if (quiz == null)
+            {
+                return NotFound(
+                    new APIError(
+                        404,
+                        "Quiz not found."));
+            }
+
+            var module =
+                await uow.ModuleService
+                    .GetByIdAsync(quiz.ModuleId);
+
+            if (module == null)
+            {
+                return NotFound(
+                    new APIError(
+                        404,
+                        "Module not found."));
+            }
+
+            var course =
+                await uow.CourseService
+                    .GetByIdAsync(module.CourseId);
+
+            if (course == null)
+            {
+                return NotFound(
+                    new APIError(
+                        404,
+                        "Course not found."));
+            }
+
+            if (!IsAdmin() &&
+                course.TrainerId != user.Id)
+            {
+                return Unauthorized(
+                    new APIError(
+                        401,
+                        "You are not allowed to update this quiz access."));
+            }
+
+            var wasAccessible =
+                quiz.IsAccessible;
+
+            quiz.IsAccessible =
+                dto.IsAccessible;
 
             uow.QuizService.Update(quiz);
 
-            await uow.SaveAsync();
+            var saved =
+                await uow.SaveAsync();
+
+            if (!saved)
+            {
+                return BadRequest(
+                    new APIError(
+                        400,
+                        "Quiz access could not be updated."));
+            }
+
+            if (!wasAccessible &&
+                quiz.IsAccessible &&
+                quiz.IsActive &&
+                module.IsActive &&
+                module.IsAccessible &&
+                course.IsActive &&
+                course.IsPublished)
+            {
+                await NotifyStudentsQuizAvailableAsync(
+                    quiz,
+                    module,
+                    course);
+            }
 
             return Ok(new
             {
-                message = "Quiz access updated successfully."
+                message =
+                    "Quiz access updated successfully."
             });
         }
 
+        // =========================================
+        // DELETE
+        // =========================================
+
         [HttpDelete("delete/{id:int}")]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(
+            int id)
         {
             var email = User.Identity?.Name;
 
             if (string.IsNullOrWhiteSpace(email))
-                return Unauthorized(new APIError(401, "User is not logged in."));
-
-            var user = await uow.UserService.GetUserByEmailAsync(email);
-
-            if (user == null)
-                return NotFound(new APIError(404, "Logged-in user was not found."));
-
-            var quiz = await uow.QuizService.GetByIdAsync(id);
-
-            if (quiz == null)
-                return NotFound(new APIError(404, "Quiz not found."));
-
-            var module = await uow.ModuleService.GetByIdAsync(quiz.ModuleId);
-
-            if (module == null)
-                return NotFound(new APIError(404, "Module not found."));
-
-            var course = await uow.CourseService.GetByIdAsync(module.CourseId);
-
-            if (course == null)
-                return NotFound(new APIError(404, "Course not found."));
-
-            if (!IsAdmin() && course.TrainerId != user.Id)
             {
                 return Unauthorized(
-                    new APIError(401, "You are not allowed to delete this quiz.")
-                );
+                    new APIError(
+                        401,
+                        "User is not logged in."));
+            }
+
+            var user =
+                await uow.UserService
+                    .GetUserByEmailAsync(email);
+
+            if (user == null)
+            {
+                return NotFound(
+                    new APIError(
+                        404,
+                        "Logged-in user was not found."));
+            }
+
+            var quiz =
+                await uow.QuizService
+                    .GetByIdAsync(id);
+
+            if (quiz == null)
+            {
+                return NotFound(
+                    new APIError(
+                        404,
+                        "Quiz not found."));
+            }
+
+            var module =
+                await uow.ModuleService
+                    .GetByIdAsync(quiz.ModuleId);
+
+            if (module == null)
+            {
+                return NotFound(
+                    new APIError(
+                        404,
+                        "Module not found."));
+            }
+
+            var course =
+                await uow.CourseService
+                    .GetByIdAsync(module.CourseId);
+
+            if (course == null)
+            {
+                return NotFound(
+                    new APIError(
+                        404,
+                        "Course not found."));
+            }
+
+            if (!IsAdmin() &&
+                course.TrainerId != user.Id)
+            {
+                return Unauthorized(
+                    new APIError(
+                        401,
+                        "You are not allowed to delete this quiz."));
             }
 
             uow.QuizService.Delete(quiz);
 
-            await uow.SaveAsync();
+            var saved =
+                await uow.SaveAsync();
+
+            if (!saved)
+            {
+                return BadRequest(
+                    new APIError(
+                        400,
+                        "Quiz could not be deleted."));
+            }
 
             return Ok(new
             {
-                message = "Quiz deleted successfully."
+                message =
+                    "Quiz deleted successfully."
             });
+        }
+
+        // =========================================
+        // QUIZ AVAILABLE NOTIFICATION
+        // =========================================
+
+        private async Task NotifyStudentsQuizAvailableAsync(
+            Quiz quiz,
+            Module module,
+            Course course)
+        {
+            try
+            {
+                var studentIds =
+                    await uow.CourseEnrollmentService
+                        .GetActiveStudentIdsByCourseAsync(
+                            course.Id);
+
+                if (studentIds.Count == 0)
+                    return;
+
+                await uow.NotificationService
+                    .CreateBulkAsync(
+                        studentIds,
+                        "Quiz Available",
+                        $"A new quiz \"{quiz.Title}\" is now available for {module.Title}. You can attempt it when you are ready.",
+                        "Quiz",
+                        "/Student/Courses");
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(
+                    ex,
+                    "Quiz available notification failed. QuizId: {QuizId}",
+                    quiz.Id);
+            }
         }
     }
 }

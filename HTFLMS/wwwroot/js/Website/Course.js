@@ -1,8 +1,9 @@
-﻿(function () {
+﻿
+(function () {
     'use strict';
 
     var grid = document.getElementById('htfCoursesGrid');
-    if (!grid) return; // DB mein courses nahi hain
+    if (!grid) return;
 
     var cards = Array.prototype.slice.call(grid.querySelectorAll('.htf-courses__card'));
     var pills = Array.prototype.slice.call(document.querySelectorAll('.htf-courses__filter'));
@@ -16,11 +17,16 @@
         var shown = 0;
 
         cards.forEach(function (card) {
-            var okCategory = activeFilter === 'all' || card.getAttribute('data-category') === activeFilter;
-            var okSearch = !term || (card.getAttribute('data-search') || '').indexOf(term) !== -1;
+            var okCategory = activeFilter === 'all' ||
+                card.getAttribute('data-category') === activeFilter;
+
+            var okSearch = !term ||
+                (card.getAttribute('data-search') || '').indexOf(term) !== -1;
+
             var visible = okCategory && okSearch;
 
             card.classList.toggle('is-hidden', !visible);
+
             if (!visible) card.classList.remove('is-open');
             if (visible) shown++;
         });
@@ -28,27 +34,57 @@
         if (noMatch) noMatch.hidden = shown !== 0;
     }
 
+    // Category filters
     pills.forEach(function (pill) {
         pill.addEventListener('click', function () {
             activeFilter = pill.getAttribute('data-filter');
+
             pills.forEach(function (p) {
                 var on = p === pill;
                 p.classList.toggle('is-active', on);
                 p.setAttribute('aria-pressed', on ? 'true' : 'false');
             });
+
             applyFilters();
         });
     });
 
-    if (search) search.addEventListener('input', applyFilters);
+    // Course search
+    if (search) {
+        search.addEventListener('input', applyFilters);
+    }
 
-    // Touch devices: tap se card kholo/band karo (Enroll link par tap normal chalega)
+    // Course card -> Detail Page
+    // Enroll Now -> Login Page (handled by its own href)
     grid.addEventListener('click', function (e) {
-        if (e.target.closest('a')) return;
+
+        if (e.target.closest('a, button')) return;
+
         var card = e.target.closest('.htf-courses__card');
-        if (!card) return;
-        var wasOpen = card.classList.contains('is-open');
-        cards.forEach(function (c) { c.classList.remove('is-open'); });
-        if (!wasOpen) card.classList.add('is-open');
+        if (!card || card.classList.contains('is-hidden')) return;
+
+        var url = card.getAttribute('data-detail-url');
+
+        if (url) {
+            window.location.href = url;
+        }
     });
+
+    // Keyboard accessibility
+    grid.addEventListener('keydown', function (e) {
+        if (e.key !== 'Enter' && e.key !== ' ') return;
+
+        var card = e.target.closest('.htf-courses__card');
+        if (!card || e.target !== card ||
+            card.classList.contains('is-hidden')) return;
+
+        e.preventDefault();
+
+        var url = card.getAttribute('data-detail-url');
+
+        if (url) {
+            window.location.href = url;
+        }
+    });
+
 })();

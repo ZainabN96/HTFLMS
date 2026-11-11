@@ -66,7 +66,7 @@
         if (N < 5) return;
 
         const SLOT = 344;       // card width 320 + gap 24
-        const STAY = 4800;      // ms each card stays in the centre
+        const STAY = 6500;      // ms each card stays in the centre
         const SVG = "http://www.w3.org/2000/svg";
 
         const el = (tag, cls, text) => {
@@ -80,7 +80,8 @@
         cards.forEach((card) => {
             const name = $(".s-card__name", card).textContent.trim();
             const role = $(".s-card__role", card).textContent.trim();
-            const quote = $(".s-card__quote", card).textContent.trim();
+            //const quote = $(".s-card__quote", card).textContent.trim();
+            const quote = $(".s-card__glass-quote", card).textContent.trim();
             const avatar = $(".s-card__avatar", card).getAttribute("src");
 
             const glass = el("div", "s-glass");
@@ -137,32 +138,120 @@
 
         layout(true);
 
-        /* ---- autoplay (only while the section is on screen) */
-        let timer = null, started = false;
+    //    /* ---- autoplay (only while the section is on screen) */
+    //    let timer = null, started = false;
+
+    //    const next = () => {
+    //        cards.forEach((c) => c.classList.remove("is-active"));
+    //        pos = (pos + 1) % N;
+    //        layout(false);
+    //        setTimeout(setActive, 450); // glass starts as the card reaches the centre
+    //    };
+    //    const run = () => {
+    //        if (timer) return;
+    //        if (!started) { started = true; setTimeout(setActive, 300); }
+    //        else setActive();
+    //        timer = setInterval(next, STAY);
+    //    };
+    //    const halt = () => { clearInterval(timer); timer = null; };
+
+    //    if ("IntersectionObserver" in window) {
+    //        new IntersectionObserver((entries) => {
+    //            entries[0].isIntersecting ? run() : halt();
+    //        }, { threshold: 0.35 }).observe(section);
+    //    } else {
+    //        run();
+    //    }
+        //})();
+
+        /* ---- autoplay (pause only when hovering over a card) ---- */
+
+        let timer = null;
+        let activeTimeout = null;
+        let started = false;
+        let isHovered = false;
+        let isVisible = false;
+
+        const setActiveAfterMove = () => {
+            clearTimeout(activeTimeout);
+
+            activeTimeout = setTimeout(() => {
+                setActive();
+                activeTimeout = null;
+            }, 450);
+        };
 
         const next = () => {
+            if (isHovered || !isVisible) return;
+
             cards.forEach((c) => c.classList.remove("is-active"));
+
             pos = (pos + 1) % N;
             layout(false);
-            setTimeout(setActive, 450); // glass starts as the card reaches the centre
+
+            setActiveAfterMove();
         };
+
         const run = () => {
-            if (timer) return;
-            if (!started) { started = true; setTimeout(setActive, 300); }
-            else setActive();
+            if (timer || isHovered || !isVisible) return;
+
+            if (!started) {
+                started = true;
+                activeTimeout = setTimeout(setActive, 300);
+            } else if (!activeTimeout) {
+                setActive();
+            }
+
             timer = setInterval(next, STAY);
         };
-        const halt = () => { clearInterval(timer); timer = null; };
 
+        const halt = () => {
+            clearInterval(timer);
+            timer = null;
+        };
+
+        // Pause only when cursor enters a card
+        cards.forEach((card) => {
+
+            card.addEventListener("mouseenter", () => {
+                isHovered = true;
+                halt();
+            });
+
+            card.addEventListener("mouseleave", () => {
+
+                // Check whether cursor moved directly to another card
+                const hoveredCard = cards.some(c => c.matches(":hover"));
+
+                if (!hoveredCard) {
+                    isHovered = false;
+                    run();
+                }
+            });
+
+        });
+
+        // Autoplay only while section is visible
         if ("IntersectionObserver" in window) {
-            new IntersectionObserver((entries) => {
-                entries[0].isIntersecting ? run() : halt();
-            }, { threshold: 0.35 }).observe(section);
-        } else {
-            run();
-        }
-    })();
 
+            new IntersectionObserver((entries) => {
+
+                isVisible = entries[0].isIntersecting;
+
+                if (isVisible) {
+                    run();
+                } else {
+                    halt();
+                }
+
+            }, { threshold: 0.35 }).observe(section);
+
+        } else {
+            isVisible = true;
+        
+        run();
+            }
+        })();
     /* ---------------------------------------------------------
        Word-swap measuring helper (also used for reduced motion)
        --------------------------------------------------------- */

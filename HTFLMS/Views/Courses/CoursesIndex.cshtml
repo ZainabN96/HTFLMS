@@ -18,11 +18,11 @@
         <!-- HERO -->
         <section class="htf-courses__hero">
             <div class="htf-courses__intro">
-                <h1 class="htf-courses__heading">
-                    <span class="htf-courses__our">Our</span>
-                    <span class="htf-courses__script">courses</span>
+                <h1 class="hero-title hero-title--page">
+                    <span class="hero-title-line hero-title-black">Our</span>
+                    <span class="hero-title-line hero-title-pink">courses</span>
                 </h1>
-                <p class="htf-courses__description">
+                <p class="hero__para">
                     A glimpse into the lives we're shaping through technology and education.
                     Every photo is a milestone of empowerment, collaboration and hope.
                 </p>
@@ -45,7 +45,8 @@
         </section>
 
         <!-- LISTING -->
-        <section class="htf-courses__listing" id="courses">
+
+        @* <section class="htf-courses__listing" id="courses">
             <div class="htf-courses__toolbar">
                 <div class="htf-courses__filters" id="htfCoursesFilters">
                     <button type="button" class="htf-courses__filter is-active" data-filter="all" aria-pressed="true">All</button>
@@ -126,7 +127,148 @@
                     <p>Try a different search or category.</p>
                 </div>
             }
-        </section>
+        </section> *@
+
+        
+<section class="htf-courses__listing" id="courses">
+
+    <div class="htf-courses__toolbar">
+
+        <div class="htf-courses__filters" id="htfCoursesFilters">
+            <button type="button"
+                    class="htf-courses__filter is-active"
+                    data-filter="all"
+                    aria-pressed="true">
+                All
+            </button>
+
+            @foreach (var cat in categories)
+            {
+                <button type="button"
+                        class="htf-courses__filter"
+                        data-filter="@cat.ToLowerInvariant()"
+                        aria-pressed="false">
+                    @cat
+                </button>
+            }
+        </div>
+
+        <div class="htf-courses__search">
+            <label for="htfCoursesSearch" class="htf-courses__sr">
+                Search courses
+            </label>
+
+            <svg viewBox="0 0 24 24"
+                 width="18"
+                 height="18"
+                 aria-hidden="true">
+                <circle cx="11" cy="11" r="7"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2" />
+
+                <path d="M20 20l-3.5-3.5"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round" />
+            </svg>
+
+            <input type="search"
+                   id="htfCoursesSearch"
+                   placeholder="Search courses"
+                   autocomplete="off">
+        </div>
+
+    </div>
+
+    @if (Model == null || Model.Count == 0)
+    {
+        <div class="htf-courses__empty">
+            <h4>No courses available yet</h4>
+            <p>Please check back soon.</p>
+        </div>
+    }
+    else
+    {
+        <div class="htf-courses__grid" id="htfCoursesGrid">
+
+            @foreach (var c in Model)
+            {
+                <article class="htf-courses__card"
+                         tabindex="0"
+                         role="link"
+                         aria-label="View details for @c.Title"
+                         data-detail-url="@Url.Action("CourseDetailPage", "Courses", new {  id = c.Id })"
+                         data-category="@(c.Category?.Trim().ToLowerInvariant())"
+                         data-search="@((c.Title + " " + c.Category + " " + c.Trainer?.Name).ToLowerInvariant())">
+
+                    <div class="htf-courses__media">
+                        <img src="@(string.IsNullOrWhiteSpace(c.CourseImagePath)
+                            ? Url.Content("~/img/course/course-2.webp")
+                            : c.CourseImagePath)"
+                             alt="@c.Title"
+                             loading="lazy">
+                    </div>
+
+                    <div class="htf-courses__glass">
+                        <span class="htf-courses__tag">
+                            @c.Category
+                        </span>
+
+                        <h3 class="htf-courses__name">
+                            @c.Title
+                        </h3>
+                    </div>
+
+                    <div class="htf-courses__panel">
+
+                        <h3 class="htf-courses__panel-title">
+                            @c.Title
+                        </h3>
+
+                        <p class="htf-courses__panel-text">
+
+                            @if (c.Trainer != null &&
+                                 !string.IsNullOrWhiteSpace(c.Trainer.Name))
+                            {
+                                <strong>By @c.Trainer.Name</strong>
+                                <br />
+                            }
+
+                            @(string.IsNullOrWhiteSpace(c.Description)
+                                ? "Course description coming soon."
+                                : c.Description)
+
+                        </p>
+
+                        <!-- Enroll Now -> Login Page -->
+                        <a asp-area=""
+                           asp-controller="Account"
+                           asp-action="Login"
+                           class="htf-courses__enroll">
+                            Enroll Now
+                            <span aria-hidden="true">&rarr;</span>
+                        </a>
+
+                    </div>
+
+                </article>
+            }
+
+        </div>
+
+        <div class="htf-courses__empty"
+             id="htfCoursesNoMatch"
+             hidden>
+            <h4>No matching courses</h4>
+            <p>Try a different search or category.</p>
+        </div>
+    }
+
+</section>
+
+
 
         <!-- CTA BAND -->
         <section class="htf-courses__cta-wrap">

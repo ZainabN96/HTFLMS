@@ -7,7 +7,7 @@
     --rose-soft: #f3e4e9;
     --rose-bg: #c9828f33;
     --rose-band: #ecd7dc;
-/*    --sage: #8aab8f;*/
+    /*    --sage: #8aab8f;*/
     --sage: #C1282a;
     --ink: #1a1a1a;
     --text: #5f5a5d;
@@ -15,7 +15,8 @@
     --radius: 18px;
     --ease: cubic-bezier(.22, .61, .36, 1);
     font-family: 'Inter', system-ui, sans-serif;
-    color: var(--text);
+    --f-jakarta: "Plus Jakarta Sans", "Inter", sans-serif;
+    --f-cormorant: "Cormorant Garamond", Georgia, serif color: var(--text);
     background: #fff;
     overflow-x: hidden;
     --light-brown: #6b4b5a;
@@ -135,35 +136,53 @@
     animation: abRise .9s var(--ease) both;
 }
 
-.ab-hero__title {
-    margin: 22px 0 28px;
-    line-height: .95;
+
+/* Base: heading wrapper (h1/h2) */
+.hero-title {
+    font: 800 clamp(4.2rem, 8.7vw, 11rem)/.81 var(--f-sans);
+    letter-spacing: -.04em;
+    text-transform: uppercase;
 }
 
-.ab-hero__about {
+.hero-title-line {
     display: block;
-    font-family: 'Cormorant Garamond', serif;
-    font-weight: 800;
-    font-size: clamp(56px, 8vw, 92px);
-    letter-spacing: -.02em;
-    color: var(--ink);
+    white-space: nowrap;
 }
 
-.ab-hero__us {
-    display: block;
-    font-family: 'Cormorant Garamond', serif;
-    font-style: italic;
-    font-weight: 400;
-    font-size: clamp(56px, 8vw, 92px);
-    color: var(--sage);
-    margin-top: 4px;
+/* ---- Color variants ---- */
+
+/* Black / dark word: sans font */
+.hero-title-black {
+    font-family: var(--f-sans);
+    color: var(--plum);
 }
 
-.ab-hero__lead {
-    max-width: 430px;
-    font-size: 16.5px;
-    line-height: 1.65;
-    color: var(--text);
+/* Red word: sans font */
+.hero-title-red {
+    font-family: var(--f-sans);
+    color: #C1282A;
+}
+
+/* Pink word: serif italic, lowercase style */
+.hero-title-pink {
+    font: italic 500 1em/.81 var(--f-serif);
+    text-transform: none;
+    letter-spacing: -.01em;
+    color: var(--pink);
+    margin-left: .08em;
+}
+
+/* for 2 words side by side  (BUILD + Grow.) */
+.hero-title-line--inline {
+    display: flex;
+    align-items: baseline;
+}
+
+.hero__para {
+    margin-top: clamp(2.2rem, 4.2vw, 5rem);
+    max-width: 44ch;
+    font: 400 clamp(1rem, 1.2vw, 1.45rem)/1.6 var(--f-sans);
+    color: var(--plum-text);
 }
 
 .ab-hero__visual {
@@ -537,21 +556,39 @@
 }
 
 .ab-bcard__photo {
-    width: 100%;
+    /*    width: 100%;
     height: 150px;
     display: grid;
     place-items: center;
     overflow: hidden;
+}*/
+    width: 100%;
+    height: 210px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
 }
 
-    .ab-bcard__photo img {
+
+/*    .ab-bcard__photo img {
         height: 100%;
         width: auto;
         max-width: none;
         object-fit: cover;
         border-radius: 0 0 75px 75px;
         transition: transform .6s var(--ease);
-    }
+    }*/
+.ab-bcard__photo img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    max-width: 100%;
+    object-fit: contain;
+    object-position: center bottom;
+    border-radius: 0 0 75px 75px;
+    transition: transform .6s var(--ease);
+}
 
 .ab-bcard__name {
     margin-top: 26px;
@@ -724,11 +761,16 @@
 .ab-pcard p {
     margin-top: 14px;
     font-family: 'Plus Jakarta Sans', sans-serif;
-    font-size: 11.5px;
+    font-size: 11px;
     line-height: 1.6;
     color: #6b6468;
     flex: 1;
+    text-align: justify;
+    text-justify: inter-word;
+    hyphens: auto;
+    
 }
+
 
 .ab-pcard__social {
     margin-top: 16px;

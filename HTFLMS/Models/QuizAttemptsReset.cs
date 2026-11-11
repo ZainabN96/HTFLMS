@@ -12,7 +12,13 @@ namespace HTFLMS.Models
 
         public DateTime LockedUntil { get; set; }
 
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public DateTime CreatedAt { get; set; }
+            = DateTime.UtcNow;
+
+        // Notification Tracking
+        public DateTime? LockNotificationSentAt { get; set; }
+
+        public DateTime? UnlockNotificationSentAt { get; set; }
 
         // Navigation
         public User? Student { get; set; }

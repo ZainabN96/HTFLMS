@@ -108,11 +108,14 @@ builder.Services.AddSingleton<
 
 
 // =====================================================
-// BACKGROUND SERVICES
+// BACKGROUND / SCHEDULED SERVICES
 // =====================================================
 
 builder.Services.AddHostedService<
     AssignmentDueReminderBackgroundService>();
+
+builder.Services.AddHostedService<
+    QuizUnlockNotificationService>();
 
 
 // =====================================================
